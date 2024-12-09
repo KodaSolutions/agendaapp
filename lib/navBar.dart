@@ -1,5 +1,7 @@
 import 'package:agenda_app/projectStyles/appColors.dart';
 import 'package:agenda_app/services/auth_service.dart';
+import 'package:agenda_app/usersConfig/appConfig.dart';
+import 'package:agenda_app/usersConfig/editProfile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -43,7 +45,7 @@ class _navBarState extends State<navBar> {
 
   @override
   Widget build(BuildContext context) {
-    return  Drawer(
+    return Drawer(
             backgroundColor: AppColors3.whiteColor,
             child: Stack(
               children: [
@@ -55,7 +57,7 @@ class _navBarState extends State<navBar> {
                     child: Column(
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(bottom: 30, left: 20),
+                            padding: const EdgeInsets.only(bottom: 22, left: 20),
                             child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -83,7 +85,72 @@ class _navBarState extends State<navBar> {
                                 ]
                             ),
                           ),
-                          //    bool isBluetoothOn = await flutterBlue.isOn;
+                          Divider(),
+                          SizedBox(height: MediaQuery.of(context).size.width * 0.045,),
+                          Visibility(
+                    visible: true,
+                    child: InkWell(
+                      splashColor: AppColors3.primaryColor.withOpacity(0.2),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => AppConfig(),
+                          ),
+                        );
+                      },
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.width * 0.03,
+                              bottom: MediaQuery.of(context).size.width * 0.03,
+                              left: MediaQuery.of(context).size.width * 0.03,
+                              right: MediaQuery.of(context).size.width * 0.03,
+                            ),
+                            child: Icon(CupertinoIcons.gear_alt,
+                            size: MediaQuery.of(context).size.width * 0.075,
+                            color: AppColors3.primaryColor,
+                            ),
+                          ),
+                          Text(
+                            'Configurar usuarios',
+                            style: TextStyle(
+                              color: AppColors3.primaryColor,
+                                fontSize: MediaQuery.of(context).size.width * 0.045),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                          InkWell(
+                            splashColor: AppColors3.primaryColor.withOpacity(0.2),
+                            onTap: (){
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => EditProfile(),
+                                ),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: MediaQuery.of(context).size.width * 0.03,
+                                    bottom: MediaQuery.of(context).size.width * 0.03,
+                                    left: MediaQuery.of(context).size.width * 0.03,
+                                    right: MediaQuery.of(context).size.width * 0.03,
+                                  ),
+                                  child: Icon(CupertinoIcons.profile_circled,
+                                    size: MediaQuery.of(context).size.width * 0.075,
+                                  color: AppColors3.primaryColor,
+                                  ),
+                        ),
+                        Text('Editar perfil', style: TextStyle(
+                            color: AppColors3.primaryColor,
+                            fontSize: MediaQuery.of(context).size.width * 0.045)),
+                      ],
+                    ),
+                  ),
                           Visibility(
                             visible: !widget.isDoctorLog,
                             child: Container(
