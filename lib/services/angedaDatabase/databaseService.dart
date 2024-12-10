@@ -16,12 +16,12 @@ class DatabaseService {
     _database = await _initDatabase();
     return _database!;
   }
-//tablas
+
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'app_database.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 2, // Incrementamos la versión
       onCreate: (db, version) async {
         await db.execute('''
         CREATE TABLE IF NOT EXISTS session(
@@ -38,6 +38,8 @@ class DatabaseService {
           name TEXT,
           email TEXT,
           email_verified_at TEXT,
+          identification TEXT,
+          role TEXT,
           fcm_token TEXT,
           created_at TEXT,
           updated_at TEXT
@@ -59,33 +61,50 @@ class DatabaseService {
           updated_at TEXT
         )
       ''');
+
         await db.execute('''
-      CREATE TABLE IF NOT EXISTS appointments(
-        id BIGINT PRIMARY KEY,
-        client_id BIGINT,
-        created_by BIGINT,
-        doctor_id BIGINT,
-        appointment_date TEXT,
-        treatment_type TEXT,
-        payment_method TEXT,
-        status TEXT,
-        notification_read INTEGER DEFAULT 0,
-        created_at TEXT,
-        updated_at TEXT,
-        client_name TEXT
-      )
-    ''');
+        CREATE TABLE IF NOT EXISTS appointments(
+          id BIGINT PRIMARY KEY,
+          client_id BIGINT,
+          created_by BIGINT,
+          doctor_id BIGINT,
+          appointment_date TEXT,
+          treatment_type TEXT,
+          payment_method TEXT,
+          status TEXT,
+          notification_read INTEGER DEFAULT 0,
+          created_at TEXT,
+          updated_at TEXT,
+          client_name TEXT
+        )
+      ''');
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          // Agregar las nuevas columnas a la tabla users
+          await db.execute('ALTER TABLE users ADD COLUMN identification TEXT');
+          await db.execute('ALTER TABLE users ADD COLUMN role TEXT');
+        }
       },
     );
   }
-
 
   //funciones usuarios
   Future<void> saveUser(Map<String, dynamic> user) async {
     final db = await database;
     await db.insert(
       'users',
-      user,
+      {
+        'id': user['id'],
+        'name': user['name'],
+        'email': user['email'],
+        'email_verified_at': user['email_verified_at'],
+        'identification': user['identification'],
+        'role': user['role'],
+        'fcm_token': user['fcm_token'],
+        'created_at': user['created_at'],
+        'updated_at': user['updated_at'],
+      },
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
@@ -101,6 +120,7 @@ class DatabaseService {
     final db = await database;
     await db.delete('users', where: 'id = ?', whereArgs: [userId]);
   }
+
   Future<void> saveSession(String token, int userId, bool isDoctor) async {
     final db = await database;
     await db.insert(
@@ -121,19 +141,22 @@ class DatabaseService {
     final db = await database;
     await db.delete('session');
   }
+
   //funciones clientes
-  Future<void> insertClient(List<Map<String, dynamic>> clients) async{
+  Future<void> insertClient(List<Map<String, dynamic>> clients) async {
     final db = await database;
     Batch batch = db.batch();
-    for(var client in clients){
-      batch.insert('clients',client, conflictAlgorithm: ConflictAlgorithm.replace);
+    for(var client in clients) {
+      batch.insert('clients', client, conflictAlgorithm: ConflictAlgorithm.replace);
     }
     await batch.commit();
   }
-  Future<List<Map<String, dynamic>>> getClients() async{
+
+  Future<List<Map<String, dynamic>>> getClients() async {
     final db = await database;
     return await db.query('clients');
   }
+
   //funciones appts
   Future<void> insertAppointments(List<Map<String, dynamic>> appointments) async {
     final db = await database;
@@ -143,14 +166,21 @@ class DatabaseService {
     }
     await batch.commit();
   }
+
   Future<List<Map<String, dynamic>>> getAppointments() async {
     final db = await database;
     return await db.query('appointments');
   }
-  Future<List<Map<String, dynamic>>>  getAppointmentsByDate(String date) async{
+
+  Future<List<Map<String, dynamic>>> getAppointmentsByDate(String date) async {
     final db = await database;
-    return await db.query('appointments', where: 'DATE(appointment_date) = DATE(?)', whereArgs: [date],);
+    return await db.query(
+      'appointments',
+      where: 'DATE(appointment_date) = DATE(?)',
+      whereArgs: [date],
+    );
   }
+
   //verificar que se creen las tablas
   Future<void> checkTables() async {
     final db = await database;
