@@ -5,6 +5,8 @@ import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../services/userService.dart';
+
 class AppConfig extends StatefulWidget {
   const AppConfig({super.key});
 
@@ -13,7 +15,7 @@ class AppConfig extends StatefulWidget {
 }
 
 class _AppConfigState extends State<AppConfig> {
-
+  bool resetRolSelection = false;
   late KeyboardVisibilityManager keyboardVisibilityManager;
 
   FocusNode nameFocus = FocusNode();
@@ -27,26 +29,88 @@ class _AppConfigState extends State<AppConfig> {
 
   final _formKey = GlobalKey<FormState>();
   String? user;
-  String? rol;
   bool isValidationActive = false;
+  int? roleId;
 
-  void lockforEmpetyFields() {
-    if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-            padding: EdgeInsets.only(
-              top: MediaQuery.of(context).size.width * 0.08,
-              bottom: MediaQuery.of(context).size.width * 0.08,
-              left: MediaQuery.of(context).size.width * 0.02,
-            ),
-            content: Text('Formulario válido', style: TextStyle(
-                color: AppColors3.whiteColor,
-                fontSize: MediaQuery.of(context).size.width * 0.045),),
-        ),
-      );
-    }
+  void onSelRol(int? id) {
+    setState(() {
+      roleId = id;
+    });
   }
 
+  void lockforEmpetyFields() async {
+    if (_formKey.currentState!.validate()) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      );
+
+      try {
+        final response = await UserServices.registerUser(
+          name: nameController.text,
+          email: emailController.text,
+          password: pswController.text,
+          roleId: roleId!,
+        );
+
+        if (mounted) {
+          Navigator.of(context).pop(); // Cerrar el diálogo de carga
+        }
+
+        if (response.success) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Usuario registrado exitosamente'),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            // Recargar la página completa
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AppConfig(),
+              ),
+            );
+          }
+        } else {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(response.error ?? 'Error en el registro'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
+        }
+      } catch (e) {
+        if (mounted) {
+          Navigator.of(context).pop();
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Error: ${e.toString()}'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    }
+  }
+  void clearForm() {
+    nameController.clear();
+    emailController.clear();
+    pswController.clear();
+    setState(() {
+      roleId = null;
+    });
+    _formKey.currentState?.reset();
+  }
 
   @override
   void dispose() {
@@ -59,23 +123,101 @@ class _AppConfigState extends State<AppConfig> {
   }
 
   bool isUserSel = false;
+  String? selectedUserId;
+  void onSelUser(String? displayText, String? userId) {
+    setState(() {
+      user = displayText;
+      selectedUserId = userId;
+      isUserSel = displayText != null && userId != null;
+    });
+  }
+  void deleteUser() async {
+    if (selectedUserId == null) return;
 
-  void onSelUser (String? user){
-    this.user = user;
-    if(user != null){
-      setState(() {
-        isUserSel = true;
-      });
+    // Mostrar diálogo de confirmación
+    bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar eliminación'),
+          content: Text('¿Está seguro que desea eliminar al usuario: $user?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Eliminar'),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (confirm != true) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+
+    final result = await UserServices.deleteUser(selectedUserId!);
+
+    if (mounted) {
+      Navigator.of(context).pop();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message']),
+          backgroundColor: result['success'] ? Colors.green : Colors.red,
+        ),
+      );
+
+      if (result['success']) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const AppConfig()),
+        );
+      }
     }
   }
-  void onSelRol (String? rol){
-    this.rol = rol;
-    if(rol != null){
-      setState(() {
-        lockforEmpetyFields();
-      });
+
+  void changePassword() async {
+    if (selectedUserId == null || newPswController.text.isEmpty) return;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+
+    final result = await UserServices.changePassword(
+      selectedUserId!,
+      newPswController.text,
+    );
+
+    if (mounted) {
+      Navigator.of(context).pop(); // Cerrar el indicador de carga
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message']),
+          backgroundColor: result['success'] ? Colors.green : Colors.red,
+        ),
+      );
+
+      if (result['success']) {
+        newPswController.clear();
+      }
     }
   }
+
 
   void addFocusListeners(List<FocusNode> focusNodes) {
     for (var focusNode in focusNodes) {
@@ -203,7 +345,7 @@ class _AppConfigState extends State<AppConfig> {
                                 if (value.length < 3) {
                                   return 'El nombre debe tener al menos 3 caracteres';
                                 }
-                                return null; // Campo válido
+                                return null;
                               },
                             ),
                             TextFormField(
@@ -232,10 +374,12 @@ class _AppConfigState extends State<AppConfig> {
                                 if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w]{2,4}').hasMatch(value)) {
                                   return 'Por favor ingrese un correo válido';
                                 }
-                                return null; // Campo válido
+                                return null;
                               },
                             ),
-                            SelBoxRol(onSelRol: onSelRol),
+                            SelBoxRol(
+                              onSelRol: onSelRol
+                            ),
                             TextFormField(
                               controller: pswController,
                               focusNode: pswFocus,
@@ -255,10 +399,10 @@ class _AppConfigState extends State<AppConfig> {
                                 if (value == null || value.isEmpty) {
                                   return 'La contraseña es obligatoria';
                                 }
-                                if (value.length < 6) {
-                                  return 'La contraseña debe tener al menos 6 caracteres';
+                                if (value.length <= 3) {
+                                  return 'La contraseña debe tener al menos 4 caracteres';
                                 }
-                                return null; // Campo válido
+                                return null;
                               },
                             ),
                           ],
@@ -347,14 +491,16 @@ class _AppConfigState extends State<AppConfig> {
                                   padding: EdgeInsets.only(
                                     left: MediaQuery.of(context).size.width * 0.02,
                                   ),
-                                  child: ElevatedButton(
+                                  child:   ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       padding: EdgeInsets.zero,
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                     ),
-                                    onPressed: isUserSel ? () {} : null,
-                                    child: Icon(Icons.delete_forever,
-                                    color: isUserSel ? AppColors3.redDelete : AppColors3.redDelete.withOpacity(0.3)),
+                                    onPressed: isUserSel ? deleteUser : null,
+                                    child: Icon(
+                                        Icons.delete_forever,
+                                        color: isUserSel ? AppColors3.redDelete : AppColors3.redDelete.withOpacity(0.3)
+                                    ),
                                   ),
                                 ),
                               ],
@@ -378,13 +524,20 @@ class _AppConfigState extends State<AppConfig> {
                                 focusNode: newPswFocus,
                                 decoration: InputDecoration(
                                     contentPadding: EdgeInsets.symmetric(
-                                        horizontal:
-                                        MediaQuery.of(context).size.width * 0.02,
-                                        vertical: MediaQuery.of(context).size.width * 0.035),
-                                    suffixIcon: IconButton(onPressed: (){}, icon: Icon(Icons.check)),
-                                    filled: newPswFocus.hasFocus ? true : false,
+                                        horizontal: MediaQuery.of(context).size.width * 0.02,
+                                        vertical: MediaQuery.of(context).size.width * 0.035
+                                    ),
+                                    suffixIcon: IconButton(
+                                        onPressed: isUserSel ? changePassword : null,
+                                        icon: Icon(
+                                          Icons.check,
+                                          color: isUserSel ? Colors.green : Colors.grey,
+                                        )
+                                    ),
+                                    filled: newPswFocus.hasFocus,
                                     fillColor: AppColors3.greyColor.withOpacity(0.2),
-                                    hintText: 'Nueva contraseña'),
+                                    hintText: 'Nueva contraseña'
+                                ),
                               ),
                             ],
                           ),),),
