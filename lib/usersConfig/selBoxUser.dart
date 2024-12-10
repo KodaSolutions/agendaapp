@@ -49,11 +49,9 @@ class _SelBoxRolState extends State<SelBoxRol> {
           }
           return null;
         },
-
       );
   }
 }
-//
 
 class SelBoxUser extends StatefulWidget {
   final Function (String?) onSelUser;
@@ -91,7 +89,7 @@ class _SelBoxUserState extends State<SelBoxUser> {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   rol,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontWeight: FontWeight.w400,
                   ),
                 ),
