@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import '../projectStyles/appColors.dart';
 import '../services/auth_service.dart';
@@ -12,277 +13,161 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool isDocLog = true;
-  int userIdHelper = 0;
+  final TextEditingController _identificationController = TextEditingController();
+  final FocusNode _identificationFocusNode = FocusNode();
+
   bool showPinEntryScreen = false;
+  String userIdentification = '';
+
+  @override
+  void initState() {
+    super.initState();
+    // Agregar listener para detectar cambios en el texto
+    _identificationController.addListener(_onIdentificationChanged);
+  }
+
+  @override
+  void dispose() {
+    _identificationController.removeListener(_onIdentificationChanged);
+    _identificationController.dispose();
+    _identificationFocusNode.dispose();
+    super.dispose();
+  }
+
+  void _onIdentificationChanged() {
+    if (_identificationController.text.length == 3) {
+      _handleIdentificationSubmit();
+    }
+  }
+
+  void _handleIdentificationSubmit() {
+    if (_identificationController.text.length == 3) {
+      setState(() {
+        userIdentification = _identificationController.text;
+        showPinEntryScreen = true;
+      });
+      FocusScope.of(context).unfocus(); // Cerrar el teclado
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        const LadingDraw(),
-        Container(
-          color: Colors.transparent,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.width * 0.32),
-                child: CircleAvatar(
-                  backgroundColor: AppColors3.whiteColor,
-                  radius: MediaQuery.of(context).size.height * 0.21,
-                  /*backgroundImage:
-                      const AssetImage("assets/icons/logoBeauteWhite.png")*/
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.transparent,
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Stack(
+          children: [
+            const LadingDraw(),
+            Column(
+              children: [
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.transparent,
+                  ),
                 ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.065,
-                margin: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.095,
-                  right: MediaQuery.of(context).size.width * 0.095,
-                  bottom: MediaQuery.of(context).size.width * 0.065,
-                ),
-                child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showPinEntryScreen = true;
-                        isDocLog = true;
-                        userIdHelper = 1;
-                        /*   Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PinEntryScreen(
-                                  userId: 1,
-                                  docLog: isDocLog,
-                                )),
-                      );*/
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      splashFactory: InkRipple.splashFactory,
-                      elevation: 10,
-                      surfaceTintColor: AppColors3.secundaryColor.withOpacity(0.1),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: const BorderSide(
-                            color: AppColors3.secundaryColor, width: 2),
-                      ),
-                      backgroundColor: AppColors3.secundaryColor,
-                    ),
-                    child: Row(
+                Expanded(
+                  flex: 1,
+                  child: Container(
+                    color: Colors.transparent,
+                    child: Column(
                       children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.035, right: MediaQuery.of(context).size.width * 0.015),
-                          child: SvgPicture.asset(
-                            'assets/icons/docVector2.svg',
-                            color: AppColors3.primaryColor,
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.015,
-                              right: MediaQuery.of(context).size.width * 0.15),
-                          height: MediaQuery.of(context).size.width * 0.09,
-                          width: MediaQuery.of(context).size.width * 0.006,
-                          decoration: BoxDecoration(
-                            color: AppColors3.primaryColor,
-                            border: Border.all(width: 0.5, color: AppColors3.primaryColor),
-                          ),
-                        ),
-                        const Center(
-                          child: Text(
-                            'Doctor1',
-                            style: TextStyle(
-                              color: AppColors3.primaryColor,
-                              fontSize: 26,
+                        Center(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height * 0.065,
+                            margin: EdgeInsets.symmetric(
+                              horizontal: MediaQuery.of(context).size.width * 0.095,
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: TextField(
+                                controller: _identificationController,
+                                focusNode: _identificationFocusNode,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(3),
+                                ],
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: AppColors3.primaryColor,
+                                  fontSize: 26,
+                                ),
+                                decoration: InputDecoration(
+                                  hintText: 'Enter Identification',
+                                  hintStyle: TextStyle(
+                                    color: AppColors3.primaryColor.withOpacity(0.5),
+                                    fontSize: 20,
+                                  ),
+                                  filled: true,
+                                  fillColor: AppColors3.secundaryColor,
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                      color: AppColors3.secundaryColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    borderSide: const BorderSide(
+                                      color: AppColors3.secundaryColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    )),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.065,
-                margin: EdgeInsets.only(
-                  left: MediaQuery.of(context).size.width * 0.095,
-                  right: MediaQuery.of(context).size.width * 0.095,
-                  bottom: MediaQuery.of(context).size.width * 0.065,
-                ),
-                child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showPinEntryScreen = true;
-                        userIdHelper = 2;
-                        isDocLog = true;
-                        /* Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => PinEntryScreen(
-                                  userId: 2,
-                                  docLog: isDocLog,
-                                )),
-                      );*/
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      splashFactory: InkRipple.splashFactory,
-                      elevation: 10,
-                      surfaceTintColor: AppColors3.secundaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: const BorderSide(
-                            color: AppColors3.secundaryColor, width: 2),
-                      ),
-                      backgroundColor: AppColors3.secundaryColor,
-                    ),
-                    child: Row(
-                      children: [
-                        Padding(
-                            padding: EdgeInsets.only(
-                                left:
-                                    MediaQuery.of(context).size.width * 0.035, right: MediaQuery.of(context).size.width * 0.015),
-                            child: SvgPicture.asset(
-                                'assets/icons/docVector2.svg', color: AppColors3.primaryColor,) /*Icon(
-                            Icons.person,
-                            color: Colors.white,
-                            size: MediaQuery.of(context).size.width * 0.1,
-                          ),*/
-                            ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.015,
-                              right: MediaQuery.of(context).size.width * 0.15),
-                          height: MediaQuery.of(context).size.width * 0.09,
-                          width: MediaQuery.of(context).size.width * 0.006,
-                          decoration: BoxDecoration(
-                            color: AppColors3.primaryColor,
-                            border: Border.all(width: 0.5, color: AppColors3.primaryColor),
-                          ),
-                        ),
-                        const Center(
-                          child: Text(
-                            'Doctor2',
-                            style: TextStyle(
-                              color: AppColors3.primaryColor,
-                              fontSize: 26,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.065,
-                margin: EdgeInsets.only(
-                    left: MediaQuery.of(context).size.width * 0.095,
-                    right: MediaQuery.of(context).size.width * 0.095,
-                    bottom: MediaQuery.of(context).size.width * 0.08),
-                child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        showPinEntryScreen = true;
-                        userIdHelper = 3;
-                        isDocLog = false;
-                        /*Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PinEntryScreen(
-                                userId: 3,
-                                docLog: isDocLog,
-                              )),
-                        );*/
-                      });
-                    },
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      splashFactory: InkRipple.splashFactory,
-                      elevation: 10,
-                      surfaceTintColor: AppColors3.secundaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                        side: const BorderSide(
-                            color: AppColors3.secundaryColor, width: 2),
-                      ),
-                      backgroundColor: AppColors3.secundaryColor,
-                    ),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.035, right: MediaQuery.of(context).size.width * 0.015),
-                          child: SvgPicture.asset(
-                                  'assets/icons/asisVector.svg', color: AppColors3.primaryColor,)
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(
-                              left: MediaQuery.of(context).size.width * 0.015,
-                              right: MediaQuery.of(context).size.width * 0.15),
-                          height: MediaQuery.of(context).size.width * 0.09,
-                          width: MediaQuery.of(context).size.width * 0.006,
-                          decoration: BoxDecoration(
-                            color: AppColors3.primaryColor,
-                            border: Border.all(width: 0.5, color: AppColors3.primaryColor),
-                          ),
-                        ),
-                        const Center(
-                          child: Text(
-                            'Asistente',
-                            style: TextStyle(
-                              color: AppColors3.primaryColor,
-                              fontSize: 26,
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
-              ),
-              Column(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height * 0.003,
-                    decoration: const BoxDecoration(
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors3.primaryColor,
-                          spreadRadius: 1,
-                          blurRadius: 2,
-                          offset: Offset(2, -0),
                         ),
                       ],
                     ),
                   ),
-                ],
-              )
-            ],
-          ),
-        ),
-
-        ///
-        Visibility(
-          visible: showPinEntryScreen,
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: PinEntryScreen(
-              userId: userIdHelper,
-              docLog: isDocLog,
-              onCloseScreeen: (closeScreen) {
-                setState(() {
-                  closeScreen == true
-                      ? showPinEntryScreen = false
-                      : showPinEntryScreen == true;
-                });
-              },
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.003,
+                  decoration: const BoxDecoration(
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppColors3.primaryColor,
+                        spreadRadius: 1,
+                        blurRadius: 2,
+                        offset: Offset(2, -0),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ),
+
+            // Pin Entry Screen
+            Visibility(
+              visible: showPinEntryScreen,
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: PinEntryScreen(
+                  userId: userIdentification,
+                  docLog: true,
+                  onCloseScreeen: (closeScreen) {
+                    setState(() {
+                      if (closeScreen) {
+                        showPinEntryScreen = false;
+                        _identificationController.clear();
+                      }
+                    });
+                  },
+                ),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
