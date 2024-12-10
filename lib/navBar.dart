@@ -2,6 +2,7 @@ import 'package:agenda_app/projectStyles/appColors.dart';
 import 'package:agenda_app/services/auth_service.dart';
 import 'package:agenda_app/usersConfig/appConfig.dart';
 import 'package:agenda_app/usersConfig/editProfile.dart';
+import 'package:agenda_app/usersConfig/newAppointments.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -158,6 +159,43 @@ class _navBarState extends State<navBar> {
                       ],
                     ),
                   ),
+                          Visibility(
+                            visible: userRole == 'asistente' || userRole == 'admin',
+                            child: InkWell(
+                              splashColor: AppColors3.primaryColor.withOpacity(0.2),
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  CupertinoPageRoute(
+                                    builder: (context) => NewAppointments(),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.width * 0.03,
+                                      bottom: MediaQuery.of(context).size.width * 0.03,
+                                      left: MediaQuery.of(context).size.width * 0.03,
+                                      right: MediaQuery.of(context).size.width * 0.03,
+                                    ),
+                                    child: Icon(
+                                      CupertinoIcons.doc_append,
+                                      size: MediaQuery.of(context).size.width * 0.075,
+                                      color: AppColors3.primaryColor,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Citas recibidas',
+                                    style: TextStyle(
+                                        color: AppColors3.primaryColor,
+                                        fontSize: MediaQuery.of(context).size.width * 0.045
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                           Visibility(
                             visible: !widget.isDoctorLog,
                             child: Container(
