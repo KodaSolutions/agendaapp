@@ -212,7 +212,6 @@ class _ApmntListState extends State<ApmntList> {
 
   @override
   Widget build(BuildContext context) {
-    print(newApmnt);
     // final groupedTickets = groupByTicket(ticketProducts);
     return Container(
         color: AppColors3.bgColor,
@@ -238,7 +237,6 @@ class _ApmntListState extends State<ApmntList> {
                     ),
                     child: GestureDetector(
                       onLongPress: () {
-                        print(apmntKeys);
                         keyboardVisibilityManager.hideKeyboard(context);
                         showApmntOptions(index);
                         widget.onShowBlur(2);
