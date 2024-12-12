@@ -8,11 +8,11 @@ import 'package:http/http.dart' as http;
 import '../projectStyles/appColors.dart';
 import '../services/getClientsService.dart';
 import '../styles/AppointmentStyles.dart';
+import '../usersConfig/functionsUserFly.dart';
 
 class AlertForm extends StatefulWidget {
   final bool isDoctorLog;
-  final List<Map<String, dynamic>> doctorUsers;
-  const AlertForm({super.key, required this.isDoctorLog, required this.doctorUsers});
+  const AlertForm({super.key, required this.isDoctorLog});
 
   @override
   State<AlertForm> createState() => _AlertFormState();
@@ -39,6 +39,9 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
   bool isDocLog = false;
   bool drFieldDone = false;
   double? ajuste;
+  String? error;
+  List<Map<String, dynamic>> doctorUsers = [];
+  bool isLoadingUsers = false;
   final DropdownDataManager dropdownDataManager = DropdownDataManager();
 
   void hideKeyBoard() {
@@ -66,6 +69,26 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
         animationController.reset();
       });
     });
+  }
+
+  Future<void> loadUserswhitRole() async {
+    setState(() {
+      isLoadingUsers = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersFromApi('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll');
+      setState(() {
+        doctorUsers = usersList.where((user) => user['isDoctor'] == true).toList();
+        isLoadingUsers = false;
+        print('alett$doctorUsers');
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingUsers = false;
+        error = e.toString();
+      });
+    }
   }
 
 
@@ -105,6 +128,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
 
   @override
   void initState() {
+    loadUserswhitRole();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     rotate = Tween(begin: 0.0, end: pi).animate(CurvedAnimation(parent: animationController, curve: const Interval(0.0, 1, curve: Curves.easeInOut )));
     hideKeyBoard();
@@ -116,7 +140,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
     super.initState();
     dropdownDataManager.fetchUser();
     isDocLog = widget.isDoctorLog;
-    ajuste = 50.0 * (widget.doctorUsers.length);
+    ajuste = 50.0 * (doctorUsers.length);
   }
 
   @override
@@ -205,65 +229,81 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                           padding: EdgeInsets.symmetric(
                                             vertical: MediaQuery.of(context).size.width * 0.02,
                                           ),
-                                          child: TextFormField(
-                                            controller: _drSelected,
-                                            decoration: InputDecoration(
-                                                hintText: 'Seleccione una opción...',
-                                                contentPadding: EdgeInsets.symmetric(
-                                                  horizontal: MediaQuery.of(context).size.width * 0.03,
-                                                  vertical: MediaQuery.of(context).size.width * 0.03,
+                                          child: Stack(
+                                            children: [
+                                              TextFormField(
+                                                controller: _drSelected,
+                                                decoration: InputDecoration(
+                                                    hintText: 'Seleccione una opción...',
+                                                    contentPadding: EdgeInsets.symmetric(
+                                                      horizontal: MediaQuery.of(context).size.width * 0.03,
+                                                      vertical: MediaQuery.of(context).size.width * 0.03,
+                                                    ),
+                                                    border: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.circular(10.0),
+                                                        borderSide: const BorderSide(
+                                                            color: AppColors3.primaryColor)),
+                                                    enabledBorder: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.circular(10.0),
+                                                        borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                                    focusedBorder: OutlineInputBorder(
+                                                      borderRadius: BorderRadius.circular(10.0),
+                                                      borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),),
+                                                    suffixIcon: AnimatedBuilder(
+                                                      animation: animationController,
+                                                      child: Icon(
+                                                        Icons.arrow_drop_down_circle_outlined,
+                                                        size: MediaQuery.of(context).size.width * 0.085,
+                                                        color: AppColors3.primaryColor,
+                                                      ),
+                                                      builder: (context, iconToRotate){
+                                                        return Transform.rotate(angle: rotate.value, child:  iconToRotate,);
+                                                      },
+                                                    )
                                                 ),
-                                              border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  borderSide: const BorderSide(
-                                                      color: AppColors3.primaryColor)),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  borderSide: const BorderSide(color: AppColors3.primaryColor)),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),),
-                                                suffixIcon: AnimatedBuilder(
-                                                  animation: animationController,
-                                                  child: Icon(
-                                                    Icons.arrow_drop_down_circle_outlined,
-                                                    size: MediaQuery.of(context).size.width * 0.085,
-                                                    color: AppColors3.primaryColor,
+                                                readOnly: true,
+                                                onTap: () {
+                                                  setState(() {
+                                                    _showdrChooseWidget = _showdrChooseWidget
+                                                        ? false
+                                                        : true;
+                                                    _showdrChooseWidget == true ? animationController.forward() : animationController.reverse().then((_){
+                                                      animationController.reset();
+                                                    });
+                                                  });
+                                                },
+                                                onEditingComplete: () {
+                                                  setState(() {
+                                                    drFieldDone = true;
+                                                  });
+                                                },
+                                              ),
+                                              if (isLoadingUsers)
+                                                Positioned.fill(
+                                                  child: Container(
+                                                    color: Colors.white.withOpacity(0.7), // Fondo semitransparente
+                                                    child: const Center(
+                                                      child: CircularProgressIndicator(),
+                                                    ),
                                                   ),
-                                                  builder: (context, iconToRotate){
-                                                    return Transform.rotate(angle: rotate.value, child:  iconToRotate,);
-                                                  },
-                                                )
-                                            ),
-                                            readOnly: true,
-                                            onTap: () {
-                                              setState(() {
-                                                _showdrChooseWidget = _showdrChooseWidget
-                                                    ? false
-                                                    : true;
-                                                _showdrChooseWidget == true ? animationController.forward() : animationController.reverse().then((_){
-                                                  animationController.reset();
-                                                });
-                                              });
-                                            },
-                                            onEditingComplete: () {
-                                              setState(() {
-                                                drFieldDone = true;
-                                              });
-                                            },
-                                          ),
+                                                ),
+                                            ],
+                                          )
                                         ),
                                         AnimatedContainer(duration: const Duration(milliseconds: 85),
                                           margin: EdgeInsets.only(bottom: _showdrChooseWidget ? MediaQuery.of(context).size.width * 0.02 : 0),
                                           height: _showdrChooseWidget ? ajuste : 0,
                                           decoration: const BoxDecoration(),
                                           clipBehavior: Clip.hardEdge, // Recort
-                                          child: DoctorsMenu(
+                                          child: Visibility(
+                                            visible: _showdrChooseWidget,
+                                            child: DoctorsMenu(
                                               onAjustSize: (ajuste) {setState(() {
-                                                this.ajuste = (ajuste! * (widget.doctorUsers.length)) + 2;
+                                                this.ajuste = (ajuste! * (doctorUsers.length)) + 2;
                                               });},
                                               onAssignedDoctor: onAssignedDoctor,
-                                              optSelectedToRecieve: _optSelected, doctors: widget.doctorUsers)
+                                              optSelectedToRecieve: _optSelected,
+                                              doctors: doctorUsers),),
                                         ),
                                         Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

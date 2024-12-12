@@ -149,18 +149,20 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
   void initState() {
     super.initState();
     optSelected = widget.optSelectedToRecieve;
-    for (int i = 0; i < widget.doctors.length; i++) {
-      _listColumsKey.add(GlobalKey());
-    }
   }
 
   @override
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
-    WidgetsBinding.instance.addPostFrameCallback((_){
-      print('medida ${_listColumsKey.first.currentContext?.size?.height}');
-      widget.onAjustSize!(_listColumsKey.first.currentContext?.size!.height);
-    });
+    for (int i = 0; i < widget.doctors.length; i++) {
+      _listColumsKey.add(GlobalKey());
+    }
+    if(widget.doctors.isNotEmpty){
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        print('medida ${_listColumsKey.first.currentContext?.size?.height}');
+        widget.onAjustSize!(_listColumsKey.first.currentContext?.size!.height);
+      });
+    }
     super.didChangeDependencies();
   }
 

@@ -42,7 +42,7 @@ class _navBarState extends State<navBar> {
         context: context,
         barrierColor: Colors.transparent,
         builder: (BuildContext context) {
-          return AlertForm(isDoctorLog: widget.isDoctorLog, doctorUsers: doctorUsers);
+          return AlertForm(isDoctorLog: widget.isDoctorLog);
         }).then((_){widget.onShowBlur(false);});
   }
 
@@ -50,32 +50,12 @@ class _navBarState extends State<navBar> {
   void initState() {
     super.initState();
     getUserRole();
-    loadUserswhitRole();
   }
 
   Future<void> getUserRole() async {
     setState(() {
       userRole = SessionManager.instance.userRole;
     });
-  }
-
-  Future<void> loadUserswhitRole() async {
-    setState(() {
-      isLoadingUsers = true;
-      error = null;
-    });
-    try {
-      final usersList = await loadUsersFromApi('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll');
-      setState(() {
-        doctorUsers = usersList.where((user) => user['isDoctor'] == true).toList();
-        isLoadingUsers = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoadingUsers = false;
-        error = e.toString();
-      });
-    }
   }
 
   @override
