@@ -4,6 +4,7 @@ import 'package:agenda_app/regEx.dart';
 import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../services/userService.dart';
 
@@ -207,7 +208,14 @@ class _AppConfigState extends State<AppConfig> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message']),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).size.width * 0.08,
+            bottom: MediaQuery.of(context).size.width * 0.08,
+            left: MediaQuery.of(context).size.width * 0.02,
+          ),
+          content: Text(result['message'], style: TextStyle(
+              color: AppColors3.whiteColor,
+              fontSize: MediaQuery.of(context).size.width * 0.045),),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
         ),
       );
@@ -383,13 +391,17 @@ class _AppConfigState extends State<AppConfig> {
                             TextFormField(
                               controller: pswController,
                               focusNode: pswFocus,
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                LengthLimitingTextInputFormatter(4),
+                                RegEx(type: InputFormatterType.numeric),
+                              ],
                               decoration: InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal:
-                                      MediaQuery.of(context).size.width *
-                                          0.02,
-                                      vertical:
-                                      MediaQuery.of(context).size.width *
+                                      MediaQuery.of(context).size.width * 0.02,
+                                      vertical: MediaQuery.of(context).size.width *
                                           0.035),
                                   filled: pswFocus.hasFocus ? true : false,
                                   fillColor:
@@ -399,8 +411,8 @@ class _AppConfigState extends State<AppConfig> {
                                 if (value == null || value.isEmpty) {
                                   return 'La contraseña es obligatoria';
                                 }
-                                if (value.length <= 3) {
-                                  return 'La contraseña debe tener al menos 4 caracteres';
+                                if (value.length != 4) {
+                                  return 'La contraseña debe tener 4 caracteres';
                                 }
                                 return null;
                               },

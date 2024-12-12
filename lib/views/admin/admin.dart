@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
+import 'package:agenda_app/globalVar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -90,6 +91,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
     keyboardVisibilityController = KeyboardVisibilityController();
     Platform.isIOS ? platform = false : platform = true;
     checkKeyboardVisibility();
+    print('role ${SessionManager.instance.userRole}');
     super.initState();
   }
 
@@ -146,7 +148,9 @@ class _AssistantAdminState extends State<AssistantAdmin> {
         onBackPressed(didPop);
       },
       child: Scaffold(
-        endDrawer: navBar(onItemSelected: _onItemSelected, onShowBlur: _onShowBlur, isDoctorLog: widget.docLog, currentScreen: currentScreen, onLockScreen: (doNothing ) {  },),
+        endDrawer: navBar(
+          onItemSelected: _onItemSelected, onShowBlur: _onShowBlur, isDoctorLog: widget.docLog, currentScreen: currentScreen,
+          onLockScreen: (doNothing ) {  }),
         body: Stack(
           children: [
             Container(

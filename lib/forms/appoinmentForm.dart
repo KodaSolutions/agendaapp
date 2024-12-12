@@ -88,6 +88,15 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
   String nameDr2 = 'Doctor2';
   String nameDr3 = 'Doctor3';//etc
 
+  List<Map<String, dynamic>> doctorsList = [
+    {"id": 1, "nameDoctor": "Dr. Juan Pérez"},
+    {"id": 2, "nameDoctor": "Dra. María López"},
+    {"id": 3, "nameDoctor": "Dr. Carlos Ramírez"},
+    {"id": 4, "nameDoctor": "Dra. Ana Gómez"},
+    {"id": 5, "nameDoctor": "Dr. Luis Fernández"},
+  ];
+
+
   Future<void> createClient() async {
     try {
       var response = await http.post(
@@ -200,18 +209,19 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
     }
   }
 
-  void _onAssignedDoctor(bool dr1sel, bool dr2sel, TextEditingController drSelected,
-      int optSelected, bool showdrChooseWidget) {
+/*(bool isSelected, TextEditingController controller, int option) {
+                                    print("Doctor seleccionado: ${controller.text}, opción: $option");*/
+
+  void _onAssignedDoctor(bool isSelected, TextEditingController drSelected,
+      int optSelected) {
+    print('isSel $isSelected');
+    print('drSel ${drSelected.text}');
+    print('opotSel $optSelected');
     setState(() {
       _drSelected = drSelected;
-      if (_drSelected!.text == nameDr1) {
-        doctor_id_body = 1;
-      } else {
-        doctor_id_body = 2;
-      }//si hay mas drs habra que hacer un swicht o if else
       _optSelected = optSelected;
       animationController.reverse().then((_){
-        _showdrChooseWidget = showdrChooseWidget;
+        _showdrChooseWidget = !isSelected;
         animationController.reset();
       });
     });
@@ -974,9 +984,12 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                   horizontal: MediaQuery.of(context).size.width * 0.025,
                                 ),
                                 child: DoctorsMenu(
-                                  onAssignedDoctor: _onAssignedDoctor,
+                                  doctors: doctorsList,
                                   optSelectedToRecieve: _optSelected,
-                                      ))
+                                  onAssignedDoctor: _onAssignedDoctor/*(bool isSelected, TextEditingController controller, int option) {
+                                    print("Doctor seleccionado: ${controller.text}, opción: $option");
+                                  },*/
+                                ),)
                                 ])))),
                     builder: (context, doctorChooseOp){
                     return Opacity(opacity: opacidad.value,child: doctorChooseOp);

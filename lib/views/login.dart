@@ -87,10 +87,10 @@ class _LoginState extends State<Login> {
                               child: TextField(
                                 controller: _identificationController,
                                 focusNode: _identificationFocusNode,
-                                keyboardType: TextInputType.number,
+                                //keyboardType: TextInputType.number,
                                 inputFormatters: [
-                                  FilteringTextInputFormatter.digitsOnly,
-                                  LengthLimitingTextInputFormatter(3),
+                          /*        FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(3),*/
                                 ],
                                 textAlign: TextAlign.center,
                                 style: const TextStyle(

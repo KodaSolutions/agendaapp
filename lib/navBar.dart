@@ -197,7 +197,7 @@ class _navBarState extends State<navBar> {
                             ),
                           ),
                           Visibility(
-                            visible: !widget.isDoctorLog,
+                            visible: userRole == 'asistente' ? true : false,
                             child: Container(
                               padding: const EdgeInsets.only(top:40),
                               child: ElevatedButton(

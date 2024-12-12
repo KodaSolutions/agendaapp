@@ -121,34 +121,25 @@ class CalendarContainer extends StatelessWidget {
 }
 
 class DoctorsMenu extends StatefulWidget {
-  final void Function(
-    bool,
-    bool,
-    TextEditingController,
-    int,
-    bool,
-  ) onAssignedDoctor;
+  final Function(bool, TextEditingController, int, ) onAssignedDoctor;
   final int optSelectedToRecieve;
+  final List<Map<String, dynamic>> doctors;
 
-  const DoctorsMenu(
-      {super.key,
-      required this.onAssignedDoctor,
-      required this.optSelectedToRecieve});
+  const DoctorsMenu({
+    super.key,
+    required this.onAssignedDoctor,
+    required this.optSelectedToRecieve,
+    required this.doctors,
+  });
 
   @override
   State<DoctorsMenu> createState() => _DoctorsMenuState();
 }
 
 class _DoctorsMenuState extends State<DoctorsMenu> {
-  bool dr1sel = false;
-  bool dr2sel = false;
-  bool showdrChooseWidget = false;
-  final drSelected = TextEditingController();
-  int optSelectedToSend = 0;
-  int optSelected = 0;
-  String nameDr1 = 'Doctor1'; //aqui cambiar por el nombre del doctor1
-  String nameDr2 = 'Doctor2'; //aqui cambiar por el nombre del doctor2
-
+  final TextEditingController drSelected = TextEditingController();
+  int? optSelectedToSend;
+  int? optSelected;
   @override
   void initState() {
     super.initState();
@@ -164,128 +155,76 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
-        children: [
-          InkWell(
-            splashColor: Colors.transparent,
-            onTap: () {
-              setState(() {
-                drSelected.text = nameDr1;
-                widget.onAssignedDoctor(
-                  dr1sel = true,
-                  dr2sel = false,
-                  drSelected,
-                  optSelectedToSend = 1,
-                  showdrChooseWidget = false,
-                );
-              });
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.width * 0.02),
-              decoration: BoxDecoration(
-                  color:
-                      optSelected == 1 || optSelectedToSend == 1 ? AppColors3.primaryColor : AppColors3.whiteColor,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(10),
-                      topRight: Radius.circular(10))),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.02,
-                        right: MediaQuery.of(context).size.width * 0.02),
-                    child: optSelected == 1 ||  optSelectedToSend == 1
-                        ? SvgPicture.asset(
-                            'assets/icons/docVector2.svg',
-                            width: MediaQuery.of(context).size.width * 0.06,
-                            height: MediaQuery.of(context).size.width * 0.06,
-                          )
-                        : SvgPicture.asset(
-                            'assets/icons/docVector2.svg',
-                              colorFilter: const ColorFilter.mode(AppColors3.primaryColor, BlendMode.srcIn),
-                            width: MediaQuery.of(context).size.width * 0.07,
-                            height: MediaQuery.of(context).size.width * 0.07,
-                          ),
-                  ),
-                  Text(
-                    'Doctor 1',
-                    style: TextStyle(
-                        color: optSelected == 1 ||  optSelectedToSend == 1
-                            ? AppColors3.whiteColor
-                            : AppColors3.primaryColor,
-                        fontSize: MediaQuery.of(context).size.width * 0.054),
-                  )
-                ],
-              ),
-            ),
-          ),
+        children: widget.doctors.asMap().entries.map((entry) {
+          int index = entry.key;
+          Map<String, dynamic> doctor = entry.value;
 
-          ///
-          Container(
-            padding: EdgeInsets.symmetric(
-                vertical: MediaQuery.of(context).size.width * 0.02),
-            color: AppColors3.blackColor.withOpacity(0.5),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height * 0.0009,
-          ),
-          InkWell(
-            splashColor: Colors.transparent,
-            onTap: () {
-              setState(() {
-                drSelected.text = nameDr2;
-                widget.onAssignedDoctor(
-                  dr2sel = true,
-                  dr1sel = false,
-                  drSelected,
-                  optSelectedToSend = 2,
-                  showdrChooseWidget = false,
-                );
-              });
-            },
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: MediaQuery.of(context).size.width * 0.02),
-              decoration: BoxDecoration(
-                  color: optSelected == 2 ||  optSelectedToSend == 2 ? AppColors3.primaryColor : AppColors3.whiteColor,
-                  borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(10),
-                      bottomRight: Radius.circular(10))),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        left: MediaQuery.of(context).size.width * 0.02,
-                        right: MediaQuery.of(context).size.width * 0.02),
-                    child: optSelected == 2 ||  optSelectedToSend == 2
-                        ? SvgPicture.asset(
-                          'assets/icons/docVector2.svg',
+          return Column(
+            children: [
+              InkWell(
+                splashColor: Colors.transparent,
+                onTap: () {
+                  setState(() {
+                    drSelected.text = doctor['nameDoctor'];
+                    widget.onAssignedDoctor(
+                      true,
+                      drSelected,
+                      optSelectedToSend = index + 1,
+                    );
+                  });
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02),
+                  decoration: BoxDecoration(
+                    color: optSelected == index + 1 || optSelectedToSend == index + 1
+                        ? AppColors3.primaryColor
+                        : AppColors3.whiteColor,
+                    borderRadius: BorderRadius.vertical(
+                      top: index == 0 ? const Radius.circular(10) : Radius.zero,
+                      bottom: index == widget.doctors.length - 1
+                          ? const Radius.circular(10)
+                          : Radius.zero,
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.02),
+                        child: SvgPicture.asset('assets/icons/docVector2.svg',
                           width: MediaQuery.of(context).size.width * 0.06,
                           height: MediaQuery.of(context).size.width * 0.06,
-                        )
-                        : SvgPicture.asset(
-                          'assets/icons/docVector2.svg',
-                          colorFilter: const ColorFilter.mode(AppColors3.primaryColor, BlendMode.srcIn),
-                          width: MediaQuery.of(context).size.width * 0.07,
-                          height: MediaQuery.of(context).size.width * 0.07,
+                          colorFilter: optSelected == index + 1 || optSelectedToSend == index + 1
+                              ? null : const ColorFilter.mode(AppColors3.primaryColor, BlendMode.srcIn),
                         ),
+                      ),
+                      Text(
+                        doctor['nameDoctor'],
+                        style: TextStyle(
+                          color: optSelected == index + 1 || optSelectedToSend == index + 1
+                              ? AppColors3.whiteColor
+                              : AppColors3.primaryColor,
+                          fontSize: MediaQuery.of(context).size.width * 0.054,
+                        ),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Doctor 2',
-                    style: TextStyle(
-                        color: optSelected == 2 ||  optSelectedToSend == 2
-                            ? AppColors3.whiteColor
-                            : AppColors3.primaryColor,
-                        fontSize: MediaQuery.of(context).size.width * 0.054),
-                  )
-                ],
+                ),
               ),
-            ),
-          ),
-        ],
+              // Divider
+              if (index != widget.doctors.length - 1)
+                Container(
+                  color: AppColors3.blackColor.withOpacity(0.5),
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height * 0.0009,
+                ),
+            ],
+          );
+        }).toList(),
       ),
     );
   }
 }
+
 
 class FieldsToWrite extends StatelessWidget {
   final String labelText;
