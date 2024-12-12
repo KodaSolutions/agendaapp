@@ -265,7 +265,17 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                           height: _showdrChooseWidget ? 94 : 0,
                                           decoration: const BoxDecoration(),
                                           clipBehavior: Clip.hardEdge, // Recort
-                                          child: DoctorsMenu(onAssignedDoctor: _onAssignedDoctor, optSelectedToRecieve: _optSelected),
+                                          child: DoctorsMenu(
+                                            doctors: [
+                                              {"id": 1, "nameDoctor": "Dr. Juan Pérez"},
+                                              {"id": 2, "nameDoctor": "Dra. María López"},
+                                              {"id": 3, "nameDoctor": "Dr. Carlos Ramírez"},
+                                            ],
+                                            optSelectedToRecieve: 1,
+                                            onAssignedDoctor: (bool isSelected, TextEditingController controller, int option) {
+                                              print("Doctor seleccionado: ${controller.text}, opción: $option");
+                                            },
+                                          ),
                                         ),
                                         Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
