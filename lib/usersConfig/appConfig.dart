@@ -411,7 +411,7 @@ class _AppConfigState extends State<AppConfig> {
                                 if (value == null || value.isEmpty) {
                                   return 'La contraseña es obligatoria';
                                 }
-                                if (value.length != 4) {
+                                if (value.length != 3) {
                                   return 'La contraseña debe tener 4 caracteres';
                                 }
                                 return null;

@@ -11,7 +11,8 @@ import '../styles/AppointmentStyles.dart';
 
 class AlertForm extends StatefulWidget {
   final bool isDoctorLog;
-  const AlertForm({super.key, required this.isDoctorLog});
+  final List<Map<String, dynamic>> doctorUsers;
+  const AlertForm({super.key, required this.isDoctorLog, required this.doctorUsers});
 
   @override
   State<AlertForm> createState() => _AlertFormState();
@@ -37,6 +38,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
   int _optSelected = 0;
   bool isDocLog = false;
   bool drFieldDone = false;
+  double? ajuste;
   final DropdownDataManager dropdownDataManager = DropdownDataManager();
 
   void hideKeyBoard() {
@@ -54,28 +56,18 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
         });
   }
 
-  void _onAssignedDoctor(
-      bool dr1sel,
-      bool dr2sel,
-      TextEditingController drSelected,
-      int optSelected,
-      bool showdrChooseWidget) {
+  void onAssignedDoctor(bool isSelected, TextEditingController drSelected,
+      int optSelected) {
     setState(() {
+      _showdrChooseWidget = !isSelected;
       _drSelected = drSelected;
-      if (_drSelected!.text == 'Doctor1') {
-        doctor_id_body = 1;
-      } else {
-        doctor_id_body = 2;
-      }
       _optSelected = optSelected;
-      _showdrChooseWidget = showdrChooseWidget;
-      print('_optSelected $_optSelected');
       animationController.reverse().then((_) {
         animationController.reset();
       });
-      //
     });
   }
+
 
   @override
   void didChangeDependencies() {
@@ -124,6 +116,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
     super.initState();
     dropdownDataManager.fetchUser();
     isDocLog = widget.isDoctorLog;
+    ajuste = 50.0 * (widget.doctorUsers.length);
   }
 
   @override
@@ -262,20 +255,15 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                         ),
                                         AnimatedContainer(duration: const Duration(milliseconds: 85),
                                           margin: EdgeInsets.only(bottom: _showdrChooseWidget ? MediaQuery.of(context).size.width * 0.02 : 0),
-                                          height: _showdrChooseWidget ? 94 : 0,
+                                          height: _showdrChooseWidget ? ajuste : 0,
                                           decoration: const BoxDecoration(),
                                           clipBehavior: Clip.hardEdge, // Recort
                                           child: DoctorsMenu(
-                                            doctors: [
-                                              {"id": 1, "nameDoctor": "Dr. Juan Pérez"},
-                                              {"id": 2, "nameDoctor": "Dra. María López"},
-                                              {"id": 3, "nameDoctor": "Dr. Carlos Ramírez"},
-                                            ],
-                                            optSelectedToRecieve: 1,
-                                            onAssignedDoctor: (bool isSelected, TextEditingController controller, int option) {
-                                              print("Doctor seleccionado: ${controller.text}, opción: $option");
-                                            },
-                                          ),
+                                              onAjustSize: (ajuste) {setState(() {
+                                                this.ajuste = (ajuste! * (widget.doctorUsers.length)) + 2;
+                                              });},
+                                              onAssignedDoctor: onAssignedDoctor,
+                                              optSelectedToRecieve: _optSelected, doctors: widget.doctorUsers)
                                         ),
                                         Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),

@@ -2,9 +2,11 @@ import 'package:agenda_app/projectStyles/appColors.dart';
 import 'package:agenda_app/services/auth_service.dart';
 import 'package:agenda_app/usersConfig/appConfig.dart';
 import 'package:agenda_app/usersConfig/editProfile.dart';
+import 'package:agenda_app/usersConfig/functionsUserFly.dart';
 import 'package:agenda_app/usersConfig/newAppointments.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'forms/alertForm.dart';
 import 'globalVar.dart';
@@ -25,6 +27,11 @@ class navBar extends StatefulWidget {
 
 class _navBarState extends State<navBar> {
   String? userRole;
+  String? error;
+  late List<Map<String, dynamic>> doctorUsers;
+  bool isLoadingUsers = false;
+
+
   void closeMenu(BuildContext context){
     Navigator.of(context).pop();
   }
@@ -35,7 +42,7 @@ class _navBarState extends State<navBar> {
         context: context,
         barrierColor: Colors.transparent,
         builder: (BuildContext context) {
-          return AlertForm(isDoctorLog: widget.isDoctorLog);
+          return AlertForm(isDoctorLog: widget.isDoctorLog, doctorUsers: doctorUsers);
         }).then((_){widget.onShowBlur(false);});
   }
 
@@ -43,12 +50,34 @@ class _navBarState extends State<navBar> {
   void initState() {
     super.initState();
     getUserRole();
+    loadUserswhitRole();
   }
+
   Future<void> getUserRole() async {
     setState(() {
       userRole = SessionManager.instance.userRole;
     });
   }
+
+  Future<void> loadUserswhitRole() async {
+    setState(() {
+      isLoadingUsers = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersFromApi('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll');
+      setState(() {
+        doctorUsers = usersList.where((user) => user['isDoctor'] == true).toList();
+        isLoadingUsers = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingUsers = false;
+        error = e.toString();
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -201,7 +230,7 @@ class _navBarState extends State<navBar> {
                             child: Container(
                               padding: const EdgeInsets.only(top:40),
                               child: ElevatedButton(
-                                  onPressed: (){
+                                  onPressed: isLoadingUsers ? null :  (){
                                     setState(() {
                                       widget.onShowBlur(true);
                                       createAlert();
@@ -216,14 +245,14 @@ class _navBarState extends State<navBar> {
                                     elevation: 5.0,
                                     shadowColor: Colors.black54,
                                   ),
-                                  child: Text(
+                                  child: isLoadingUsers ? CircularProgressIndicator() : Text(
                                     'Mandar alerta',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: MediaQuery.of(context).size.width*0.05,
                                         color: AppColors3.primaryColor
                                     ),
-                                  )
+                                  ),
                               ),
                             ),),
                           ///Icono escoger impresora
