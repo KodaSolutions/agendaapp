@@ -77,12 +77,9 @@ class _SelBoxUserState extends State<SelBoxUser> {
       final response = await http.get(
           Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll')
       );
-
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        final usersList = (data['user'] as List)
-            .where((user) => user['role_id'] != 3)
-            .map((user) => {
+        final usersList = (data['user'] as List).where((user) => user['role_id'] != 3).map((user) => {
           'id': user['id'].toString(),
           'name': user['name'].toString(),
           'identification': user['identification'].toString(),

@@ -23,7 +23,7 @@ class TitleContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final BoxDecoration defaultDecoration = const BoxDecoration(
+    const BoxDecoration defaultDecoration = BoxDecoration(
       color: AppColors3.primaryColor,
       borderRadius: BorderRadius.all(Radius.circular(10)),
     );
@@ -124,12 +124,13 @@ class DoctorsMenu extends StatefulWidget {
   final Function(bool, TextEditingController, int, ) onAssignedDoctor;
   final int optSelectedToRecieve;
   final List<Map<String, dynamic>> doctors;
+  final Function (double?)? onAjustSize;
 
   const DoctorsMenu({
     super.key,
     required this.onAssignedDoctor,
     required this.optSelectedToRecieve,
-    required this.doctors,
+    required this.doctors, this.onAjustSize,
   });
 
   @override
@@ -140,10 +141,29 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
   final TextEditingController drSelected = TextEditingController();
   int? optSelectedToSend;
   int? optSelected;
+  final GlobalKey _columnKey = GlobalKey();
+  List<GlobalKey> _listColumsKey = [];
+
+
   @override
   void initState() {
     super.initState();
     optSelected = widget.optSelectedToRecieve;
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    for (int i = 0; i < widget.doctors.length; i++) {
+      _listColumsKey.add(GlobalKey());
+    }
+    if(widget.doctors.isNotEmpty){
+      WidgetsBinding.instance.addPostFrameCallback((_){
+        print('medida ${_listColumsKey.first.currentContext?.size?.height}');
+        widget.onAjustSize!(_listColumsKey.first.currentContext?.size!.height);
+      });
+    }
+    super.didChangeDependencies();
   }
 
   @override
@@ -155,17 +175,18 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
+        key: _columnKey,
         children: widget.doctors.asMap().entries.map((entry) {
           int index = entry.key;
           Map<String, dynamic> doctor = entry.value;
-
           return Column(
+            key: _listColumsKey[index],
             children: [
               InkWell(
                 splashColor: Colors.transparent,
                 onTap: () {
                   setState(() {
-                    drSelected.text = doctor['nameDoctor'];
+                    drSelected.text = doctor['name'];
                     widget.onAssignedDoctor(
                       true,
                       drSelected,
@@ -198,7 +219,7 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
                         ),
                       ),
                       Text(
-                        doctor['nameDoctor'],
+                        doctor['name'],
                         style: TextStyle(
                           color: optSelected == index + 1 || optSelectedToSend == index + 1
                               ? AppColors3.whiteColor

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -9,11 +10,13 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../calendar/calendarioScreenCita.dart';
+import '../globalVar.dart';
 import '../models/clientModel.dart';
 import '../projectStyles/appColors.dart';
 import '../regEx.dart';
 import '../services/getClientsService.dart';
 import '../styles/AppointmentStyles.dart';
+import '../usersConfig/functionsUserFly.dart';
 import '../utils/PopUpTabs/addNewClientandAppointment.dart';
 import '../utils/PopUpTabs/appointmetSuccessfullyCreated.dart';
 import '../utils/PopUpTabs/closeAppointmentScreen.dart';
@@ -40,6 +43,7 @@ class AppointmentForm extends StatefulWidget {
 
 class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProviderStateMixin {
 
+  SelBoxUser selBoxUser = SelBoxUser(onSelUser: (a, b){});
   late AnimationController animationController;
   late Animation<double> opacidad;
   final GlobalKey<ClientFormState> myWidgetKey = GlobalKey<ClientFormState>();
@@ -83,18 +87,21 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
   int? newClientID;
   bool showBlurr = false;
   bool isLoading = false;
+  bool isLoadingUsers = false;
   //
   String nameDr1 = 'Doctor1';
   String nameDr2 = 'Doctor2';
   String nameDr3 = 'Doctor3';//etc
+  List<Map<String, dynamic>> users = [];
+  String? error;
+  List<Map<String, dynamic>> doctorUsers = [];
 
-  List<Map<String, dynamic>> doctorsList = [
-    {"id": 1, "nameDoctor": "Dr. Juan Pérez"},
-    {"id": 2, "nameDoctor": "Dra. María López"},
-    {"id": 3, "nameDoctor": "Dr. Carlos Ramírez"},
-    {"id": 4, "nameDoctor": "Dra. Ana Gómez"},
-    {"id": 5, "nameDoctor": "Dr. Luis Fernández"},
-  ];
+  List<String> usersRoles = [];
+
+  Future<void> getUserRole() async {
+      //usersRoles = SessionManager.;
+  }
+  //late Map<String, dynamic> doctors;
 
 
   Future<void> createClient() async {
@@ -327,6 +334,26 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
     }
   }
 
+  Future<void> loadUserswhitRole() async {
+    setState(() {
+      isLoadingUsers = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersFromApi('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll');
+      setState(() {
+        doctorUsers = usersList.where((user) => user['isDoctor'] == true).toList();
+        isLoadingUsers = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingUsers = false;
+        error = e.toString();
+      });
+    }
+  }
+
+
   Future<void> submitAppointment() async {
     setState(() {
       isLoading = true;
@@ -390,6 +417,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
   @override
   void initState() {
     super.initState();
+    loadUserswhitRole();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     opacidad = Tween(begin: 0.0, end:  1.0).animate(CurvedAnimation(parent: animationController, curve: Curves.easeInOut));
     if (widget.dateFromCalendarSchedule != null) {
@@ -496,61 +524,75 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02,
                                   horizontal: MediaQuery.of(context).size.width * 0.026),
-                              child: TextFormField(
-                                controller: _drSelected,
-                                decoration: InputDecoration(
-                                  hintText: 'Seleccione una opción...',
-                                  contentPadding: EdgeInsets.symmetric(
-                                      horizontal: MediaQuery.of(context).size.width * 0.03),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
+                              child: Stack(
+                                children: [
+                                  TextFormField(
+                                    enabled: isLoadingUsers ? false : true,
+                                    controller: _drSelected,
+                                    decoration: InputDecoration(
+                                      hintText: 'Seleccione una opción...',
+                                      contentPadding: EdgeInsets.symmetric(
+                                          horizontal: MediaQuery.of(context).size.width * 0.03),
+                                      border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                            color: AppColors3.primaryColor,
+                                            width: 1,
+                                          )
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                            color: AppColors3.primaryColor,
+                                            width: 1,
+                                          )
+                                      ),
+                                      focusedBorder:  OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10.0),
+                                          borderSide: const BorderSide(
+                                            color: AppColors3.primaryColor,
+                                            width: 1,
+                                          )
+                                      ),
+                                      suffixIcon: Icon(
+                                        Icons.arrow_drop_down_circle_outlined,
+                                        size: MediaQuery.of(context).size.width * 0.085,
                                         color: AppColors3.primaryColor,
-                                        width: 1,
-                                      )
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor,
-                                        width: 1,
-                                      )
-                                  ),
-                                  focusedBorder:  OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor,
-                                        width: 1,
-                                      )
-                                  ),
-                                  suffixIcon: Icon(
-                                    Icons.arrow_drop_down_circle_outlined,
-                                    size: MediaQuery.of(context).size.width * 0.085,
-                                    color: AppColors3.primaryColor,
-                                  ),
-                                ),
-                                readOnly: true,
-                                onTap: () {
-                                  setState(() {
-                                    if(_showdrChooseWidget == false){
-                                      _showdrChooseWidget = true;
-                                      animationController.forward();
-                                    } else{
-                                      animationController.reverse().then((_){
-                                        _showdrChooseWidget = false;
-                                        animationController.reset();
-                                      });
-                                    }
-                                    drFieldDone = true;
+                                      ),
+                                    ),
+                                    readOnly: true,
+                                    onTap: () {
+                                      setState(() {
+                                        if(_showdrChooseWidget == false){
+                                          _showdrChooseWidget = true;
+                                          animationController.forward();
+                                        } else{
+                                          animationController.reverse().then((_){
+                                            _showdrChooseWidget = false;
+                                            animationController.reset();
+                                          });
+                                        }
+                                        drFieldDone = true;
+                                      },
+                                      );
                                     },
-                                  );
-                                  },
-                                onEditingComplete: () {
-                                  setState(() {
-                                    drFieldDone = true;
-                                  });
-                                  },
-                              ),
+                                    onEditingComplete: () {
+                                      setState(() {
+                                        drFieldDone = true;
+                                      });
+                                    },
+                                  ),
+                                  if (isLoadingUsers)
+                                    Positioned.fill(
+                                      child: Container(
+                                        color: Colors.white.withOpacity(0.7), // Fondo semitransparente
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              )
                             ),
                           ),
                           TitleContainer(
@@ -984,12 +1026,9 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                   horizontal: MediaQuery.of(context).size.width * 0.025,
                                 ),
                                 child: DoctorsMenu(
-                                  doctors: doctorsList,
+                                  doctors: doctorUsers,
                                   optSelectedToRecieve: _optSelected,
-                                  onAssignedDoctor: _onAssignedDoctor/*(bool isSelected, TextEditingController controller, int option) {
-                                    print("Doctor seleccionado: ${controller.text}, opción: $option");
-                                  },*/
-                                ),)
+                                  onAssignedDoctor: _onAssignedDoctor),)
                                 ])))),
                     builder: (context, doctorChooseOp){
                     return Opacity(opacity: opacidad.value,child: doctorChooseOp);

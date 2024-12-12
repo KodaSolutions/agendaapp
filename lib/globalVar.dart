@@ -11,4 +11,9 @@ class SessionManager {
 
   // Método para obtener la instancia
   static SessionManager get instance => _instance;
+
+  bool isRoleDoctor(String name) {
+    return name.toLowerCase().contains('doctor');
+  }
+
 }
