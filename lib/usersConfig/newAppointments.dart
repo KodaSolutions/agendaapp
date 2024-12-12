@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:agenda_app/usersConfig/apmntList.dart';
+import 'package:agenda_app/usersConfig/cardAptm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -25,6 +26,8 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
   late String formattedDate;
   late KeyboardVisibilityManager keyboardVisibilityManager;
   //
+
+  bool listFF = false;
   double? screenWidth;
   double? screenHeight;
   double optSize = 0;
@@ -125,10 +128,11 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors3.whiteColor,
       body: Stack(
         children: [
           CustomScrollView(
-            physics: const NeverScrollableScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             slivers: [
               SliverAppBar(
                 backgroundColor: AppColors3.bgColor,
@@ -149,10 +153,7 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                       ),
                     ),
                     Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Text(
+                        child: Text(
                               'Citas recibidas',
                               style: TextStyle(
                                 fontSize: MediaQuery.of(context).size.width * 0.085,
@@ -160,21 +161,52 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                                 color: AppColors3.primaryColor,
                               ),
                             )
-                          ],
-                        )),
+                          ),
                   ],
                 ),
               ),
-              SliverFillRemaining(
+              if (!listFF) ...[//TODO variable temporal la condicion seria un List.isNotEmpty
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return CardAptm(index: index);
+                    },
+                    childCount: 5,
+                  ),
+                ),
+              ] else ...[
+                SliverToBoxAdapter(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 200),
+                      Center(
+                          child: isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.black,
+                                )
+                              : Text(
+                                  "No hay citas pendientes",
+                                  style: TextStyle(
+                                      color: AppColors3.primaryColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          MediaQuery.of(context).size.width *
+                                              0.06),
+                                )),
+                    ],
+                  ),
+                )
+              ]
+              /* SliverFillRemaining(
                 child: PageView(
                   children: [
                     ApmntList(onShowBlur: _onShowBlurr, onOptnSize: onOptnSize)
                   ],
                 ),
-              ),
+              ),*/
             ],
           ),
-          Visibility(
+         /* Visibility(
               visible: showBlurr,
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
@@ -194,7 +226,7 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                   ),
                 ),
               )
-          ),
+          ),*/
         ],
       ),
     );
