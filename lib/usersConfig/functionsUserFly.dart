@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../globalVar.dart';
 
-Future<List<Map<String, dynamic>>> loadUsersFromApi(String url) async {
+Future<List<Map<String, dynamic>>> loadUsersFromApi() async {
   try {
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll'));
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);

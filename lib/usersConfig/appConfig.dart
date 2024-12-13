@@ -407,7 +407,7 @@ class _AppConfigState extends State<AppConfig> {
                                   fillColor:
                                   AppColors3.greyColor.withOpacity(0.2),
                                   hintText: 'Contraseña'),
-                              validator: (value) {
+                             /* validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'La contraseña es obligatoria';
                                 }
@@ -415,7 +415,7 @@ class _AppConfigState extends State<AppConfig> {
                                   return 'La contraseña debe tener 4 caracteres';
                                 }
                                 return null;
-                              },
+                              },*/
                             ),
                           ],
                         ),),

@@ -340,7 +340,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
       error = null;
     });
     try {
-      final usersList = await loadUsersFromApi('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll');
+      final usersList = await loadUsersFromApi();
       setState(() {
         doctorUsers = usersList.where((user) => user['isDoctor'] == true).toList();
         isLoadingUsers = false;
