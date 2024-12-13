@@ -1,9 +1,10 @@
 import 'package:agenda_app/projectStyles/appColors.dart';
 import 'package:agenda_app/services/auth_service.dart';
-import 'package:agenda_app/usersConfig/appConfig.dart';
+import 'package:agenda_app/forms/appConfig.dart';
 import 'package:agenda_app/usersConfig/editProfile.dart';
-import 'package:agenda_app/usersConfig/functionsUserFly.dart';
+import 'package:agenda_app/usersConfig/functions.dart';
 import 'package:agenda_app/usersConfig/newAppointments.dart';
+import 'package:agenda_app/views/usersConfig.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -109,7 +110,7 @@ class _navBarState extends State<navBar> {
                               onTap: () {
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
-                                    builder: (context) => AppConfig(),
+                                    builder: (context) => UsersConfig(),
                                   ),
                                 );
                               },

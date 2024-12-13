@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import '../projectStyles/appColors.dart';
 import '../services/getClientsService.dart';
 import '../styles/AppointmentStyles.dart';
-import '../usersConfig/functionsUserFly.dart';
+import '../usersConfig/functions.dart';
 
 class AlertForm extends StatefulWidget {
   final bool isDoctorLog;

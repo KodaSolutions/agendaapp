@@ -16,7 +16,7 @@ import '../projectStyles/appColors.dart';
 import '../regEx.dart';
 import '../services/getClientsService.dart';
 import '../styles/AppointmentStyles.dart';
-import '../usersConfig/functionsUserFly.dart';
+import '../usersConfig/functions.dart';
 import '../utils/PopUpTabs/addNewClientandAppointment.dart';
 import '../utils/PopUpTabs/appointmetSuccessfullyCreated.dart';
 import '../utils/PopUpTabs/closeAppointmentScreen.dart';
