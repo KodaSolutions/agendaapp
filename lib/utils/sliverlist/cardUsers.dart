@@ -38,24 +38,31 @@ class _CardUsersState extends State<CardUsers> {
         padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.03),
         child: Row(
           children: [
-            Flexible(child: TextFormField(
-              controller: controllers[widget.index],
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(10),),
+            Expanded(child: Container(
+              padding: EdgeInsets.symmetric(
+                vertical: MediaQuery.of(context).size.width * 0.02,
+                horizontal: MediaQuery.of(context).size.width * 0.02,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: Colors.black.withOpacity(0.4),
                 ),
               ),
+              child: Text(controllers[widget.index].text,
+              style: TextStyle(
+                color: AppColors3.blackColor.withOpacity(0.4),
+                fontSize: MediaQuery.of(context).size.width * 0.05,
+              ),),
             ),),
             IconButton(onPressed: (){
               setState(() {
-                print('index ${widget.index}');
                 widget.onModifyUser(controllers[widget.index].text, widget.index, true);
               });
 
             }, icon: Icon(Icons.edit, size: MediaQuery.of(context).size.width * 0.06,)),
             IconButton(onPressed: (){
               setState(() {
-                print('index ${widget.index}');
               });
             }, icon: Icon(Icons.delete_forever,
             color: AppColors3.redDelete,
