@@ -18,14 +18,10 @@ class NewAppointments extends StatefulWidget {
 
 class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProviderStateMixin {
 
-  //ListenerremoverOL listenerremoverOL = ListenerremoverOL();
-  //ListenerQuery listenerQuery = ListenerQuery();
-  //ListenerOnDateChanged listenerOnDateChanged = ListenerOnDateChanged();
   late AnimationController animationController;
   late Animation<double> opacidad;
   late String formattedDate;
   late KeyboardVisibilityManager keyboardVisibilityManager;
-  //
 
   bool listFF = false;
   double? screenWidth;
@@ -34,55 +30,18 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
   bool showBlurr = false;
   int blurShowed = 0;
   int selectedPage = 0;
-  //
-  TextEditingController seekController = TextEditingController();
-  TextEditingController dateController = TextEditingController();
-  FocusNode seekNode = FocusNode();
-  FocusNode dateNode = FocusNode();
-  PageController pageController = PageController();
-  String longDate = '';
+  int? oldIndex = 0;
+  //TODO al pasarse newApmnt al sliverlist se puede pasar una lista filtrada (newApmntfilter) para generar dinamicamente las citas.
+  List<Map<String, dynamic>> newApmnt = [
+    {"id": 1, "name": "Cliente1", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9991999999"}]},
+    {"id": 2, "name": "Cliente2", "date": "10/12/25", "time": "17:00", "detalles": [{"pet": "Mascota2", "mail": "cliente2@correo.com", "phone": "9992999999"}]},
+    {"id": 3, "name": "Cliente3", "date": "10/12/26", "time": "17:00", "detalles": [{"pet": "Mascota3", "mail": "cliente3@correo.com", "phone": "9993999999"}]},
+    {"id": 4, "name": "Cliente4", "date": "10/12/27", "time": "17:00", "detalles": [{"pet": "Mascota4", "mail": "cliente4@correo.com", "phone": "9994999999"}]},
+    {"id": 5, "name": "Cliente5", "date": "10/12/28", "time": "17:00", "detalles": [{"pet": "Mascota5", "mail": "cliente5@correo.com", "phone": "9995999999"}]},
+  ];
 
-  List<Map<String, dynamic>> tickets = [];
+  late List<ExpansionTileController> tileControllers;
 
-  void onOptnSize(double optSize){
-    setState(() {
-      this.optSize = optSize;
-    });
-  }
-
-  void onFilterProducts (){
-    //listenerQuery.setChange(seekController.text);
-  }
-
-  void onDateChanged(){
-    //listenerOnDateChanged.setChange(true, dateController.text, dateController.text);
-  }
-
-  void _onDateToAppointmentForm(
-      String dateToAppointmentForm, bool showCalendar) {
-    setState(() {
-      animationController.reverse().then((_){
-        showBlurr = showCalendar;
-        animationController.reset();
-      });
-      DateTime parsedDate = DateTime.parse(dateToAppointmentForm);
-      String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
-      longDate = DateFormat("d 'de' MMMM 'de' y", 'es_ES').format(parsedDate);
-      dateController.text = formattedDate;
-      onDateChanged();
-    });
-  }
-
-  void _onShowBlurr(int showBlurr) {
-    setState(() {
-      blurShowed = showBlurr;
-      if (blurShowed == 0) {
-        this.showBlurr = false;
-      } else {
-        this.showBlurr = true;
-      }
-    });
-  }
 
   @override
   void didChangeDependencies() {
@@ -91,15 +50,12 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
     screenHeight = MediaQuery.of(context).size.height;
   }
 
-  void filterSales(text){
-    setState(() {
-      //listenerQuery.setChange(seekController.text);
-    });
-  }
-
   @override
   void initState() {
     // TODO: implement initState
+    tileControllers = List.generate(
+      newApmnt.length, (index) => ExpansionTileController(),
+    );
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     opacidad = Tween(begin: 0.0, end:  1.0).animate(CurvedAnimation(parent: animationController, curve: Curves.easeInOut));
     animationController.addListener((){
@@ -107,9 +63,6 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
       });
     });
     keyboardVisibilityManager = KeyboardVisibilityManager();
-    DateTime now = DateTime.now();
-    var formatter = DateFormat('yyyy-MM-dd');
-    dateController.text = formatter.format(now);
     super.initState();
   }
 
@@ -120,10 +73,6 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
     super.dispose();
   }
   bool isLoading = false;
-
-  void removerOverL(){
-    //listenerremoverOL.setChange(true);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,9 +118,21 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {
-                      return CardAptm(index: index);
-                    },
-                    childCount: 5,
+                      return CardAptm(
+                          index: index,
+                          oldIndex: oldIndex,
+                          tileController: tileControllers[index],
+                          newAptm: newApmnt,
+                          onExpansionChanged: (int newIndex) {
+                            setState(() {
+                              if (oldIndex != null && oldIndex != newIndex) {
+                                tileControllers[oldIndex!].collapse();
+                              }
+                              oldIndex = newIndex;
+                            });
+                          });
+                      },
+                    childCount: newApmnt.length,
                   ),
                 ),
               ] else ...[
@@ -197,36 +158,8 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                   ),
                 )
               ]
-              /* SliverFillRemaining(
-                child: PageView(
-                  children: [
-                    ApmntList(onShowBlur: _onShowBlurr, onOptnSize: onOptnSize)
-                  ],
-                ),
-              ),*/
             ],
           ),
-         /* Visibility(
-              visible: showBlurr,
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                child: GestureDetector(
-                  onTap: () {
-                    removerOverL();
-                    setState(() {
-                      showBlurr = false;
-                      blurShowed = 0;
-                    });
-                  },
-                  child: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    color: AppColors3.blackColor.withOpacity(0.1),
-                    alignment: Alignment.centerLeft,
-                  ),
-                ),
-              )
-          ),*/
         ],
       ),
     );

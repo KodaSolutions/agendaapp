@@ -6,7 +6,11 @@ import '../projectStyles/appColors.dart';
 
 class CardAptm extends StatefulWidget {
   final int index;
-  const CardAptm({super.key, required this.index});
+  final int? oldIndex;
+  final Function(int) onExpansionChanged;
+  final List<Map<String, dynamic>> newAptm;
+  final ExpansionTileController tileController;
+  const CardAptm({super.key, required this.index, this.oldIndex, required this.onExpansionChanged, required this.tileController, required this.newAptm});
 
   @override
   State<CardAptm> createState() => _CardAptmState();
@@ -15,18 +19,11 @@ class CardAptm extends StatefulWidget {
 class _CardAptmState extends State<CardAptm> {
 
   String? user;
+  int? oldIndex;
   bool isUserSel = false;
   String? selectedUserId;
-  List<ExpansionTileController> controllers = [];
-  late int? currentOpenIndex;
+  final List<ExpansionTileController> activeControllers = [];
 
-  List<Map<String, dynamic>> newApmnt = [
-    {"id": 1, "name": "Cliente1", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
-    {"id": 2, "name": "Cliente2", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
-    {"id": 3, "name": "Cliente3", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
-    {"id": 4, "name": "Cliente4", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
-    {"id": 5, "name": "Cliente5", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
-  ];
 
   void onSelUser(String? displayText, String? userId) {
     setState(() {
@@ -39,8 +36,6 @@ class _CardAptmState extends State<CardAptm> {
   @override
   void initState() {
     super.initState();
-    currentOpenIndex = null;
-    controllers = newApmnt.map((apmnt) => ExpansionTileController()).toList();
   }
 
   @override
@@ -65,23 +60,12 @@ class _CardAptmState extends State<CardAptm> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: ExpansionTile(
-            controller: controllers[widget.index],
-            onExpansionChanged: (value) {
-              print('valor actual $currentOpenIndex');
-              setState(() {
-                if (value) {
-                  if (currentOpenIndex != null) {
-                    print('no es nulo');
-                  }
-                  // Actualiza el índice actual al que se está abriendo
-                  currentOpenIndex = widget.index;
-                } else if (currentOpenIndex == widget.index) {
-                  print('igual al anterior');
-                  // Si se cierra el actual, limpia el índice
-                  currentOpenIndex = null;
-                }
-              });
-              print('hola4 $currentOpenIndex');
+            key: Key('${widget.index}'),
+            controller: widget.tileController,
+            onExpansionChanged: (isExpanded) {
+              if (isExpanded) {
+                widget.onExpansionChanged(widget.index);
+              }
             },
             initiallyExpanded: false,
             iconColor: AppColors3.bgColor,
@@ -104,7 +88,7 @@ class _CardAptmState extends State<CardAptm> {
                 )
             ),
             title: Text(
-              'Cita ${newApmnt[widget.index]['id']}',
+              'Cita ${widget.newAptm[widget.index]['id']}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: MediaQuery.of(context).size.width * 0.05,
@@ -122,7 +106,7 @@ class _CardAptmState extends State<CardAptm> {
                       ),
                     ),
                     Text(
-                      '${newApmnt[widget.index]['date']}',
+                      '${widget.newAptm[widget.index]['date']}',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: MediaQuery.of(context).size.width * 0.04),
@@ -138,7 +122,7 @@ class _CardAptmState extends State<CardAptm> {
                       ),
                     ),
                     Text(
-                      '${newApmnt[widget.index]['name']}',
+                      '${widget.newAptm[widget.index]['name']}',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: MediaQuery.of(context).size.width * 0.04),
@@ -161,7 +145,7 @@ class _CardAptmState extends State<CardAptm> {
                     )
                 ),
                 child: Column(
-                  children: newApmnt[widget.index]['detalles'].map<Widget>((detalle) {
+                  children: widget.newAptm[widget.index]['detalles'].map<Widget>((detalle) {
                     return ListTile(
                       title: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
