@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
+import 'functions.dart';
+
 class Rol {
   final int id;
   final String name;
@@ -54,7 +56,8 @@ class _SelBoxRolState extends State<SelBoxRol> {
 //cambiar a String, Dynamic.
 class SelBoxUser extends StatefulWidget {
   final Function(String?, String?) onSelUser;
-  const SelBoxUser({super.key, required this.onSelUser});
+  final int? requiredRole;
+  const SelBoxUser({super.key, required this.onSelUser, required this.requiredRole});
 
   @override
   State<SelBoxUser> createState() => _SelBoxUserState();
@@ -62,17 +65,36 @@ class SelBoxUser extends StatefulWidget {
 
 class _SelBoxUserState extends State<SelBoxUser> {
   String? selectedUser;
-  List<Map<String, String>> users = [];
+  List<Map<String, dynamic>> users = [];
   bool isLoading = true;
   String? error;
 
   @override
   void initState() {
     super.initState();
-    loadUsers();
+    loadUserswithRole();
   }
 
-  Future<void> loadUsers() async {
+  Future<void> loadUserswithRole() async {
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersWithRoles();
+      setState(() {
+        users = usersList;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        error = e.toString();
+      });
+    }
+  }
+
+  /*Future<void> loadUsers() async {
     try {
       final response = await http.get(
           Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll')
@@ -104,7 +126,7 @@ class _SelBoxUserState extends State<SelBoxUser> {
         isLoading = false;
       });
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -115,17 +137,32 @@ class _SelBoxUserState extends State<SelBoxUser> {
       return Text('Error: $error');
     }
     return DropdownButtonFormField<String>(
+      isExpanded: true,
       alignment: Alignment.topCenter,
       decoration: InputDecoration(
         isDense: true,
-        labelText: 'Seleccione usuario',
+        labelText: widget.requiredRole == 1 ? 'Doctor...' : 'Seleccione usuario',
         floatingLabelBehavior: FloatingLabelBehavior.never,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),
       ),
       value: selectedUser,
-      items: users.map((user) {
+      items: widget.requiredRole == 1 ? users.where((user) => user['role'] == 1).map((user) {
+        String displayText = "${user['name']} (${user['identification']})";
+        return DropdownMenuItem(
+          value: displayText,
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              displayText,
+              style: const TextStyle(
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        );
+      }).toList() : users.map((user) {
         String displayText = "${user['name']} (${user['identification']})";
         return DropdownMenuItem(
           value: displayText,
