@@ -43,7 +43,7 @@ class AppointmentForm extends StatefulWidget {
 
 class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProviderStateMixin {
 
-  SelBoxUser selBoxUser = SelBoxUser(onSelUser: (a, b){});
+  SelBoxUser selBoxUser = SelBoxUser(onSelUser: (a, b){}, requiredRole: null,);
   late AnimationController animationController;
   late Animation<double> opacidad;
   final GlobalKey<ClientFormState> myWidgetKey = GlobalKey<ClientFormState>();

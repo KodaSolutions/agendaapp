@@ -1,3 +1,4 @@
+import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +14,12 @@ class CardAptm extends StatefulWidget {
 
 class _CardAptmState extends State<CardAptm> {
 
+  String? user;
+  bool isUserSel = false;
+  String? selectedUserId;
+  List<ExpansionTileController> controllers = [];
+  late int? currentOpenIndex;
+
   List<Map<String, dynamic>> newApmnt = [
     {"id": 1, "name": "Cliente1", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
     {"id": 2, "name": "Cliente2", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
@@ -20,6 +27,21 @@ class _CardAptmState extends State<CardAptm> {
     {"id": 4, "name": "Cliente4", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
     {"id": 5, "name": "Cliente5", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9999999999"}]},
   ];
+
+  void onSelUser(String? displayText, String? userId) {
+    setState(() {
+      user = displayText;
+      selectedUserId = userId;
+      isUserSel = displayText != null && userId != null;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    currentOpenIndex = null;
+    controllers = newApmnt.map((apmnt) => ExpansionTileController()).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +65,25 @@ class _CardAptmState extends State<CardAptm> {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
         child: ExpansionTile(
-          //controller: tileController![index],
+            controller: controllers[widget.index],
+            onExpansionChanged: (value) {
+              print('valor actual $currentOpenIndex');
+              setState(() {
+                if (value) {
+                  if (currentOpenIndex != null) {
+                    print('no es nulo');
+                  }
+                  // Actualiza el índice actual al que se está abriendo
+                  currentOpenIndex = widget.index;
+                } else if (currentOpenIndex == widget.index) {
+                  print('igual al anterior');
+                  // Si se cierra el actual, limpia el índice
+                  currentOpenIndex = null;
+                }
+              });
+              print('hola4 $currentOpenIndex');
+            },
+            initiallyExpanded: false,
             iconColor: AppColors3.bgColor,
             collapsedIconColor: AppColors3.primaryColor,
             backgroundColor: AppColors3.primaryColor,
@@ -56,7 +96,6 @@ class _CardAptmState extends State<CardAptm> {
                 top: MediaQuery.of(context).size.width * 0.01,
                 bottom: MediaQuery.of(context).size.width * 0.015
             ),
-            initiallyExpanded: false,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
                 side: const BorderSide(
@@ -184,21 +223,31 @@ class _CardAptmState extends State<CardAptm> {
                             top: MediaQuery.of(context).size.width * 0.04,
                           ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    ),
-                                    onPressed: (){}, child: const Icon(Icons.check)),
-                                const SizedBox(width: 15),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    ),
-                                    onPressed: (){}, child: Icon(CupertinoIcons.xmark)),
+                                Flexible(
+                                  child: SelBoxUser(onSelUser: onSelUser, requiredRole: 1,),
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        ),
+                                        onPressed: (){}, child: const Icon(Icons.check)),
+                                    SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        ),
+                                        onPressed: (){}, child: Icon(CupertinoIcons.xmark)),
+                                  ],
+                                ),
                               ],
-                            ),),
+                            )
+                          ),
                         ],
                       ),
                     );

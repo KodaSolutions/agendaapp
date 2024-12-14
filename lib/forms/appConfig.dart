@@ -497,7 +497,7 @@ class _AppConfigState extends State<AppConfig> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Flexible(
-                                  child: SelBoxUser(onSelUser: onSelUser),
+                                  child: SelBoxUser(onSelUser: onSelUser, requiredRole: null,),
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
