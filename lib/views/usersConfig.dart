@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:agenda_app/usersConfig/functions.dart';
+import 'package:agenda_app/utils/PopUpTabs/modifyUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,7 @@ class _UsersConfigState extends State<UsersConfig> {
   bool isLoadingUsers = false;
   List<Map<String, dynamic>> users = [];
   String? error;
+  bool blurr = false;
 
   Future<void> loadUserswhitRole() async {
     setState(() {
@@ -37,6 +39,23 @@ class _UsersConfigState extends State<UsersConfig> {
         error = e.toString();
       });
     }
+  }
+
+  void onShowBlurr (bool blurr){
+    setState(() {
+      this.blurr = blurr;
+    });
+
+  }
+
+  void onModifyUser (String name, int index, bool blurr){
+    print(name);
+    print(blurr);
+    print(index);
+    setState(() {
+      this.blurr = blurr;
+    });
+
   }
 
 
@@ -76,19 +95,23 @@ class _UsersConfigState extends State<UsersConfig> {
                 return CardUsers(
                   users: users,
                   index: index,
+                  onModifyUser: onModifyUser,
                 );
               }, childCount: users.length)),
         ],
       ),
       ),
         Visibility(
-          visible: false,
+          visible: blurr,
           child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
           child: Container(
             decoration: const BoxDecoration(
               color: Colors.transparent,
             ),
+            child: Center(
+              child: MOdifyUser(onShowBlurr: onShowBlurr),
+            )
           ),
         ),),
       ],
