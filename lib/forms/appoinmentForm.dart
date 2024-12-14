@@ -334,7 +334,26 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
     }
   }
 
-  Future<void> loadUserswhitRole() async {
+  Future<void> loadUserswithRole() async {
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersWithRoles();
+      setState(() {
+        users = usersList;
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        error = e.toString();
+      });
+    }
+  }
+
+/*  Future<void> loadUserswhitRole() async {
     setState(() {
       isLoadingUsers = true;
       error = null;
@@ -351,7 +370,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
         error = e.toString();
       });
     }
-  }
+  }*/
 
 
   Future<void> submitAppointment() async {
@@ -417,7 +436,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
   @override
   void initState() {
     super.initState();
-    loadUserswhitRole();
+    loadUserswithRole();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     opacidad = Tween(begin: 0.0, end:  1.0).animate(CurvedAnimation(parent: animationController, curve: Curves.easeInOut));
     if (widget.dateFromCalendarSchedule != null) {
@@ -1026,7 +1045,8 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                   horizontal: MediaQuery.of(context).size.width * 0.025,
                                 ),
                                 child: DoctorsMenu(
-                                  doctors: doctorUsers,
+                                  //users.where((user) => user['role'] == 1).map((user)
+                                  doctors: users.where((user) => user['role'] == 1).toList(),
                                   optSelectedToRecieve: _optSelected,
                                   onAssignedDoctor: _onAssignedDoctor),)
                                 ])))),

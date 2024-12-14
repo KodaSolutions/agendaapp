@@ -5,9 +5,8 @@ import 'package:flutter/material.dart';
 
 class MOdifyUser extends StatefulWidget {
   final String name;
-  final String psw;
   final Function (bool) onShowBlurr;
-  const MOdifyUser({super.key, required this.onShowBlurr, required this.name, required this.psw});
+  const MOdifyUser({super.key, required this.onShowBlurr, required this.name});
 
   @override
   State<MOdifyUser> createState() => _MOdifyUserState();
@@ -23,7 +22,6 @@ class _MOdifyUserState extends State<MOdifyUser> {
     // TODO: implement initState
     keyboardVisibilityManager = KeyboardVisibilityManager();
     nameController.text = widget.name;
-    pswController.text = widget.psw;
     super.initState();
   }
 
