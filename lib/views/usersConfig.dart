@@ -19,8 +19,7 @@ class _UsersConfigState extends State<UsersConfig> {
   List<Map<String, dynamic>> users = [];
   String? error;
   bool blurr = false;
-  String name = 'name';
-  String psw = 'XXXX';
+  String name = '';
 
   Future<void> loadUserswhitRole() async {
     setState(() {
@@ -49,12 +48,8 @@ class _UsersConfigState extends State<UsersConfig> {
   }
 
   void onModifyUser (String name, int index, bool blurr){
-    print(name);
-    print(blurr);
-    print(index);
     setState(() {
       this.name = name;
-      this.psw = psw;
       this.blurr = blurr;
     });
 
@@ -112,7 +107,7 @@ class _UsersConfigState extends State<UsersConfig> {
               color: Colors.transparent,
             ),
             child: Center(
-              child: MOdifyUser(onShowBlurr: onShowBlurr, name: name, psw: psw),
+              child: MOdifyUser(onShowBlurr: onShowBlurr, name: name),
             )
           ),
         ),),

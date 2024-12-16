@@ -40,7 +40,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
   bool drFieldDone = false;
   double? ajuste;
   String? error;
-  List<Map<String, dynamic>> doctorUsers = [];
+  List<Map<String, dynamic>> doctors = [];
   bool isLoadingUsers = false;
   final DropdownDataManager dropdownDataManager = DropdownDataManager();
 
@@ -71,17 +71,16 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
     });
   }
 
-  Future<void> loadUserswhitRole() async {
+  Future<void> loadUserswithRole() async {
     setState(() {
       isLoadingUsers = true;
       error = null;
     });
     try {
-      final usersList = await loadUsersFromApi();
+      final usersList = await loadUsersWithRoles();
       setState(() {
-        doctorUsers = usersList.where((user) => user['isDoctor'] == true).toList();
+        doctors = usersList.where((user) => user['role'] == 1).toList();
         isLoadingUsers = false;
-        print('alett$doctorUsers');
       });
     } catch (e) {
       setState(() {
@@ -90,7 +89,6 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
       });
     }
   }
-
 
   @override
   void didChangeDependencies() {
@@ -128,7 +126,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
 
   @override
   void initState() {
-    loadUserswhitRole();
+    loadUserswithRole();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     rotate = Tween(begin: 0.0, end: pi).animate(CurvedAnimation(parent: animationController, curve: const Interval(0.0, 1, curve: Curves.easeInOut )));
     hideKeyBoard();
@@ -140,7 +138,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
     super.initState();
     dropdownDataManager.fetchUser();
     isDocLog = widget.isDoctorLog;
-    ajuste = 50.0 * (doctorUsers.length);
+    ajuste = 50.0 * (doctors.length);
   }
 
   @override
@@ -213,7 +211,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                     child: Column(
                                       children: [
                                         Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                             width: MediaQuery.of(context).size.width,
                                             decoration: const BoxDecoration(
                                               color: AppColors3.primaryColor,
@@ -290,20 +288,20 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                             ],
                                           )
                                         ),
-                                        AnimatedContainer(duration: const Duration(milliseconds: 85),
+                                        AnimatedContainer(duration: const Duration(milliseconds: 250),
                                           margin: EdgeInsets.only(bottom: _showdrChooseWidget ? MediaQuery.of(context).size.width * 0.02 : 0),
                                           height: _showdrChooseWidget ? ajuste : 0,
                                           decoration: const BoxDecoration(),
-                                          clipBehavior: Clip.hardEdge, // Recort
+                                          clipBehavior: Clip.hardEdge,
                                           child: Visibility(
                                             visible: _showdrChooseWidget,
                                             child: DoctorsMenu(
                                               onAjustSize: (ajuste) {setState(() {
-                                                this.ajuste = (ajuste! * (doctorUsers.length)) + 2;
+                                                this.ajuste = (ajuste! * (doctors.length)) + 2;
                                               });},
                                               onAssignedDoctor: onAssignedDoctor,
                                               optSelectedToRecieve: _optSelected,
-                                              doctors: doctorUsers),),
+                                              doctors: doctors),),
                                         ),
                                         Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
