@@ -3,7 +3,7 @@ import 'package:agenda_app/services/auth_service.dart';
 import 'package:agenda_app/forms/appConfig.dart';
 import 'package:agenda_app/usersConfig/editProfile.dart';
 import 'package:agenda_app/usersConfig/functions.dart';
-import 'package:agenda_app/usersConfig/newAppointments.dart';
+import 'package:agenda_app/views/newAppointments.dart';
 import 'package:agenda_app/views/usersConfig.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

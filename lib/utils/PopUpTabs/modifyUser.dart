@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 class MOdifyUser extends StatefulWidget {
   final String name;
   final Function (bool) onShowBlurr;
-  const MOdifyUser({super.key, required this.onShowBlurr, required this.name});
+  final bool kBoardVisibility;
+  const MOdifyUser({super.key, required this.onShowBlurr, required this.name, required this.kBoardVisibility});
 
   @override
   State<MOdifyUser> createState() => _MOdifyUserState();
@@ -15,13 +16,14 @@ class MOdifyUser extends StatefulWidget {
 class _MOdifyUserState extends State<MOdifyUser> {
 
   late KeyboardVisibilityManager keyboardVisibilityManager;
-
+  bool keyBoardV = false;
 
   @override
   void initState() {
     // TODO: implement initState
-    keyboardVisibilityManager = KeyboardVisibilityManager();
+    keyBoardV = widget.kBoardVisibility;
     nameController.text = widget.name;
+    keyboardVisibilityManager = KeyboardVisibilityManager();
     super.initState();
   }
 
@@ -31,6 +33,7 @@ class _MOdifyUserState extends State<MOdifyUser> {
     keyboardVisibilityManager.dispose();
     super.dispose();
   }
+
 
   TextEditingController nameController = TextEditingController();
   TextEditingController pswController = TextEditingController();
@@ -43,7 +46,7 @@ class _MOdifyUserState extends State<MOdifyUser> {
         margin: EdgeInsets.only(
           right: MediaQuery.of(context).size.width * 0.05,
           left: MediaQuery.of(context).size.width * 0.05,
-          bottom: keyboardVisibilityManager.visibleKeyboard ? MediaQuery.of(context).size.width * 0.4 : 0,
+          bottom: keyBoardV ? MediaQuery.of(context).size.width * 0.4 : 0,
         ),
         padding: EdgeInsets.only(
             right: MediaQuery.of(context).size.width * 0.02,
@@ -62,7 +65,7 @@ class _MOdifyUserState extends State<MOdifyUser> {
               children: [
                 IconButton(onPressed: (){
                   widget.onShowBlurr(false);
-                }, icon: Icon(CupertinoIcons.xmark)),
+                }, icon: const Icon(CupertinoIcons.xmark)),
               ],
             ),
             Column(
@@ -80,7 +83,6 @@ class _MOdifyUserState extends State<MOdifyUser> {
                     fontSize: MediaQuery.of(context).size.width * 0.05,
                     color: AppColors3.whiteColor,
                     fontWeight: FontWeight.bold,
-
                   ),),
                 ),
                 TextFormField(
@@ -94,6 +96,17 @@ class _MOdifyUserState extends State<MOdifyUser> {
                         bottomRight: Radius.circular(10),),
                     ),
                   ),
+                  onTap: (){
+                    setState(() {
+                      keyBoardV = true;
+                    });
+                  },
+                  onEditingComplete: (){
+                    setState(() {
+                      keyboardVisibilityManager.hideKeyboard(context);
+                      keyBoardV = false;
+                    });
+                  },
                 ),
               ],
             ),
@@ -131,7 +144,7 @@ class _MOdifyUserState extends State<MOdifyUser> {
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
-                onPressed: (){}, child: Text('Aceptar')),),
+                onPressed: (){}, child: const Text('Aceptar')),),
           ],
         ),
       ),
