@@ -37,7 +37,7 @@ class DatabaseHelpers {
 
     if (token != null) {
       var response = await http.get(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/user'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/user'),
         headers: {'Authorization': 'Bearer $token'},
       );
 
@@ -90,7 +90,7 @@ class DatabaseHelpers {
   Future<void> syncClientsFromAPI() async {
     final dbService = DatabaseService();
     try {
-      var response = await http.get(Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/clientsAll'));
+      var response = await http.get(Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/clientsAll'));
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
@@ -111,7 +111,7 @@ class DatabaseHelpers {
   }
   Future<void> syncAppointmentsFromAPI(int userId) async {
     final dbService = DatabaseService();
-    const baseUrl = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/getAppoinments/';
+    const baseUrl = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.comapi/getAppoinments/';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
