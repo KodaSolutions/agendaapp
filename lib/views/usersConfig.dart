@@ -1,4 +1,6 @@
 import 'dart:ui';
+import 'package:agenda_app/kboardVisibilityManager.dart';
+import 'package:agenda_app/regEx.dart';
 import 'package:agenda_app/usersConfig/functions.dart';
 import 'package:agenda_app/utils/PopUpTabs/modifyUser.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,11 +17,15 @@ class UsersConfig extends StatefulWidget {
 
 class _UsersConfigState extends State<UsersConfig> {
 
+  late KeyboardVisibilityManager keyboardVisibilityManager;
   bool isLoadingUsers = false;
   List<Map<String, dynamic>> users = [];
   String? error;
   bool blurr = false;
   String name = '';
+  TextEditingController seek = TextEditingController();
+  List<Map<String, dynamic>> filteredUsers = [];
+
 
   Future<void> loadUserswhitRole() async {
     setState(() {
@@ -30,6 +36,7 @@ class _UsersConfigState extends State<UsersConfig> {
       final usersList = await loadUsersWithRoles();
       setState(() {
         users = usersList;
+        filteredUsers = users;
         isLoadingUsers = false;
       });
     } catch (e) {
@@ -55,12 +62,39 @@ class _UsersConfigState extends State<UsersConfig> {
 
   }
 
+  void filterByUsers() {
+    final query = seek.text.toLowerCase();
+    final roleMapping = {
+      1: 'doctor',
+      2: 'asistente',
+    };
+    setState(() {
+      if (query.isEmpty) {
+        filteredUsers = users;
+      } else {
+        filteredUsers = users.where((user) {
+          final matchesTextQuery = user['name'].toLowerCase().contains(query);
+          final roleDescription = roleMapping[user['role']]?.toLowerCase() ?? '';
+          final matchesRoleQuery = roleDescription.contains(query);
+          return matchesTextQuery || matchesRoleQuery;
+        }).toList();
+      }});
+  }
+
 
   @override
   void initState() {
+    keyboardVisibilityManager = KeyboardVisibilityManager();
     loadUserswhitRole();
-    // TODO: implement initState
+    // TODO: implement initStat
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    keyboardVisibilityManager.dispose();
+    super.dispose();
   }
 
   @override
@@ -87,17 +121,69 @@ class _UsersConfigState extends State<UsersConfig> {
       ),
       body: CustomScrollView(
         slivers: [
-          SliverList(
+          SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.only(
+                right: MediaQuery.of(context).size.width * 0.03,
+                left: MediaQuery.of(context).size.width * 0.03,
+                bottom: MediaQuery.of(context).size.width * 0.04,
+                top: MediaQuery.of(context).size.width * 0.02,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: CupertinoTextField(
+                      inputFormatters: [
+                        RegEx(type: InputFormatterType.name),
+                      ],
+                      controller: seek,
+                      placeholder: 'Buscar usuario...',
+                      prefix: const Padding(
+                        padding: EdgeInsets.only(left: 8.0),
+                        child: Icon(
+                          CupertinoIcons.search,
+                          size: 20.0,
+                          color: CupertinoColors.systemGrey,
+                        ),
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: CupertinoColors.systemGrey, width: 1.0),
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      onChanged: (val){
+                        filterByUsers();
+                              }))
+                    ]))),
+            if(filteredUsers.isNotEmpty)...[SliverList(
               delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
                 return CardUsers(
-                  users: users,
+                  users: filteredUsers,
                   index: index,
-                  onModifyUser: onModifyUser,
+                  onModifyUser: onModifyUser, query: seek.text,
                 );
-              }, childCount: users.length)),
-        ],
-      ),
-      ),
+              }, childCount: filteredUsers.length)),]
+          else ...[
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  const SizedBox(height: 200),
+                  Center(
+                      child: isLoadingUsers
+                          ? const CircularProgressIndicator(
+                        color: Colors.black,
+                      )
+                          : Text(
+                        "No se han encontrado usuarios",
+                        style: TextStyle(
+                            color: AppColors3.primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize:
+                            MediaQuery.of(context).size.width *
+                                0.06),
+                            ))
+                ]))
+              ]
+            ])),
         Visibility(
           visible: blurr,
           child: BackdropFilter(
@@ -107,12 +193,11 @@ class _UsersConfigState extends State<UsersConfig> {
               color: Colors.transparent,
             ),
             child: Center(
-              child: MOdifyUser(onShowBlurr: onShowBlurr, name: name),
-            )
-          ),
-        ),),
-      ],
-    );
+              child: MOdifyUser(
+                  kBoardVisibility: keyboardVisibilityManager.visibleKeyboard,
+                  onShowBlurr: onShowBlurr, name: name),
+                  ))))
+    ]);
   }
 }
 //

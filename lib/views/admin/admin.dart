@@ -45,7 +45,6 @@ class _AssistantAdminState extends State<AssistantAdmin> {
     keyboardVisibilitySubscription =
         keyboardVisibilityController.onChange.listen((visible) {
       setState(() {
-        print('holadamin');
         visibleKeyboard = visible;
         if(_selectedScreen == 3){
         }
@@ -65,7 +64,6 @@ class _AssistantAdminState extends State<AssistantAdmin> {
       setState(() {
         _showBlurr = false;
       });
-      print('El modal fue cerrado');
     }
   }
 

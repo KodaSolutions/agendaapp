@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:agenda_app/usersConfig/apmntList.dart';
-import 'package:agenda_app/usersConfig/cardAptm.dart';
+import 'package:agenda_app/utils/sliverlist/cardAptm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
