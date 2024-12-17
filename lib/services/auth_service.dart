@@ -108,6 +108,7 @@ class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProvide
         print('hola: ${data['user']}');
         SessionManager.instance.isDoctor = data['user']['role'] == 'doctor';
         SessionManager.instance.Nombre = data['user']['name'];
+
         SessionManager.instance.userRole = data['user']['role'];
 
         if (mounted) {

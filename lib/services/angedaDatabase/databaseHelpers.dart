@@ -69,6 +69,11 @@ class DatabaseHelpers {
         }
         SessionManager.instance.isDoctor = (data['user']['id'] == 1 || data['user']['id'] == 2);
         SessionManager.instance.Nombre = data['user']['name'];
+        //configuracion para los roels
+        SessionManager.instance.userRole = data['user']['role_id'] == 1 ? 'doctor'
+            : data['user']['role_id'] == 2 ? 'asistente'
+            : data['user']['role_id'] == 3 ? 'admin'
+            : data['user']['role_id'];
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => AssistantAdmin(docLog: SessionManager.instance.isDoctor)),
         );
