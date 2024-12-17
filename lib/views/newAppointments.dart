@@ -1,12 +1,18 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:agenda_app/usersConfig/apmntList.dart';
 import 'package:agenda_app/utils/sliverlist/cardAptm.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../regEx.dart';
 import '../../kboardVisibilityManager.dart';
+import '../calendar/calendarSchedule.dart';
 import '../projectStyles/appColors.dart';
+import '../services/angedaDatabase/databaseService.dart';
+import 'package:http/http.dart' as http;
 
 class NewAppointments extends StatefulWidget {
 
@@ -22,6 +28,7 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
   late Animation<double> opacidad;
   late String formattedDate;
   late KeyboardVisibilityManager keyboardVisibilityManager;
+  List<Appointment2> _appointments = [];
 
   bool listFF = false;
   double? screenWidth;
@@ -31,14 +38,72 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
   int blurShowed = 0;
   int selectedPage = 0;
   int? oldIndex = 0;
-  //TODO al pasarse newApmnt al sliverlist se puede pasar una lista filtrada (newApmntfilter) para generar dinamicamente las citas.
-  List<Map<String, dynamic>> newApmnt = [
-    {"id": 1, "name": "Cliente1", "date": "10/12/24", "time": "17:00", "detalles": [{"pet": "Mascota1", "mail": "cliente1@correo.com", "phone": "9991999999"}]},
-    {"id": 2, "name": "Cliente2", "date": "10/12/25", "time": "17:00", "detalles": [{"pet": "Mascota2", "mail": "cliente2@correo.com", "phone": "9992999999"}]},
-    {"id": 3, "name": "Cliente3", "date": "10/12/26", "time": "17:00", "detalles": [{"pet": "Mascota3", "mail": "cliente3@correo.com", "phone": "9993999999"}]},
-    {"id": 4, "name": "Cliente4", "date": "10/12/27", "time": "17:00", "detalles": [{"pet": "Mascota4", "mail": "cliente4@correo.com", "phone": "9994999999"}]},
-    {"id": 5, "name": "Cliente5", "date": "10/12/28", "time": "17:00", "detalles": [{"pet": "Mascota5", "mail": "cliente5@correo.com", "phone": "9995999999"}]},
-  ];
+
+  ///MANDAR A SERVICIO
+  Future<void> _loadAppointments() async {
+    try {
+      final appointments = await fetchAppointments();
+      setState(() {
+        _appointments = appointments;
+        tileControllers = List.generate(
+          _appointments.length, (index) => ExpansionTileController(),
+        );
+      });
+      print('bye $_appointments');
+    } catch (e) {
+      print('Error loading appointments: $e');
+    }
+  }
+
+  Future<List<Appointment2>> fetchAppointments() async {
+    List<Appointment2> appointments = [];
+    final dbService = DatabaseService();
+    try {
+      var connectivityResult = await Connectivity().checkConnectivity();
+      bool isConnected = connectivityResult != ConnectivityResult.none;
+      if (isConnected) {
+        final response = await http.get(
+          Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getPendingAppointments'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ${await getToken()}',
+          },
+        );
+
+        if (response.statusCode == 200) {
+          print('adios');
+          var jsonResponse = jsonDecode(response.body);
+          if (jsonResponse is Map<String, dynamic> && jsonResponse['appointments'] is List) {
+            appointments = List<Appointment2>.from(
+              jsonResponse['appointments']
+                  .map((appointmentJson) => Appointment2.fromJson(appointmentJson as Map<String, dynamic>)),
+            );
+
+            print('hola alan');
+
+            print('Datos de appointments sincronizados correctamente');
+          } else {
+            print('La respuesta no contiene una lista de citas.');
+          }
+        } else {
+          print('Error al cargar citas desde la API: ${response.statusCode}');
+        }
+      } else {
+        print('Sin conexión a internet, cargando datos locales de appointments');
+        List<Map<String, dynamic>> localAppointments = await dbService.getAppointments();
+        appointments = localAppointments.map((appointmentMap) => Appointment2.fromJson(appointmentMap)).toList();
+      }
+    } catch (e) {
+      print('Error al realizar la solicitud o cargar datos locales: $e');
+    }
+
+    return appointments;
+  }
+
+  Future<String?> getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('jwt_token');
+  }
 
   late List<ExpansionTileController> tileControllers;
 
@@ -53,9 +118,6 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
   @override
   void initState() {
     // TODO: implement initState
-    tileControllers = List.generate(
-      newApmnt.length, (index) => ExpansionTileController(),
-    );
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     opacidad = Tween(begin: 0.0, end:  1.0).animate(CurvedAnimation(parent: animationController, curve: Curves.easeInOut));
     animationController.addListener((){
@@ -63,6 +125,8 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
       });
     });
     keyboardVisibilityManager = KeyboardVisibilityManager();
+    _loadAppointments();
+    print('hola jeje $_appointments');
     super.initState();
   }
 
@@ -122,7 +186,7 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                           index: index,
                           oldIndex: oldIndex,
                           tileController: tileControllers[index],
-                          newAptm: newApmnt,
+                          newAptm: _appointments,
                           onExpansionChanged: (int newIndex) {
                             setState(() {
                               if (oldIndex != null && oldIndex != newIndex) {
@@ -132,7 +196,7 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                             });
                           });
                       },
-                    childCount: newApmnt.length,
+                    childCount: _appointments.length,
                   ),
                 ),
               ] else ...[

@@ -605,6 +605,8 @@ class MeetingDataSource extends CalendarDataSource {
 
 class Appointment2 {
   final int? id;
+  final bool? is_web;
+  final bool? is_approved;
   final int? clientId;
   final int? createdBy;
   final int? doctorId;
@@ -617,6 +619,8 @@ class Appointment2 {
 
   Appointment2({
     this.id,
+    this.is_web,
+    this.is_approved,
     this.clientId,
     this.createdBy,
     this.doctorId,
@@ -631,6 +635,7 @@ class Appointment2 {
   factory Appointment2.fromJson(Map<String, dynamic> json) {
     return Appointment2(
       id: json['id'] as int?,
+
       clientId: json['client_id'] as int?,
       createdBy: json['created_by'] as int?,
       doctorId: json['doctor_id'] as int?,
@@ -642,6 +647,8 @@ class Appointment2 {
       status: json['status'] as String?,
       clientName: json['client_name'] as String?,
       notificationRead: json['notification_read'] == 1,
+      is_web: json['is_web'] == 0,
+      is_approved: json['is_approved'] == null,
     );
   }
 }

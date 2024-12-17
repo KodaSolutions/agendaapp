@@ -1,6 +1,8 @@
+import 'package:agenda_app/calendar/calendarSchedule.dart';
 import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import '../../projectStyles/appColors.dart';
 
@@ -8,7 +10,7 @@ class CardAptm extends StatefulWidget {
   final int index;
   final int? oldIndex;
   final Function(int) onExpansionChanged;
-  final List<Map<String, dynamic>> newAptm;
+  final List<Appointment2> newAptm;
   final ExpansionTileController tileController;
   const CardAptm({super.key, required this.index, this.oldIndex, required this.onExpansionChanged, required this.tileController, required this.newAptm});
 
@@ -23,6 +25,7 @@ class _CardAptmState extends State<CardAptm> {
   bool isUserSel = false;
   String? selectedUserId;
   final List<ExpansionTileController> activeControllers = [];
+  var formatter = new DateFormat('dd-MM-yyyy');
 
 
   void onSelUser(String? displayText, String? userId) {
@@ -65,6 +68,7 @@ class _CardAptmState extends State<CardAptm> {
             onExpansionChanged: (isExpanded) {
               if (isExpanded) {
                 widget.onExpansionChanged(widget.index);
+                isUserSel = false;
               }
             },
             initiallyExpanded: false,
@@ -88,7 +92,7 @@ class _CardAptmState extends State<CardAptm> {
                 )
             ),
             title: Text(
-              'Cita ${widget.newAptm[widget.index]['id']}',
+              'Cita ${widget.newAptm[widget.index].id}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: MediaQuery.of(context).size.width * 0.05,
@@ -106,7 +110,9 @@ class _CardAptmState extends State<CardAptm> {
                       ),
                     ),
                     Text(
-                      '${widget.newAptm[widget.index]['date']}',
+                      widget.newAptm[widget.index].appointmentDate != null
+                          ? formatter.format(widget.newAptm[widget.index].appointmentDate!)
+                          : "No disponible",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: MediaQuery.of(context).size.width * 0.04),
@@ -122,7 +128,7 @@ class _CardAptmState extends State<CardAptm> {
                       ),
                     ),
                     Text(
-                      '${widget.newAptm[widget.index]['name']}',
+                      '${widget.newAptm[widget.index].clientName}',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: MediaQuery.of(context).size.width * 0.04),
@@ -136,7 +142,9 @@ class _CardAptmState extends State<CardAptm> {
                 padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).size.width * 0.04,
                     top: MediaQuery.of(context).size.width * 0.04,
-                    left: MediaQuery.of(context).size.width * 0.0),
+                    left: MediaQuery.of(context).size.width * 0.04,
+                    right: MediaQuery.of(context).size.width * 0.04
+                ),
                 decoration: const BoxDecoration(
                     color: AppColors3.bgColor,
                     borderRadius: BorderRadius.only(bottomRight: Radius.circular(10), bottomLeft: Radius.circular(10)),
@@ -145,97 +153,76 @@ class _CardAptmState extends State<CardAptm> {
                     )
                 ),
                 child: Column(
-                  children: widget.newAptm[widget.index]['detalles'].map<Widget>((detalle) {
-                    return ListTile(
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                "Mascota: ",
-                                style: TextStyle(
-                                    color: AppColors3.primaryColor,
-                                    fontSize: MediaQuery.of(context).size.width * 0.05),
-                              ),
-                              Text(
-                                '${detalle['pet']}',
-                                style: TextStyle(
-                                  color: AppColors3.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: MediaQuery.of(context).size.width * 0.05,
-                                ),
-                              ),
-                            ],
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Tratamiento: ",
+                          style: TextStyle(
+                              color: AppColors3.primaryColor,
+                              fontSize: MediaQuery.of(context).size.width * 0.04),
+                        ),
+                        Text(
+                          '${widget.newAptm[widget.index].treatmentType}',
+                          style: TextStyle(
+                            color: AppColors3.primaryColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: MediaQuery.of(context).size.width * 0.04,
                           ),
-                          Row(
-                            children: [
-                              Text(
-                                "Correo: ",
-                                style: TextStyle(
-                                    color: AppColors3.primaryColor,
-                                    fontSize: MediaQuery.of(context).size.width * 0.05),
-                              ),
-                              Text(
-                                '${detalle['mail']}',
-                                style: TextStyle(
-                                    color: AppColors3.primaryColor,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: MediaQuery.of(context).size.width * 0.05),
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              Text(
-                                "Teléfono: ",
-                                style: TextStyle(
-                                    color: AppColors3.primaryColor,
-                                    fontSize: MediaQuery.of(context).size.width * 0.05),
-                              ),
-                              Text(
-                                '${detalle['phone']}',
-                                style: TextStyle(
-                                  color: AppColors3.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: MediaQuery.of(context).size.width * 0.05,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.width * 0.04,
-                          ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Método de pago: ",
+                          style: TextStyle(
+                              color: AppColors3.primaryColor,
+                              fontSize: MediaQuery.of(context).size.width * 0.04),
+                        ),
+                        Text(
+                          '${widget.newAptm[widget.index].paymentMethod}',
+                          style: TextStyle(
+                              color: AppColors3.primaryColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: MediaQuery.of(context).size.width * 0.04),
+                        ),
+                      ],
+                    ),
+                    Padding(padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.width * 0.04,
+                    ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Flexible(
+                              child: SelBoxUser(onSelUser: onSelUser, requiredRole: 1,),
+                            ),
+                            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
-                                Flexible(
-                                  child: SelBoxUser(onSelUser: onSelUser, requiredRole: 1,),
-                                ),
-                                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                        ),
-                                        onPressed: (){}, child: const Icon(Icons.check)),
-                                    SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                    ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                        ),
-                                        onPressed: (){}, child: Icon(CupertinoIcons.xmark)),
-                                  ],
-                                ),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                    onPressed: isUserSel ? () {
+                                      print('Doctor seleccionado: $selectedUserId');
+                                    } : null,
+                                    child: const Icon(Icons.check)),
+                                SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
+                                ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                    ),
+                                    onPressed: (){}, child: const Icon(CupertinoIcons.xmark)),
                               ],
-                            )
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                            ),
+                          ],
+                        )
+                    ),
+                  ],
                 ),
               )
             ]
