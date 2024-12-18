@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -68,61 +70,103 @@ class _LoginState extends State<Login> {
                   flex: 1,
                   child: Container(
                     color: Colors.transparent,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.width * 0.4,
+                      ),
+                      child: CircleAvatar(
+                        backgroundColor: AppColors3.whiteColor,
+                        radius: MediaQuery.of(context).size.height * 0.2,
+                        child: const Image(
+                          image: AssetImage("assets/icons/koda_logo.png"),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
                 Expanded(
                   flex: 1,
                   child: Container(
                     color: Colors.transparent,
+                    padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.width * 0.5,
+                    ),
                     child: Column(
                       children: [
-                        Center(
-                          child: Container(
+                        Container(
+                            decoration: const BoxDecoration(
+                              color: AppColors3.whiteColor,
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
                             height: MediaQuery.of(context).size.height * 0.065,
                             margin: EdgeInsets.symmetric(
                               horizontal: MediaQuery.of(context).size.width * 0.095,
                             ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: TextField(
-                                controller: _identificationController,
-                                focusNode: _identificationFocusNode,
-                                //keyboardType: TextInputType.number,
-                                inputFormatters: [
-                          /*        FilteringTextInputFormatter.digitsOnly,
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: MediaQuery.of(context).size.width * 0.035, right: MediaQuery.of(context).size.width * 0.035),
+                                  child: SvgPicture.asset(
+                                    'assets/icons/drIcon.svg',
+                                    color: AppColors3.primaryColor,
+                                    width: MediaQuery.of(context).size.width * 0.105,
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: MediaQuery.of(context).size.width * 0.015,
+                                      right: MediaQuery.of(context).size.width * 0.015),
+                                  height: MediaQuery.of(context).size.width * 0.09,
+                                  width: MediaQuery.of(context).size.width * 0.006,
+                                  decoration: BoxDecoration(
+                                    color: AppColors3.primaryColor,
+                                    border: Border.all(width: 0.5, color: AppColors3.primaryColor),
+                                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                                  ),
+                                ),
+                                Flexible(
+                                  child: TextField(
+                                    controller: _identificationController,
+                                    focusNode: _identificationFocusNode,
+                                    //keyboardType: TextInputType.number,
+                                    inputFormatters: const [
+                                      /*        FilteringTextInputFormatter.digitsOnly,
                                   LengthLimitingTextInputFormatter(3),*/
-                                ],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  color: AppColors3.primaryColor,
-                                  fontSize: 26,
-                                ),
-                                decoration: InputDecoration(
-                                  hintText: 'Enter Identification',
-                                  hintStyle: TextStyle(
-                                    color: AppColors3.primaryColor.withOpacity(0.5),
-                                    fontSize: 20,
-                                  ),
-                                  filled: true,
-                                  fillColor: AppColors3.secundaryColor,
-                                  enabledBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(
-                                      color: AppColors3.secundaryColor,
-                                      width: 2,
+                                    ],
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
+                                      color: AppColors3.primaryColor,
+                                      fontSize: 26,
+                                    ),
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      hintText: 'Ingresar identificación...',
+                                      hintStyle: TextStyle(
+                                        color: AppColors3.primaryColor.withOpacity(0.5),
+                                        fontSize: 18,
+                                      ),
+                                      filled: true,
+                                      fillColor: AppColors3.whiteColor,
+                                      enabledBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderSide: const BorderSide(
+                                          color: Colors.transparent,
+                                          width: 2,
+                                        ),
+                                      ),
+                                      focusedBorder: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(10.0),
+                                        borderSide: const BorderSide(
+                                          color: Colors.transparent,
+                                          width: 2,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(
-                                      color: AppColors3.secundaryColor,
-                                      width: 2,
-                                    ),
-                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
+                              ],
+                            )
                         ),
                       ],
                     ),
