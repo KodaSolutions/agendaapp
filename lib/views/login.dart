@@ -1,10 +1,16 @@
+import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter_svg/svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../globalVar.dart';
 import '../projectStyles/appColors.dart';
+import '../services/angedaDatabase/databaseService.dart';
 import '../services/auth_service.dart';
 import '../styles/ladingDraw.dart';
+import 'admin/admin.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -26,6 +32,77 @@ class _LoginState extends State<Login> {
 
   void changePage (int pageToGo){
     pageController.animateToPage(pageToGo, duration: const Duration(milliseconds: 300), curve: Curves.linear);
+  }
+
+  void authenticate() async {
+    try {
+      String jsonBody = json.encode({
+        //'identification': widget.userId,
+        'password': pinController.text,
+        'fcm_token': await FirebaseMessaging.instance.getToken(),
+      });
+
+      var response = await http.post(
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/login'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonBody,
+      );
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        final dbService = DatabaseService();
+        await dbService.saveSession(
+            data['token'],
+            data['user']['id'],
+            data['user']['role'] == 'doctor'
+        );
+
+        await dbService.saveUser({
+          'id': data['user']['id'],
+          'name': data['user']['name'],
+          'email': data['user']['email'],
+          'identification': data['user']['identification'],
+          'role': data['user']['role'],
+          'fcm_token': data['user']['fcm_token'],
+        });
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('jwt_token', data['token']);
+        await prefs.setInt('user_id', data['user']['id']);
+        print('hola: ${data['user']}');
+        SessionManager.instance.isDoctor = data['user']['role'] == 'doctor';
+        SessionManager.instance.Nombre = data['user']['name'];
+
+        SessionManager.instance.userRole = data['user']['role'];
+
+        if (mounted) {
+          Navigator.of(context).pushAndRemoveUntil(
+            CupertinoPageRoute(
+              builder: (context) => AssistantAdmin(
+                docLog: SessionManager.instance.isDoctor,
+              ),
+            ),
+                (Route<dynamic> route) => false,
+          );
+        }
+      } else {
+        if(mounted){
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).size.width * 0.08,
+                  bottom: MediaQuery.of(context).size.width * 0.08,
+                  left: MediaQuery.of(context).size.width * 0.02,
+                ),
+                content: Text('Error al iniciar sesión',
+                  style: TextStyle(
+                      color: AppColors3.whiteColor,
+                      fontSize: MediaQuery.of(context).size.width * 0.045),)),
+          );
+        }
+      }
+    } catch (e) {
+      print("Authentication Error: $e");
+    }
   }
 
   @override
@@ -244,7 +321,9 @@ class _LoginState extends State<Login> {
                                                 ),
                                               ),
                                             ),),
-                                            IconButton(onPressed: (){}, icon: Icon(Icons.check, color: AppColors3.whiteColor,
+                                            IconButton(onPressed: (){
+                                              authenticate();
+                                            }, icon: Icon(Icons.check, color: AppColors3.whiteColor,
                                                 size: MediaQuery.of(context).size.width * 0.07)),
                                           ],
                                         )
