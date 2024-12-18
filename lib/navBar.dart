@@ -84,24 +84,17 @@ class _navBarState extends State<navBar> {
                                       'assets/icons/drIcon.svg',
                                       colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                                       height: MediaQuery.of(context).size.width * 0.067,
-                                    ),
-                                  ),
+                                    )),
                                   Container(
                                       padding: const EdgeInsets.only(left: 10),
-                                      child:
-                                      Column(
+                                      child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(SessionManager.instance.Nombre == 'Dulce' ? 'Nombre Asistente' : SessionManager.instance.Nombre,
                                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width*0.05, color: AppColors3.primaryColor)),
                                           Text('Nombre de tu empresa', style: TextStyle(color: AppColors3.primaryColor.withOpacity(0.8)),)
-                                        ],
-                                      )
-                                  )
-                                ]
-                            ),
-                          ),
-                          Divider(),
+                                        ]))])),
+                          const Divider(),
                           SizedBox(height: MediaQuery.of(context).size.width * 0.045,),
                           Visibility(
                             visible: userRole == 'admin',

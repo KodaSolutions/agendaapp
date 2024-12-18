@@ -401,8 +401,7 @@ class _AppConfigState extends State<AppConfig> {
                                   contentPadding: EdgeInsets.symmetric(
                                       horizontal:
                                       MediaQuery.of(context).size.width * 0.02,
-                                      vertical: MediaQuery.of(context).size.width *
-                                          0.035),
+                                      vertical: MediaQuery.of(context).size.width * 0.035),
                                   filled: pswFocus.hasFocus ? true : false,
                                   fillColor:
                                   AppColors3.greyColor.withOpacity(0.2),
