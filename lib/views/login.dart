@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:agenda_app/kboardVisibilityManager.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class _LoginState extends State<Login> {
   final FocusNode pinFocus = FocusNode();
 
   late PageController pageController;
+  late KeyboardVisibilityManager keyboardVisibilityManager;
 
   bool showPinEntryScreen = false;
   String userIdentification = '';
@@ -108,6 +110,7 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
+    keyboardVisibilityManager = KeyboardVisibilityManager();
     pageController = PageController(
       initialPage: 0
     );
@@ -117,6 +120,7 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
+    keyboardVisibilityManager.dispose();
     _identificationController.removeListener(_onIdentificationChanged);
     _identificationController.dispose();
     _identificationFocusNode.dispose();
@@ -150,7 +154,7 @@ class _LoginState extends State<Login> {
         },
         child: Stack(
           children: [
-            const LadingDraw(),
+            LadingDraw(),
                 Container(
                     color: Colors.transparent,
                     child: Column(
@@ -163,7 +167,7 @@ class _LoginState extends State<Login> {
                             decoration: const BoxDecoration(
                               color: Colors.transparent,
                               image: DecorationImage(
-                                image: AssetImage('assets/kodaSol/kodaIconOrig.jpg'),
+                                image: AssetImage('assets/kodaSol/kodaIcon.png'),
                                 fit: BoxFit.contain,
                               ),
                             ),),
