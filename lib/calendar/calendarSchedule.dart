@@ -115,12 +115,13 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
       if (isConnected) {
         print('Cargando appointments para ID: $userId desde la API');
         final response = await http.get(
-          Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/getAppoinments/$userId'),
+          Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinments/$userId'),
           headers: {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer ${await getToken()}',
           },
         );
+        print('hejre ${response.body}');
 
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(response.body);

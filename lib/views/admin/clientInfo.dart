@@ -67,7 +67,7 @@ class _ClientInfoState extends State<ClientInfo> {
     });
   }
   void updateUserInfo() async {
-    final url = Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/editUserInfo/${widget.id}');
+    final url = Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/editUserInfo/${widget.id}');
     final token = await storage.read(key: 'jwt_token');
     try {
       final response = await http.post(
@@ -131,7 +131,7 @@ class _ClientInfoState extends State<ClientInfo> {
     }
   }
   Future<void> deleteClient(int id) async{
-    const baseUrl = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/deleteClient/';
+    const baseUrl = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/deleteClient/';
     try {
       final response = await http.post(
         Uri.parse(baseUrl + '$id'),

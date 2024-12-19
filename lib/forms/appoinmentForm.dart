@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
+import 'package:agenda_app/forms/boxSpecies.dart';
 import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -50,12 +52,17 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
   final DropdownDataManager dropdownDataManager = DropdownDataManager();
   Client? _selectedClient;
   var _clientTextController = TextEditingController();
+  TextEditingController pacienteController = TextEditingController();
   final _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
   TextEditingController timerControllertoShow = TextEditingController();
   final treatmentController = TextEditingController();
   FocusNode fieldClientNode = FocusNode();
+  FocusNode pacienteNode = FocusNode();
+  FocusNode clientNode = FocusNode();
   TextEditingController? _drSelected = TextEditingController();
+
+
   bool _showdrChooseWidget = false;
   int day = 0;
   int month = 0;
@@ -80,6 +87,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
   bool _cancelConfirm = false;
   late BuildContext dialogforappointment;
   String nameToCompare = '';
+  String? specie;
   bool amPm = false;
   int? doctor_id_body = 0;
   bool platform = false; //ios False androide True
@@ -107,7 +115,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
   Future<void> createClient() async {
     try {
       var response = await http.post(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/createClient'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/createClient'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
@@ -138,7 +146,6 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
     if (confirmed == true) {
       await createClient();
       if (newClientID != null) {
-        print('Test alcance IDnew $newClientID');
         submitAppointment();
       } else {
         print('Error: ID del cliente no está disponible.');
@@ -147,6 +154,13 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
       return;
     }
   }
+
+  void changeFocus(BuildContext context, FocusNode currentFocus, FocusNode nextFocus) {
+    currentFocus.unfocus();
+    FocusScope.of(context).requestFocus(nextFocus);
+  }
+
+
   Future<bool?> showAddClientAndAppointment() {
     return showDialog<bool>(
       context: context,
@@ -216,17 +230,12 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
     }
   }
 
-/*(bool isSelected, TextEditingController controller, int option) {
-                                    print("Doctor seleccionado: ${controller.text}, opción: $option");*/
-
   void _onAssignedDoctor(bool isSelected, TextEditingController drSelected,
-      int optSelected) {
-    print('isSel $isSelected');
-    print('drSel ${drSelected.text}');
-    print('opotSel $optSelected');
+      int optSelected, int idDoc) {
     setState(() {
       _drSelected = drSelected;
       _optSelected = optSelected;
+      doctor_id_body = idDoc;
       animationController.reverse().then((_){
         _showdrChooseWidget = !isSelected;
         animationController.reset();
@@ -293,6 +302,10 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
     });
   }
 
+  void onPet (String? pet) {
+    specie = pet!;
+  }
+
   void _onDateToAppointmentForm(
       String dateToAppointmentForm, bool showCalendar) {
     setState(() {
@@ -315,14 +328,12 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
     if (client != null) {
       setState(() {
         clientInDB = true;
-        print('clientInDB T: $clientInDB');
         _selectedClient = client;
+        number = client.number;
       });
     } else if (client == null) {
       setState(() {
-        print('clientInDB BF: $clientInDB');
         clientInDB = false;
-        print('clientInDB F: $clientInDB');
         _selectedClient = Client(
             id: 1,
             name: _clientTextController.text,
@@ -336,42 +347,26 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
 
   Future<void> loadUserswithRole() async {
     setState(() {
-      isLoading = true;
+      isLoadingUsers = true;
       error = null;
     });
     try {
       final usersList = await loadUsersWithRoles();
       setState(() {
         users = usersList;
-        isLoading = false;
+        doctorUsers = usersList
+            .where((user) => user['role'] == 1)
+            .map((user) => {'id': user['id'], 'name': user['name'], 'role': user['role']})
+            .toList();
+        isLoadingUsers = false;
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
+        isLoadingUsers = false;
         error = e.toString();
       });
     }
   }
-
-/*  Future<void> loadUserswhitRole() async {
-    setState(() {
-      isLoadingUsers = true;
-      error = null;
-    });
-    try {
-      final usersList = await loadUsersFromApi();
-      setState(() {
-        doctorUsers = usersList.where((user) => user['isDoctor'] == true).toList();
-        isLoadingUsers = false;
-      });
-    } catch (e) {
-      setState(() {
-        isLoadingUsers = false;
-        error = e.toString();
-      });
-    }
-  }*/
-
 
   Future<void> submitAppointment() async {
     setState(() {
@@ -391,7 +386,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
       return;
     }
 
-    String url = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/createAppoinment';
+    String url = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/createAppoinment';
     try {
       var response = await http.post(
         Uri.parse(url),
@@ -400,12 +395,16 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
           'Authorization': 'Bearer $token',
         },
         body: jsonEncode({
+          'is_web' : false,
           'dr_id': doctor_id_body!,
           'client_id': newClientID != null ? newClientID : (widget.nameClient != null ? widget.idScreenInfo : _selectedClient?.id.toString()),
+          'pet_name': pacienteController.text,
+          'species': specie?.toLowerCase(),
           'date': _dateController.text,
           'time': toTime,
           'treatment': treatmentController.text,
           'name': _clientTextController.text,
+          'contact_number': number.toString()
         }),
       );
 
@@ -526,7 +525,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Visibility(
-                            visible: isDocLog ? false : true,
+                            visible: true,
                             child: TitleContainer(
                               child: Text(
                                 'Doctor: ',
@@ -539,7 +538,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           Visibility(
-                            visible: isDocLog ? false : true,
+                            visible: true,
                             child: Padding(
                               padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02,
                                   horizontal: MediaQuery.of(context).size.width * 0.026),
@@ -631,7 +630,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                 if (textEditingValue.text == '') {
                                   return const Iterable<Client>.empty();
                                 }
-                                return dropdownDataManager.getSuggestions(textEditingValue.text).where((Client client) => client.id != 1);;
+                                return dropdownDataManager.getSuggestions(textEditingValue.text).where((Client client) => client.id != 1);
                                 },
                               displayStringForOption: (Client option) => option.name,
                               onSelected: (Client selection) {
@@ -639,7 +638,6 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                   _clientTextController.text = selection.name;
                                   nameToCompare = selection.name;
                                   _updateSelectedClient(selection);
-                                  fieldClientNode.unfocus();
                                 });
                                 },
                               fieldViewBuilder: (BuildContext context, fieldTextEditingController /*TextEditingController fieldTextEditingController*/,
@@ -667,7 +665,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                     setState(() {
                                       clientFieldDone = true;
                                       nameToCompare == _clientTextController.text ? null : _updateSelectedClient(null);
-                                      fieldFocusNode.unfocus();
+                                      changeFocus(context, fieldFocusNode, clientNode);
                                     });
                                     },
                                   onTapOutside: (PointerDownEvent tapout) {
@@ -680,6 +678,49 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                 },
                             ),
                           ),
+                          TitleContainer(
+                            child: Text(
+                              'Nombre del paciente: ',
+                              style: TextStyle(
+                                color: AppColors3.whiteColor,
+                                fontSize: MediaQuery.of(context).size.width * 0.045,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: MediaQuery.of(context).size.width * 0.02,
+                                horizontal: MediaQuery.of(context).size.width * 0.026),
+                            child: FieldsToWrite(
+                              focusNode: pacienteNode,
+                              eneabled: drFieldDone && clientFieldDone,
+                              labelText: 'Paciente',
+                              controller: pacienteController,
+                              suffixIcon: Icon(
+                                Icons.pets,
+                                color: drFieldDone && clientFieldDone && widget.dateFromCalendarSchedule == null
+                                    ? AppColors3.primaryColor : isDocLog && clientFieldDone && widget.dateFromCalendarSchedule == null ?
+                                AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                                size: MediaQuery.of(context).size.width * 0.07,
+                              ), readOnly: false,
+                              
+                            ),
+                          ),
+                          TitleContainer(
+                            child: Text(
+                              'Especie: ',
+                              style: TextStyle(
+                                color: AppColors3.whiteColor,
+                                fontSize: MediaQuery.of(context).size.width * 0.045,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(padding: EdgeInsets.symmetric(
+                          vertical: MediaQuery.of(context).size.width * 0.02,
+                      horizontal: MediaQuery.of(context).size.width * 0.026),
+                          child: Pet(onPet: onPet),),
                           TitleContainer(
                             child: Text('Fecha:',
                               style: TextStyle(
@@ -694,7 +735,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                 vertical: MediaQuery.of(context).size.width * 0.02,
                                 horizontal: MediaQuery.of(context).size.width * 0.026),
                             child: FieldsToWrite(
-                              eneabled: drFieldDone && clientFieldDone &&
+                              eneabled: drFieldDone && clientFieldDone && pacienteController.text.isNotEmpty &&
                                   widget.dateFromCalendarSchedule == null ? true : isDocLog && clientFieldDone &&
                                   widget.dateFromCalendarSchedule == null ? true : false,
                               readOnly: true,
@@ -1046,7 +1087,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                 ),
                                 child: DoctorsMenu(
                                   //users.where((user) => user['role'] == 1).map((user)
-                                  doctors: users.where((user) => user['role'] == 1).toList(),
+                                  doctors: doctorUsers,
                                   optSelectedToRecieve: _optSelected,
                                   onAssignedDoctor: _onAssignedDoctor),)
                                 ])))),

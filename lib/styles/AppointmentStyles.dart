@@ -121,7 +121,7 @@ class CalendarContainer extends StatelessWidget {
 }
 
 class DoctorsMenu extends StatefulWidget {
-  final Function(bool, TextEditingController, int, ) onAssignedDoctor;
+  final Function(bool, TextEditingController, int, int) onAssignedDoctor;
   final int optSelectedToRecieve;
   final List<Map<String, dynamic>> doctors;
   final Function (double?)? onAjustSize;
@@ -148,6 +148,7 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
   @override
   void initState() {
     super.initState();
+    print('widget ${widget.doctors}');
     optSelected = widget.optSelectedToRecieve;
   }
 
@@ -159,7 +160,6 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
     }
     if(widget.doctors.isNotEmpty){
       WidgetsBinding.instance.addPostFrameCallback((_){
-        print('medida ${_listColumsKey.first.currentContext?.size?.height}');
         widget.onAjustSize!(_listColumsKey.first.currentContext?.size!.height);
       });
     }
@@ -191,6 +191,7 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
                       true,
                       drSelected,
                       optSelectedToSend = index + 1,
+                      int.parse(doctor['id'],),
                     );
                   });
                 },

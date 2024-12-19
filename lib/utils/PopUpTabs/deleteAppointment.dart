@@ -10,7 +10,7 @@ Future<bool> showDeleteAppointmentDialog(BuildContext context, Widget widget, in
 
   Future<void> deleteAppt(int id) async {
     const baseUrl =
-        'https://beauteapp-dd0175830cc2.herokuapp.com/api/deleteAppoinment/';
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/deleteAppoinment/';
 
     try {
       final response = await http.post(

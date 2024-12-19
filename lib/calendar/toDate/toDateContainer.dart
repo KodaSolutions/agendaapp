@@ -121,9 +121,9 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   Future<List<Appointment>> fetchAppointments(DateTime selectedDate,
       {int? id}) async {
     String baseUrl =
-        'https://beauteapp-dd0175830cc2.herokuapp.com/api/getAppoinments';
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinments';
     String baseUrl2 =
-        'https://beauteapp-dd0175830cc2.herokuapp.com/api/getAppoinmentsAssit';
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinmentsAssit';
     String url = id != null ? '$baseUrl/$id' : baseUrl2;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('jwt_token');

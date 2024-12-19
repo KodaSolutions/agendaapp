@@ -19,7 +19,7 @@ Future<List<Appointment2>> fetchAppointmentsByDate(int userId, String date) asyn
     if(isConnected){
       print('Cargando appointments para ID: $userId en la fecha: $date desde la API');
       final response = await http.get(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/getAppointmentsByDate/$userId/$date'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppointmentsByDate/$userId/$date'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${await getToken()}',
@@ -81,7 +81,7 @@ class _NotiCardsState extends State<NotiCards> {
 
   Future<void> readNotification(int appointmentId) async {
     const baseUrl =
-        'https://beauteapp-dd0175830cc2.herokuapp.com/api/appointments';
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/appointments';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
@@ -110,7 +110,7 @@ class _NotiCardsState extends State<NotiCards> {
 
   Future<void> unReadNotification(int appointmentId) async {
     const baseUrl =
-        'https://beauteapp-dd0175830cc2.herokuapp.com/api/appointments';
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/appointments';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
