@@ -25,11 +25,15 @@ class _LoginState extends State<Login> {
   bool showPinField = false;
   final FocusNode _inputFocusNode = FocusNode();
   final AuthService2 authService = AuthService2();
+  late PageController pageController;
 
   @override
   void initState() {
     super.initState();
     _identificationController.addListener(_onIdentificationChanged);
+    pageController = PageController(
+        initialPage: 0
+    );
   }
 
   @override
@@ -53,8 +57,11 @@ class _LoginState extends State<Login> {
         userIdentification = _identificationController.text;
         showPinEntryScreen = true;
       });
-      FocusScope.of(context).unfocus(); // Cerrar el teclado
     }
+  }
+
+  void changePage (int pageToGo){
+    pageController.animateToPage(pageToGo, duration: const Duration(milliseconds: 300), curve: Curves.linear);
   }
 
   @override
@@ -89,52 +96,25 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-                Expanded(
-                  flex: 1,
+                Flexible(
                   child: Container(
                     color: Colors.transparent,
                     padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.width * 0.5,
+                      top: MediaQuery.of(context).size.width * 0.25,
                     ),
-                    child: Column(
+                    child: PageView(
+                      onPageChanged: (value) {
+                        value == 1
+                          ? FocusScope.of(context).requestFocus(_inputFocusNode)
+                          : FocusScope.of(context).requestFocus(_identificationFocusNode);
+                      },
+                      controller: pageController,
+                      physics: const NeverScrollableScrollPhysics(),
                       children: [
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          transitionBuilder: (Widget child, Animation<double> animation) {
-                            return SlideTransition(
-                              position: Tween<Offset>(
-                                begin: const Offset(1.0, 0.0),
-                                end: Offset.zero,
-                              ).animate(animation),
-                              child: child,
-                            );
-                          },
-                          child: showPinField
-                              ? KeyedSubtree(
-                                  key: const ValueKey('pinField'),
-                                  child: _buildPinField(),
-                                )
-                              : KeyedSubtree(
-                                  key: const ValueKey('identificationField'),
-                                  child: _buildIdentificationField(),
-                                ),
-                        ),
+                        _buildIdentificationField(),
+                        _buildPinField(),
                       ],
                     ),
-                  ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.003,
-                  decoration: const BoxDecoration(
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors3.primaryColor,
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset: Offset(2, -0),
-                      ),
-                    ],
                   ),
                 ),
               ],
@@ -147,49 +127,127 @@ class _LoginState extends State<Login> {
 
   Widget _buildIdentificationField() {
     return Container(
-      key: const ValueKey('identificationField'),
-      decoration: const BoxDecoration(
-        color: AppColors3.whiteColor,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-      ),
-      height: MediaQuery.of(context).size.height * 0.065,
-      margin: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.095,
+        margin: EdgeInsets.only(
+          left: MediaQuery.of(context).size.width * 0.095,
+          right: MediaQuery.of(context).size.width * 0.095,
+          bottom: MediaQuery.of(context).size.width * 0.095,
+        ),
+        child: Row(
+          children: [
+            Flexible(child: TextField(
+              onChanged: (value) {
+                if (value.length == 3) {
+                  changePage(1);
+                }
+              },
+              controller: _identificationController,
+              focusNode: _identificationFocusNode,
+              autocorrect: false,
+              style: TextStyle(
+                color: AppColors3.blackColor,
+                fontSize: MediaQuery.of(context).size.width * 0.05,
+              ),
+              decoration: InputDecoration(
+                isDense: true,
+                counterText: '',
+                hintText: 'Ingresar identificador...',
+                hintStyle: TextStyle(
+                  color: AppColors3.primaryColor.withOpacity(0.5),
+                  fontSize: 18,
+                ),
+                contentPadding: EdgeInsets.symmetric(
+                  vertical: MediaQuery.of(context).size.width * 0.04,
+                  horizontal: MediaQuery.of(context).size.width * 0.05,
+                ),
+                filled: true,
+                fillColor: AppColors3.whiteColor,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: const BorderSide(
+                    color: AppColors3.whiteColor,
+                    width: 0
+                  ),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: const BorderSide(
+                    color: AppColors3.whiteColor,
+                    width: 0,
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10.0),
+                  borderSide: const BorderSide(
+                    color: AppColors3.whiteColor,
+                    width: 0,
+                  ),
+                ),
+                prefixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                          left: MediaQuery.of(context).size.width * 0.035,
+                          right: MediaQuery.of(context).size.width * 0.01),
+                      child: SvgPicture.asset(
+                        'assets/icons/drIcon.svg',
+                        color: AppColors3.primaryColor,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.015,
+                        right: MediaQuery.of(context).size.width * 0.015,
+                      ),
+                      height: MediaQuery.of(context).size.width * 0.09,
+                      width: MediaQuery.of(context).size.width * 0.006,
+                      decoration: BoxDecoration(
+                        color: AppColors3.primaryColor,
+                        border: Border.all(width: 0.5, color: AppColors3.primaryColor),
+                        borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),),
+          ],
+        )
+    );
+  }
+
+  Widget _buildPinField() {
+    return Container(
+      margin: EdgeInsets.only(
+        left: MediaQuery.of(context).size.width * 0.095,
+        right: MediaQuery.of(context).size.width * 0.095,
+        bottom: MediaQuery.of(context).size.width * 0.095,
       ),
       child: Row(
         children: [
-          Padding(
-            padding: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.035,
-              right: MediaQuery.of(context).size.width * 0.035,
-            ),
-            child: SvgPicture.asset(
-              'assets/icons/drIcon.svg',
-              color: AppColors3.primaryColor,
-              width: MediaQuery.of(context).size.width * 0.105,
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(
-              left: MediaQuery.of(context).size.width * 0.015,
-              right: MediaQuery.of(context).size.width * 0.015,
-            ),
-            height: MediaQuery.of(context).size.width * 0.09,
-            width: MediaQuery.of(context).size.width * 0.006,
-            decoration: BoxDecoration(
-              color: AppColors3.primaryColor,
-              border: Border.all(width: 0.5, color: AppColors3.primaryColor),
-              borderRadius: const BorderRadius.all(Radius.circular(5)),
+          IconButton(
+            color: AppColors3.whiteColor,
+            onPressed: () {
+              setState(() {
+                changePage(0);
+                _identificationController.clear();
+              });
+            },
+            icon: Icon(
+              CupertinoIcons.left_chevron,
+              size: MediaQuery.of(context).size.width * 0.095,
             ),
           ),
           Flexible(
             child: TextField(
-              controller: _identificationController,
               focusNode: _inputFocusNode,
+              controller: _pinController,
               keyboardType: TextInputType.number,
+              obscureText: true,
+              maxLength: 4,
               inputFormatters: [
                 FilteringTextInputFormatter.digitsOnly,
-                LengthLimitingTextInputFormatter(3),
+                LengthLimitingTextInputFormatter(4),
               ],
               textAlign: TextAlign.start,
               style: const TextStyle(
@@ -197,8 +255,9 @@ class _LoginState extends State<Login> {
                 fontSize: 26,
               ),
               decoration: InputDecoration(
+                counterText: '',
                 isDense: true,
-                hintText: 'Ingresar identificación...',
+                hintText: 'Ingresar PIN...',
                 hintStyle: TextStyle(
                   color: AppColors3.primaryColor.withOpacity(0.5),
                   fontSize: 18,
@@ -219,13 +278,40 @@ class _LoginState extends State<Login> {
                     width: 2,
                   ),
                 ),
+                prefixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.035,
+                        right: MediaQuery.of(context).size.width * 0.01,
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/icons/pinIcon.svg',
+                        color: AppColors3.primaryColor,
+                        width: MediaQuery.of(context).size.width * 0.105,
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(
+                        left: MediaQuery.of(context).size.width * 0.015,
+                        right: MediaQuery.of(context).size.width * 0.015,
+                      ),
+                      height: MediaQuery.of(context).size.width * 0.09,
+                      width: MediaQuery.of(context).size.width * 0.006,
+                      decoration: BoxDecoration(
+                        color: AppColors3.primaryColor,
+                        border: Border.all(width: 0.5, color: AppColors3.primaryColor),
+                        borderRadius: const BorderRadius.all(Radius.circular(5)),
+                      ),
+                    ),
+                  ],
+                )
               ),
               onChanged: (value) {
-                if (value.length == 3) {
-                  setState(() {
-                    showPinField = true;
-                    FocusScope.of(context).requestFocus(_inputFocusNode);
-                  });
+                if (value.length == 4) {
+                  print('Autenticando...');
+                  authService.authenticate(context, userIdentification, true, value, _pinController);
                 }
               },
             ),
@@ -235,14 +321,14 @@ class _LoginState extends State<Login> {
     );
   }
 
-  Widget _buildPinField() {
+  /*Widget _buildPinField() {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.065,
-      margin: EdgeInsets.symmetric(
-        horizontal: MediaQuery.of(context).size.width * 0.095,
+      margin: EdgeInsets.only(
+        left: MediaQuery.of(context).size.width * 0.095,
+        right: MediaQuery.of(context).size.width * 0.095,
+        bottom: MediaQuery.of(context).size.width * 0.095,
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           IconButton(
             color: AppColors3.whiteColor,
@@ -257,7 +343,7 @@ class _LoginState extends State<Login> {
               size: MediaQuery.of(context).size.width * 0.095,
             ),
           ),
-          Expanded(
+          Flexible(
             child: Container(
               decoration: const BoxDecoration(
                 color: AppColors3.whiteColor,
@@ -265,6 +351,7 @@ class _LoginState extends State<Login> {
               ),
               height: MediaQuery.of(context).size.height * 0.065,
               child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
                     padding: EdgeInsets.only(
@@ -346,5 +433,5 @@ class _LoginState extends State<Login> {
         ],
       ),
     );
-  }
+  }*/
 }
