@@ -369,7 +369,7 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                   text: highlightOccurrences(client.name, query,
                     TextStyle(
                       overflow: TextOverflow.ellipsis,
-                      color: AppColors3.primaryColor,
+                      color: AppColors3.primaryColorMoreStrong,
                       fontSize: MediaQuery.of(context).size.width * 0.055,
                     ),
                   ),
@@ -386,7 +386,7 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                             query,
                             TextStyle(
                               overflow: TextOverflow.ellipsis,
-                              color: AppColors3.primaryColor.withOpacity(0.5),
+                              color: AppColors3.primaryColorMoreStrong.withOpacity(0.5),
                               fontSize: MediaQuery.of(context).size.width * 0.045,
                             ),
                           ),
@@ -399,19 +399,15 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: AppColors3.primaryColor.withOpacity(0.5),
+                            color: AppColors3.primaryColorMoreStrong.withOpacity(0.5),
                             fontSize: MediaQuery.of(context).size.width * 0.045,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    height: 2,
-                    decoration: const BoxDecoration(
-                      color: AppColors3.primaryColor,
-                    ),
+                  const Divider(
+                    thickness: 2,
                   ),
                 ],
               ),
@@ -460,7 +456,7 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                 left: Radius.circular(100),
               ),
               color: state == AlphabetScrollbarItemState.active
-                  ? AppColors3.primaryColor.withOpacity(0.3)
+                  ? AppColors3.primaryColor.withOpacity(0.5)
                   : null,
             ),
             child: Center(
@@ -513,23 +509,23 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                           contentPadding: EdgeInsets.zero,
                           hintText: 'Buscar...',
                           hintStyle: TextStyle(
-                            color: AppColors3.primaryColor.withOpacity(0.3)
+                            color: AppColors3.primaryColorMoreStrong.withOpacity(0.3)
                           ),
-                          prefixIcon: Icon(Icons.search, color: AppColors3.primaryColor.withOpacity(0.3)),
+                          prefixIcon: Icon(Icons.search, color: AppColors3.primaryColorMoreStrong.withOpacity(0.3)),
                           disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColors3.primaryColor.withOpacity(0.3), width: 2.0),
+                            borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong, width: 2.0),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColors3.primaryColor.withOpacity(0.3), width: 2.0),
+                            borderSide: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.5), width: 2.0),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: AppColors3.primaryColor, width: 2.0),
+                            borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong, width: 2.0),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: AppColors3.primaryColor),
+                            borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
@@ -550,9 +546,9 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                     });
                   },
                   icon: Icon(
-                    Icons.person_add_alt_outlined,
+                    Icons.person_add_alt_1_rounded,
                     size: MediaQuery.of(context).size.width * 0.11,
-                    color: AppColors3.primaryColor,
+                    color: AppColors3.primaryColorMoreStrong.withOpacity(0.7),
                   ),
                 ),
               ),

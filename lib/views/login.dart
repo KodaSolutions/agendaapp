@@ -90,7 +90,7 @@ class _LoginState extends State<Login> {
                         backgroundColor: AppColors3.whiteColor,
                         radius: MediaQuery.of(context).size.height * 0.2,
                         child: const Image(
-                          image: AssetImage("assets/icons/koda_logo.png"),
+                          image: AssetImage("assets/icons/logoCVP.png"),
                         ),
                       ),
                     ),
@@ -152,12 +152,12 @@ class _LoginState extends State<Login> {
                 counterText: '',
                 hintText: 'Ingresar identificador...',
                 hintStyle: TextStyle(
-                  color: AppColors3.primaryColor.withOpacity(0.5),
+                  color: AppColors3.blackColor.withOpacity(0.5),
                   fontSize: 18,
                 ),
                 contentPadding: EdgeInsets.symmetric(
                   vertical: MediaQuery.of(context).size.width * 0.04,
-                  horizontal: MediaQuery.of(context).size.width * 0.05,
+                  horizontal: MediaQuery.of(context).size.width * 0.06,
                 ),
                 filled: true,
                 fillColor: AppColors3.whiteColor,
@@ -191,19 +191,19 @@ class _LoginState extends State<Login> {
                           right: MediaQuery.of(context).size.width * 0.01),
                       child: SvgPicture.asset(
                         'assets/icons/drIcon.svg',
-                        color: AppColors3.primaryColor,
+                        color: AppColors3.blackColor,
                       ),
                     ),
                     Container(
                       margin: EdgeInsets.only(
                         left: MediaQuery.of(context).size.width * 0.015,
-                        right: MediaQuery.of(context).size.width * 0.015,
+                        right: MediaQuery.of(context).size.width * 0.03,
                       ),
                       height: MediaQuery.of(context).size.width * 0.09,
                       width: MediaQuery.of(context).size.width * 0.006,
                       decoration: BoxDecoration(
-                        color: AppColors3.primaryColor,
-                        border: Border.all(width: 0.5, color: AppColors3.primaryColor),
+                        color: AppColors3.blackColor,
+                        border: Border.all(width: 0.5, color: AppColors3.blackColor),
                         borderRadius: const BorderRadius.all(Radius.circular(5)),
                       ),
                     ),
@@ -251,7 +251,7 @@ class _LoginState extends State<Login> {
               ],
               textAlign: TextAlign.start,
               style: const TextStyle(
-                color: AppColors3.primaryColor,
+                color: AppColors3.blackColor,
                 fontSize: 26,
               ),
               decoration: InputDecoration(
@@ -259,7 +259,7 @@ class _LoginState extends State<Login> {
                 isDense: true,
                 hintText: 'Ingresar PIN...',
                 hintStyle: TextStyle(
-                  color: AppColors3.primaryColor.withOpacity(0.5),
+                  color: AppColors3.blackColor.withOpacity(0.5),
                   fontSize: 18,
                 ),
                 filled: true,
@@ -288,20 +288,20 @@ class _LoginState extends State<Login> {
                       ),
                       child: SvgPicture.asset(
                         'assets/icons/pinIcon.svg',
-                        color: AppColors3.primaryColor,
+                        color: AppColors3.blackColor,
                         width: MediaQuery.of(context).size.width * 0.105,
                       ),
                     ),
                     Container(
                       margin: EdgeInsets.only(
                         left: MediaQuery.of(context).size.width * 0.015,
-                        right: MediaQuery.of(context).size.width * 0.015,
+                        right: MediaQuery.of(context).size.width * 0.03,
                       ),
                       height: MediaQuery.of(context).size.width * 0.09,
                       width: MediaQuery.of(context).size.width * 0.006,
                       decoration: BoxDecoration(
-                        color: AppColors3.primaryColor,
-                        border: Border.all(width: 0.5, color: AppColors3.primaryColor),
+                        color: AppColors3.blackColor,
+                        border: Border.all(width: 0.5, color: AppColors3.blackColor),
                         borderRadius: const BorderRadius.all(Radius.circular(5)),
                       ),
                     ),

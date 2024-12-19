@@ -93,7 +93,7 @@ class _navBarState extends State<navBar> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(SessionManager.instance.Nombre == 'Dulce' ? 'Nombre Asistente' : SessionManager.instance.Nombre,
-                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width*0.05, color: AppColors3.primaryColor)),
+                                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width*0.05, color: AppColors3.primaryColorMoreStrong)),
                                           Text('Nombre de tu empresa', style: TextStyle(color: AppColors3.primaryColor.withOpacity(0.8)),)
                                         ],
                                       )
@@ -126,13 +126,13 @@ class _navBarState extends State<navBar> {
                                     child: Icon(
                                       CupertinoIcons.gear_alt,
                                       size: MediaQuery.of(context).size.width * 0.075,
-                                      color: AppColors3.primaryColor,
+                                      color: AppColors3.primaryColorMoreStrong,
                                     ),
                                   ),
                                   Text(
                                     'Configurar usuarios',
                                     style: TextStyle(
-                                        color: AppColors3.primaryColor,
+                                        color: AppColors3.primaryColorMoreStrong,
                                         fontSize: MediaQuery.of(context).size.width * 0.045
                                     ),
                                   ),
@@ -160,11 +160,11 @@ class _navBarState extends State<navBar> {
                                   ),
                                   child: Icon(CupertinoIcons.profile_circled,
                                     size: MediaQuery.of(context).size.width * 0.075,
-                                  color: AppColors3.primaryColor,
+                                  color: AppColors3.primaryColorMoreStrong,
                                   ),
                         ),
                         Text('Editar perfil', style: TextStyle(
-                            color: AppColors3.primaryColor,
+                            color: AppColors3.primaryColorMoreStrong,
                             fontSize: MediaQuery.of(context).size.width * 0.045)),
                       ],
                     ),
@@ -192,13 +192,13 @@ class _navBarState extends State<navBar> {
                                     child: Icon(
                                       CupertinoIcons.doc_append,
                                       size: MediaQuery.of(context).size.width * 0.075,
-                                      color: AppColors3.primaryColor,
+                                      color: AppColors3.primaryColorMoreStrong,
                                     ),
                                   ),
                                   Text(
                                     'Citas recibidas',
                                     style: TextStyle(
-                                        color: AppColors3.primaryColor,
+                                        color: AppColors3.primaryColorMoreStrong,
                                         fontSize: MediaQuery.of(context).size.width * 0.045
                                     ),
                                   ),
@@ -261,9 +261,9 @@ class _navBarState extends State<navBar> {
                                             child: Row(
                                                 mainAxisAlignment: MainAxisAlignment.center,
                                                 children: [
-                                                  const Icon(Icons.exit_to_app, color: AppColors3.primaryColor),
+                                                  const Icon(Icons.exit_to_app, color: AppColors3.secundaryColor),
                                                   SizedBox(width: 10),
-                                                  Text('Cerrar sesion', style: TextStyle(fontSize: MediaQuery.of(context).size.width*0.05, color: AppColors3.primaryColor))
+                                                  Text('Cerrar sesion', style: TextStyle(fontSize: MediaQuery.of(context).size.width*0.05, color: AppColors3.secundaryColor))
                                                 ]))])))])),
 
               ],
