@@ -238,6 +238,7 @@ class _FortodaymodalState extends State<Fortodaymodal> with SingleTickerProvider
                   title,
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.05,
+                    color: AppColors3.primaryColorMoreStrong
                   ),
                 ),
               ),
@@ -251,7 +252,12 @@ class _FortodaymodalState extends State<Fortodaymodal> with SingleTickerProvider
             } else if (snapshot.hasError) {
               return Text('Error: ${snapshot.error}');
             } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-              return const Text('No hay citas');
+              return Text(
+                  'No hay citas',
+                style: TextStyle(
+                  color: AppColors3.blackColor.withOpacity(0.3)
+                ),
+              );
             } else {
               return Column(
                 children: snapshot.data!.map((appointment) {

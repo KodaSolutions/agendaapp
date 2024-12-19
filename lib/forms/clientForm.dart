@@ -211,13 +211,16 @@ class ClientFormState extends State<ClientForm> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Agregar cliente',
-                      style: TextStyle(
-                        fontSize:
-                        MediaQuery.of(context).size.width * 0.08,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors3.primaryColor,
+                    Container(
+                      padding: EdgeInsets.only(top:MediaQuery.of(context).size.width * 0.03),
+                      child: Text(
+                        'Agregar cliente',
+                        style: TextStyle(
+                          fontSize:
+                          MediaQuery.of(context).size.width * 0.08,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors3.primaryColor,
+                        ),
                       ),
                     ),
                     IconButton(
@@ -295,14 +298,14 @@ class ClientFormState extends State<ClientForm> {
                                   hintText: 'Nombre completo',
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(color: AppColors3.primaryColor)
+                                    borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong)
                                   ),
                                   enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                        borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong)),
                                     focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),
+                                    borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong, width: 1.5),
                                   ),
                                 ),
                                 onTap: () {
@@ -365,13 +368,13 @@ class ClientFormState extends State<ClientForm> {
                                   border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(10.0),
                                         borderSide: const BorderSide(
-                                            color: AppColors3.primaryColor)),
+                                            color: AppColors3.primaryColorMoreStrong)),
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                      borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong)),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),
+                                    borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong, width: 1.5),
                                   ),
                                 ),
                                 onTap: () {
@@ -434,13 +437,13 @@ class ClientFormState extends State<ClientForm> {
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
                                       borderSide: const BorderSide(
-                                          color: AppColors3.primaryColor)),
+                                          color: AppColors3.primaryColorMoreStrong)),
                                   enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                      borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong)),
                                   focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),
+                                    borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong, width: 1.5),
                                   ),
                                   hintText: 'Correo electrónico',
                                 ),

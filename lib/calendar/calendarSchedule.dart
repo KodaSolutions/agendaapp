@@ -306,12 +306,13 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                border: Border.all(color: AppColors3.primaryColor, width: 1.2),
-                color: AppColors3.primaryColor.withOpacity(0.5)
+                border: Border.all(color: AppColors3.primaryColorMoreStrong, width: 1.2),
+                color: Colors.transparent
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: SfCalendar(
+                  todayHighlightColor: AppColors3.secundaryColor,
                   showCurrentTimeIndicator: true,
                   headerHeight: 0,
                   firstDayOfWeek: 1,
@@ -423,7 +424,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                         child: Container(
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                              border: Border.all( color: AppColors3.primaryColor, width: 2),
+                              border: Border.all( color: AppColors3.primaryColorMoreStrong, width: 2),
                               shape: BoxShape.circle,
                               color: AppColors3.whiteColor
                           ),
@@ -581,8 +582,8 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                                           details.date.day.toString(),
                                           style: TextStyle(
                                             color: isInCurrentMonth
-                                                ? AppColors3.blackColor
-                                                : AppColors3.secundaryColor,
+                                                ? AppColors3.primaryColor
+                                                : AppColors3.secundaryColor.withOpacity(0.75),
                                             fontSize: MediaQuery.of(context).size.width * 0.055,
                                           ),
                                         ),

@@ -52,9 +52,9 @@ class AppColors2 {
   static const Color calendarBg = Colors.white;
 }
 class AppColors3 {
-  static const Color primaryColor = Colors.blueGrey;
-  static const Color primaryColorMoreStrong = Color(0xFF455A64);
-  static const Color secundaryColor = Color(0xFFCFD8DC);
+  static const Color primaryColor = Color(0xFF59C2CB);
+  static const Color primaryColorMoreStrong = Colors.black87;
+  static const Color secundaryColor = Color(0xFFEE9236);
   static const Color thirdColor = Color(0xFF757575);
   static const Color bgColor = Colors.white;
   static const Color blackColor = Colors.black;
