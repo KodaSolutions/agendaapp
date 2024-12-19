@@ -104,12 +104,24 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
   double sumAvance = 0;
   double scaleValue = 0;
   int letterCherlper = 0;
+  List<Client> helperClients = [];
 
   @override
   void didPopNext() {
     super.didPopNext();
     getNombres();
   }
+
+  bool shouldHideHeader(List<Client> clients) {
+    // Filtrar los clientes cuya inicial es 'J'
+    List<Client> clientsWithJ = clients
+        .where((client) => client.name[0].toUpperCase() == 'J')
+        .toList();
+
+    // Verificar si hay solo uno con ID 1
+    return clientsWithJ.length == 1 && clientsWithJ[0].id == 1;
+  }
+
   void checkKeyboardVisibility() {
     keyboardVisibilitySubscription =
         keyboardVisibilityController.onChange.listen((visible) {
@@ -272,8 +284,12 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
   List<AlphabetListViewItemGroup> _createAlphabetizedData(List<Client> clients){
     final Map<String, List<Client>> data = {};
     String query = searchController.text;
-
+    List<Client> clientsWithT = clients
+        .where((c) => c.name[0].toUpperCase() == 'T')
+        .toList();
+    helperClients = clientsWithT;
     for(Client client in clients){
+      print(client.id);
       final String tag = client.name[0].toUpperCase();
       if (!data.containsKey(tag)) {
         data[tag] = [];
@@ -281,11 +297,13 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
       data[tag]!.add(client);
     }
 
+
+
     data.forEach((key, value) {
       value.sort((a, b) => a.name.compareTo(b.name));
     });
 
-    letterCherlper = data['C']?.length ?? 0;
+    letterCherlper = data['T']?.length ?? 0;
     final sortedKeys = data.keys.toList()..sort();
     final clientService = ClientService();
     final List<AlphabetListViewItemGroup> groups = sortedKeys.map((key) {
@@ -425,7 +443,7 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
       listOptions: ListOptions(
         listHeaderBuilder: (context, symbol) {
           return  Visibility(
-            visible: symbol == 'C' && letterCherlper == 1 ? false : true,
+            visible: symbol == 'T' && helperClients.length == 1  ? false : true,
             child: Container(
             margin: const EdgeInsets.only(right: 8),
             padding: const EdgeInsets.only(left: 6.0, top: 6, bottom: 6),
