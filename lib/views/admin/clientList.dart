@@ -34,7 +34,7 @@ class DropdownDataManager {
       bool isConnected = connectivityResult != ConnectivityResult.none;
       if (isConnected) {
         var response = await http.get(
-          Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/clientsAll'),
+          Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/clientsAll'),
         );
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(response.body);

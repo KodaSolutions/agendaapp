@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class ClientService {
-  final String baseUrl = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/deleteClient/';
+  final String baseUrl = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/deleteClient/';
 
   Future<void> deleteClient(int id) async {
     try {
@@ -24,7 +24,7 @@ class ClientService {
   }
 //funciones clientinfo
   Future<Map<String, dynamic>> fetchAppointmentByUser(int id) async {
-    final String url = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/getAppoinmentsByUser/$id';
+    final String url = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinmentsByUser/$id';
     try {
       final response = await http.get(Uri.parse(url));
       if (response.statusCode == 200) {

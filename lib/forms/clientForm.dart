@@ -114,7 +114,7 @@ class ClientFormState extends State<ClientForm> {
     });
     try {
       var response = await http.post(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/createClient'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/createClient'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },

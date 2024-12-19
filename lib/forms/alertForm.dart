@@ -60,11 +60,12 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
   }
 
   void onAssignedDoctor(bool isSelected, TextEditingController drSelected,
-      int optSelected) {
+      int optSelected, int idDoc) {
     setState(() {
       _showdrChooseWidget = !isSelected;
       _drSelected = drSelected;
       _optSelected = optSelected;
+      ///recuperar el ID y asignarlo
       animationController.reverse().then((_) {
         animationController.reset();
       });
@@ -98,7 +99,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
   }
   Future<void> sendNotification(int id) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      const baseUrl = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/sendNotification/';
+      const baseUrl = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/sendNotification/';
       try {
         String? token = prefs.getString('jwt_token');
         final response = await http.post(
