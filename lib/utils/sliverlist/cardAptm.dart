@@ -124,7 +124,7 @@ class _CardAptmState extends State<CardAptm> {
                     Text(
                       'Cliente: ',
                       style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.04
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
                       ),
                     ),
                     Text(
@@ -160,13 +160,13 @@ class _CardAptmState extends State<CardAptm> {
                         Text(
                           "Tratamiento: ",
                           style: TextStyle(
-                              color: AppColors3.primaryColor,
+                              color: AppColors3.primaryColorMoreStrong,
                               fontSize: MediaQuery.of(context).size.width * 0.04),
                         ),
                         Text(
                           '${widget.newAptm[widget.index].treatmentType}',
                           style: TextStyle(
-                            color: AppColors3.primaryColor,
+                            color: AppColors3.primaryColorMoreStrong,
                             fontWeight: FontWeight.bold,
                             fontSize: MediaQuery.of(context).size.width * 0.04,
                           ),
@@ -178,13 +178,13 @@ class _CardAptmState extends State<CardAptm> {
                         Text(
                           "Método de pago: ",
                           style: TextStyle(
-                              color: AppColors3.primaryColor,
+                              color: AppColors3.primaryColorMoreStrong,
                               fontSize: MediaQuery.of(context).size.width * 0.04),
                         ),
                         Text(
                           '${widget.newAptm[widget.index].paymentMethod}',
                           style: TextStyle(
-                              color: AppColors3.primaryColor,
+                              color: AppColors3.primaryColorMoreStrong,
                               fontWeight: FontWeight.bold,
                               fontSize: MediaQuery.of(context).size.width * 0.04),
                         ),
