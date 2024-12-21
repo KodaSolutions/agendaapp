@@ -484,7 +484,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
           child: Stack(
             children: [
               CustomScrollView(
-                physics: visibleKeyboard ? const BouncingScrollPhysics() : const NeverScrollableScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 slivers: [
                   SliverAppBar(
                     backgroundColor: AppColors3.whiteColor,
@@ -527,6 +527,13 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                           Visibility(
                             visible: true,
                             child: TitleContainer(
+                              decoration: const BoxDecoration(
+                                color: AppColors3.primaryColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(10),
+                                  topRight: Radius.circular(10)
+                                )                 
+                              ),
                               child: Text(
                                 'Doctor: ',
                                 style: TextStyle(
@@ -540,8 +547,9 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                           Visibility(
                             visible: true,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02,
-                                  horizontal: MediaQuery.of(context).size.width * 0.026),
+                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.02,
+                                  left: MediaQuery.of(context).size.width * 0.026,
+                                  right: MediaQuery.of(context).size.width * 0.026),
                               child: Stack(
                                 children: [
                                   TextFormField(
@@ -551,23 +559,32 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                       hintText: 'Seleccione una opción...',
                                       contentPadding: EdgeInsets.symmetric(
                                           horizontal: MediaQuery.of(context).size.width * 0.03),
-                                      border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                          borderSide: const BorderSide(
+                                      border: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)
+                                          ),
+                                          borderSide: BorderSide(
                                             color: AppColors3.primaryColor,
                                             width: 1,
                                           )
                                       ),
-                                      enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                          borderSide: const BorderSide(
+                                      enabledBorder: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.only(
+                                              bottomRight: Radius.circular(10),
+                                              bottomLeft: Radius.circular(10)
+                                          ),
+                                          borderSide: BorderSide(
                                             color: AppColors3.primaryColor,
                                             width: 1,
                                           )
                                       ),
-                                      focusedBorder:  OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(10.0),
-                                          borderSide: const BorderSide(
+                                      focusedBorder: const OutlineInputBorder(
+                                          borderRadius: BorderRadius.only(
+                                              bottomRight: Radius.circular(10),
+                                              bottomLeft: Radius.circular(10)
+                                          ),
+                                          borderSide: BorderSide(
                                             color: AppColors3.primaryColor,
                                             width: 1,
                                           )
@@ -614,6 +631,13 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           TitleContainer(
+                            decoration: const BoxDecoration(
+                                color: AppColors3.primaryColor,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)
+                                )
+                            ),
                             child: Text('Cliente:',
                               style: TextStyle(
                                 color: AppColors3.whiteColor,
@@ -623,8 +647,10 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.02,
-                                horizontal: MediaQuery.of(context).size.width * 0.026),
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.02,
+                                left: MediaQuery.of(context).size.width * 0.026,
+                                right: MediaQuery.of(context).size.width * 0.026
+                            ),
                             child: Autocomplete<Client>(
                               optionsBuilder: (TextEditingValue textEditingValue) {
                                 if (textEditingValue.text == '') {
@@ -645,6 +671,46 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                 fieldClientNode = fieldFocusNode;
                                 _clientTextController = fieldTextEditingController;
                                 return FieldsToWrite(
+                                  inputdecoration: InputDecoration(
+                                    hintText: 'Cliente...',
+                                    suffixIcon: Icon(
+                                      CupertinoIcons.person,
+                                      color: widget.nameClient != null ? AppColors3.greyColor : AppColors3.primaryColor,
+                                      size: MediaQuery.of(context).size.width * 0.075,
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: MediaQuery.of(context).size.width * 0.03),
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: AppColors3.primaryColor,
+                                          width: 1,
+                                        )
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: AppColors3.primaryColor,
+                                          width: 1,
+                                        )
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: AppColors3.primaryColor,
+                                          width: 1,
+                                        )
+                                    ),
+                                  ),
                                   inputFormatters: [
                                     RegEx(type: InputFormatterType.alphanumeric),
                                   ],
@@ -652,11 +718,6 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                   textInputAction: TextInputAction.done,
                                   readOnly: false,
                                   labelText: 'Cliente',
-                                  suffixIcon: Icon(
-                                    CupertinoIcons.person,
-                                    color: widget.nameClient != null ? AppColors3.greyColor : AppColors3.primaryColor,
-                                    size: MediaQuery.of(context).size.width * 0.075,
-                                  ),
                                   controller: widget.nameClient != null ? _clientTextController : fieldTextEditingController,
                                   fillColor: Colors.transparent,
                                   focusNode: fieldFocusNode,
@@ -679,6 +740,13 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           TitleContainer(
+                            decoration: const BoxDecoration(
+                                color: AppColors3.primaryColor,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)
+                                )
+                            ),
                             child: Text(
                               'Nombre del paciente: ',
                               style: TextStyle(
@@ -689,10 +757,53 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: MediaQuery.of(context).size.width * 0.02,
-                                horizontal: MediaQuery.of(context).size.width * 0.026),
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.02,
+                                left: MediaQuery.of(context).size.width * 0.026,
+                                right: MediaQuery.of(context).size.width * 0.026
+                            ),
                             child: FieldsToWrite(
+                              inputdecoration: InputDecoration(
+                                hintText: 'Paciente...',
+                                suffixIcon: Icon(
+                                  Icons.pets,
+                                  color: drFieldDone && clientFieldDone && widget.dateFromCalendarSchedule == null
+                                      ? AppColors3.primaryColor : isDocLog && clientFieldDone && widget.dateFromCalendarSchedule == null ?
+                                  AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                                  size: MediaQuery.of(context).size.width * 0.07,
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: MediaQuery.of(context).size.width * 0.03),
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                              ),
                               focusNode: pacienteNode,
                               eneabled: drFieldDone && clientFieldDone,
                               labelText: 'Paciente',
@@ -703,11 +814,19 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                     ? AppColors3.primaryColor : isDocLog && clientFieldDone && widget.dateFromCalendarSchedule == null ?
                                 AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
                                 size: MediaQuery.of(context).size.width * 0.07,
-                              ), readOnly: false,
+                              ),
+                              readOnly: false,
                               
                             ),
                           ),
                           TitleContainer(
+                            decoration: const BoxDecoration(
+                                color: AppColors3.primaryColor,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)
+                                )
+                            ),
                             child: Text(
                               'Especie: ',
                               style: TextStyle(
@@ -717,11 +836,20 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                               ),
                             ),
                           ),
-                          Padding(padding: EdgeInsets.symmetric(
-                          vertical: MediaQuery.of(context).size.width * 0.02,
-                      horizontal: MediaQuery.of(context).size.width * 0.026),
-                          child: Pet(onPet: onPet),),
+                          Padding(
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.02,
+                                left: MediaQuery.of(context).size.width * 0.026,
+                                right: MediaQuery.of(context).size.width * 0.026
+                            ),
+                            child: Pet(onPet: onPet),),
                           TitleContainer(
+                            decoration: const BoxDecoration(
+                                color: AppColors3.primaryColor,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)
+                                )
+                            ),
                             child: Text('Fecha:',
                               style: TextStyle(
                                 color: AppColors3.whiteColor,
@@ -731,23 +859,59 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: MediaQuery.of(context).size.width * 0.02,
-                                horizontal: MediaQuery.of(context).size.width * 0.026),
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.02,
+                                left: MediaQuery.of(context).size.width * 0.026,
+                                right: MediaQuery.of(context).size.width * 0.026
+                            ),
                             child: FieldsToWrite(
+                              inputdecoration: InputDecoration(
+                                hintText: 'DD/MM/AAAA',
+                                suffixIcon: Icon(
+                                  Icons.calendar_today,
+                                  color: drFieldDone && clientFieldDone && widget.dateFromCalendarSchedule == null
+                                      ? AppColors3.primaryColor : isDocLog && clientFieldDone && widget.dateFromCalendarSchedule == null ?
+                                  AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                                  size: MediaQuery.of(context).size.width * 0.07,
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: MediaQuery.of(context).size.width * 0.03),
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                              ),
                               eneabled: drFieldDone && clientFieldDone && pacienteController.text.isNotEmpty &&
                                   widget.dateFromCalendarSchedule == null ? true : isDocLog && clientFieldDone &&
                                   widget.dateFromCalendarSchedule == null ? true : false,
                               readOnly: true,
                               labelText: 'DD/M/AAAA',
                               controller: _dateController,
-                              suffixIcon: Icon(
-                                Icons.calendar_today,
-                                color: drFieldDone && clientFieldDone && widget.dateFromCalendarSchedule == null
-                                    ? AppColors3.primaryColor : isDocLog && clientFieldDone && widget.dateFromCalendarSchedule == null ?
-                                AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
-                                size: MediaQuery.of(context).size.width * 0.07,
-                              ),
                               onTap: () {
                                 setState(() {
                                   _clientTextController.text.isNotEmpty ? drFieldDone = true : null;
@@ -761,6 +925,13 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           TitleContainer(
+                            decoration: const BoxDecoration(
+                                color: AppColors3.primaryColor,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)
+                                )
+                            ),
                             child: Text(
                               'Hora:',
                               style: TextStyle(
@@ -771,20 +942,56 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: MediaQuery.of(context).size.width * 0.02,
-                                horizontal: MediaQuery.of(context).size.width * 0.026),
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.02,
+                                left: MediaQuery.of(context).size.width * 0.026,
+                                right: MediaQuery.of(context).size.width * 0.026
+                            ),
                             child: FieldsToWrite(
+                              inputdecoration: InputDecoration(
+                                hintText: 'HH:MM',
+                                suffixIcon: Icon(
+                                  Icons.access_time,
+                                  color: _dateController.text.isNotEmpty
+                                      ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                                  size: MediaQuery.of(context).size.width * 0.075,
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: MediaQuery.of(context).size.width * 0.03),
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                              ),
                               eneabled: _dateController.text.isNotEmpty ? true : false,
                               labelText: 'HH:MM',
                               readOnly: true,
                               controller: _timeController,
-                              suffixIcon: Icon(
-                                Icons.access_time,
-                                color: _dateController.text.isNotEmpty
-                                    ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
-                                size: MediaQuery.of(context).size.width * 0.075,
-                              ),
                               onTap: () {
                                 setState(() {
                                   hideKeyBoard();
@@ -797,6 +1004,13 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           TitleContainer(
+                            decoration: const BoxDecoration(
+                                color: AppColors3.primaryColor,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)
+                                )
+                            ),
                             child: Text(
                               'Tratamiento:',
                               style: TextStyle(
@@ -809,20 +1023,56 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(
-                                vertical: MediaQuery.of(context).size.width * 0.02,
-                                horizontal: MediaQuery.of(context).size.width * 0.026),
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.02,
+                                left: MediaQuery.of(context).size.width * 0.026,
+                                right: MediaQuery.of(context).size.width * 0.026
+                            ),
                             child: FieldsToWrite(
+                              inputdecoration: InputDecoration(
+                                hintText: 'Tratamiento...',
+                                suffixIcon: Icon(
+                                  CupertinoIcons.pencil_ellipsis_rectangle,
+                                  size: MediaQuery.of(context).size.width *
+                                      0.085,
+                                  color: _timeController.text.isNotEmpty && isHourCorrect ? AppColors3.primaryColor
+                                      : AppColors3.primaryColor.withOpacity(0.3),
+                                ),
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: MediaQuery.of(context).size.width * 0.03),
+                                border: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                    borderRadius: BorderRadius.only(
+                                        bottomRight: Radius.circular(10),
+                                        bottomLeft: Radius.circular(10)
+                                    ),
+                                    borderSide: BorderSide(
+                                      color: AppColors3.primaryColor,
+                                      width: 1,
+                                    )
+                                ),
+                              ),
                               inputFormatters: [
                                 RegEx(type: InputFormatterType.alphanumeric),
                               ],
-                              suffixIcon: Icon(
-                                CupertinoIcons.pencil_ellipsis_rectangle,
-                                size: MediaQuery.of(context).size.width *
-                                    0.085,
-                                color: _timeController.text.isNotEmpty && isHourCorrect ? AppColors3.primaryColor
-                                    : AppColors3.primaryColor.withOpacity(0.3),
-                              ),
                               eneabled: _timeController.text.isNotEmpty && isHourCorrect ? true : false,
                               labelText: 'Tratamiento',
                               readOnly: false,
@@ -868,31 +1118,34 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                               ),
                             ],
                           ),
-                          ElevatedButton(
-                            onPressed: treatmentController.text.isNotEmpty && !saveNewClient && isHourCorrect && isLoading == false && _clientTextController.text.isNotEmpty
-                                ? submitAppointment :  isLoading == false && saveNewClient && treatmentController.text.isNotEmpty && isHourCorrect && _clientTextController.text.isNotEmpty
-                                ? addClientAndSubmitAppointment : null,
-                            style: ElevatedButton.styleFrom(
-                              surfaceTintColor: AppColors3.whiteColor,
-                              splashFactory: InkRipple.splashFactory,
-                              padding: EdgeInsets.symmetric(
-                                  vertical: MediaQuery.of(context).size.height * 0.0225,
-                                  horizontal: MediaQuery.of(context).size.width * 0.2),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25.0),
-                                side: BorderSide(
-                                    color: treatmentController.text.isNotEmpty ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
-                                    width: 2),
+                          Padding(
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.03),
+                            child: ElevatedButton(
+                              onPressed: treatmentController.text.isNotEmpty && !saveNewClient && isHourCorrect && isLoading == false && _clientTextController.text.isNotEmpty
+                                  ? submitAppointment :  isLoading == false && saveNewClient && treatmentController.text.isNotEmpty && isHourCorrect && _clientTextController.text.isNotEmpty
+                                  ? addClientAndSubmitAppointment : null,
+                              style: ElevatedButton.styleFrom(
+                                surfaceTintColor: AppColors3.whiteColor,
+                                splashFactory: InkRipple.splashFactory,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: MediaQuery.of(context).size.height * 0.0225,
+                                    horizontal: MediaQuery.of(context).size.width * 0.2),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(25.0),
+                                  side: BorderSide(
+                                      color: treatmentController.text.isNotEmpty ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                                      width: 2),
+                                ),
                               ),
-                            ),
-                            child: isLoading ? const CircularProgressIndicator(
-                              color: AppColors3.primaryColor,
-                            ) : Text(
-                                'Crear cita',
-                                style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.width * 0.06,
-                                  color: AppColors3.primaryColor,
-                                )),)
+                              child: isLoading ? const CircularProgressIndicator(
+                                color: AppColors3.primaryColor,
+                              ) : Text(
+                                  'Crear cita',
+                                  style: TextStyle(
+                                    fontSize: MediaQuery.of(context).size.width * 0.06,
+                                    color: AppColors3.primaryColor,
+                                  )),),
+                          )
                         ])
                   )
                 ],

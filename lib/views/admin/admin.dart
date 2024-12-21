@@ -198,7 +198,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                                     ? 'Para hoy'
                                     : '',
                                 style: TextStyle(
-                                  color: AppColors3.primaryColorMoreStrong,
+                                  color: AppColors3.primaryColor,
                                   fontSize: screenWidth! < 370.00
                                       ? MediaQuery.of(context).size.width * 0.078
                                       : MediaQuery.of(context).size.width * 0.082,
