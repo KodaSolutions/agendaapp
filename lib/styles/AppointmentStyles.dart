@@ -170,7 +170,7 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors3.blackColor.withOpacity(0.5), width: 0.5),
+        border: Border.all(color: AppColors3.primaryColor, width: 1),
         color: AppColors3.whiteColor,
         borderRadius: BorderRadius.circular(10),
       ),
@@ -216,7 +216,7 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
                           width: MediaQuery.of(context).size.width * 0.06,
                           height: MediaQuery.of(context).size.width * 0.06,
                           colorFilter: optSelected == index + 1 || optSelectedToSend == index + 1
-                              ? null : const ColorFilter.mode(AppColors3.primaryColor, BlendMode.srcIn),
+                              ? const ColorFilter.mode(AppColors3.bgColor, BlendMode.srcIn) : const ColorFilter.mode(AppColors3.primaryColor, BlendMode.srcIn),
                         ),
                       ),
                       Text(
@@ -235,7 +235,7 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
               // Divider
               if (index != widget.doctors.length - 1)
                 Container(
-                  color: AppColors3.blackColor.withOpacity(0.5),
+                  color: AppColors3.primaryColor.withOpacity(0.5),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.0009,
                 ),

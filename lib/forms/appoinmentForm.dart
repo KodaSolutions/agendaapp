@@ -1155,58 +1155,108 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                   visible: isTimerShow,
                   child: AnimatedBuilder(
                     animation: animationController,
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                      child: Container(
-                        color: AppColors3.blackColor.withOpacity(0.27),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.46),
-                            TitleContainer(
-                              child: Text(
-                                'Hora:',
-                                style: TextStyle(
-                                  color: AppColors3.whiteColor,
-                                  fontSize:
-                                  MediaQuery.of(context).size.width * 0.045,
-                                  fontWeight: FontWeight.bold,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isTimerShow = false;
+                        });
+                      },
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                        child: Container(
+                          color: AppColors3.blackColor.withOpacity(0.27),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: MediaQuery.of(context).size.width * 0.46),
+                              TitleContainer(
+                                decoration: const BoxDecoration(
+                                    color: AppColors3.primaryColor,
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10)
+                                    )
+                                ),
+                                child: Text(
+                                  'Hora:',
+                                  style: TextStyle(
+                                    color: AppColors3.whiteColor,
+                                    fontSize:
+                                    MediaQuery.of(context).size.width * 0.045,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                            FieldsPading(
-                              child: FieldsToWrite(
-                                fillColor: AppColors3.whiteColor,
-                                labelText: 'HH:MM',
-                                readOnly: true,
-                                controller: _timeController,
-                                suffixIcon: const Icon(Icons.access_time),
-                                onTap: () {
-                                  animationController.reverse().then((_){
-                                    isTimerShow = false;
-                                    animationController.reset();
-                                  });},
+                              FieldsPading(
+                                padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.025, right: MediaQuery.of(context).size.width * 0.025, bottom: MediaQuery.of(context).size.width * 0.025),
+                                child: FieldsToWrite(
+                                  inputdecoration: InputDecoration(
+                                    fillColor: AppColors3.whiteColor,
+                                    filled: true,
+                                    hintText: 'HH:MM',
+                                    suffixIcon: const Icon(Icons.access_time),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        horizontal: MediaQuery.of(context).size.width * 0.03),
+                                    border: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: AppColors3.primaryColor,
+                                          width: 1,
+                                        )
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: AppColors3.primaryColor,
+                                          width: 1,
+                                        )
+                                    ),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderRadius: BorderRadius.only(
+                                            bottomRight: Radius.circular(10),
+                                            bottomLeft: Radius.circular(10)
+                                        ),
+                                        borderSide: BorderSide(
+                                          color: AppColors3.primaryColor,
+                                          width: 1,
+                                        )
+                                    ),
+                                  ),
+                                  labelText: 'HH:MM',
+                                  readOnly: true,
+                                  controller: _timeController,
+                                  onTap: () {
+                                    animationController.reverse().then((_){
+                                      isTimerShow = false;
+                                      animationController.reset();
+                                    });},
+                                ),
                               ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                horizontal: MediaQuery.of(context).size.width * 0.02,
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: MediaQuery.of(context).size.width * 0.02,
+                                ),
+                                padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(context).size.width * 0.025,
+                                ),
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height * 0.35,
+                                decoration: BoxDecoration(
+                                  border:
+                                  Border.all(color: AppColors3.blackColor.withOpacity(0.5), width: 0.5),
+                                  color: AppColors3.whiteColor,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: TimerFly(onTimeChoose: _onTimeChoose),
                               ),
-                              padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(context).size.width * 0.025,
-                                left: MediaQuery.of(context).size.width * 0.038,
-                              ),
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height * 0.35,
-                              decoration: BoxDecoration(
-                                border:
-                                Border.all(color: AppColors3.blackColor.withOpacity(0.5), width: 0.5),
-                                color: AppColors3.whiteColor,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: TimerFly(onTimeChoose: _onTimeChoose),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -1220,47 +1270,54 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                   visible: _showCalendar,
                   child: AnimatedBuilder(
                     animation: animationController,
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                      child: Container(
-                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.022),
-                        color: AppColors3.blackColor.withOpacity(0.27),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            TitleContainer(
-                              child: Text(
-                                'Fecha:',
-                                style: TextStyle(
-                                  color: AppColors3.whiteColor,
-                                  fontSize: MediaQuery.of(context).size.width * 0.045,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: MediaQuery.of(context).size.width * 0.02,
-                                  horizontal: MediaQuery.of(context).size.width * 0.02),
-                              child: FieldsToWrite(
-                                fillColor: AppColors3.whiteColor,
-                                readOnly: true,
-                                labelText: 'DD/M/AAAA',
-                                controller: _dateController,
-                                suffixIcon: const Icon(Icons.calendar_today),
-                                onTap: () {
-                                    animationController.reverse().then((_){
-                                      _showCalendar = false;
-                                      animationController.reset();
-                                  });
-                                },
-                              ),
-                            ),
-                            CalendarContainer(
-                              child: CalendarioCita(
-                                  onDayToAppointFormSelected: _onDateToAppointmentForm),
-                                  )
-                                ]))),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _showCalendar = false;
+                        });
+                      },
+                      child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                          child: Container(
+                              padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.022),
+                              color: AppColors3.blackColor.withOpacity(0.27),
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    TitleContainer(
+                                      child: Text(
+                                        'Fecha:',
+                                        style: TextStyle(
+                                          color: AppColors3.whiteColor,
+                                          fontSize: MediaQuery.of(context).size.width * 0.045,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: MediaQuery.of(context).size.width * 0.02,
+                                          horizontal: MediaQuery.of(context).size.width * 0.02),
+                                      child: FieldsToWrite(
+                                        fillColor: AppColors3.whiteColor,
+                                        readOnly: true,
+                                        labelText: 'DD/M/AAAA',
+                                        controller: _dateController,
+                                        suffixIcon: const Icon(Icons.calendar_today),
+                                        onTap: () {
+                                          animationController.reverse().then((_){
+                                            _showCalendar = false;
+                                            animationController.reset();
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                    CalendarContainer(
+                                      child: CalendarioCita(
+                                          onDayToAppointFormSelected: _onDateToAppointmentForm),
+                                    )
+                                  ]))),
+                    ),
                     builder: (context, calendarOp){
                       return Opacity(opacity: opacidad.value, child: calendarOp,);
                     },
@@ -1271,89 +1328,131 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                 visible: _showdrChooseWidget, // Solo será visible cuando sea true
                 child: AnimatedBuilder(
                   animation: animationController,
-                  child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                      child: Container(
-                        color: AppColors3.blackColor.withOpacity(0.27),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height,
-                          child: Column(
-                            children: [
-                              TitleContainer(
-                                margin: EdgeInsets.only(
-                                  top: MediaQuery.of(context).size.height * 0.12,
-                                  left: MediaQuery.of(context).size.width * 0.03,
-                                  right: MediaQuery.of(context).size.width * 0.03,
-                                ),
-                                child: Text(
-                                  'Doctor: ',
-                                  style: TextStyle(
-                                    color: AppColors3.whiteColor,
-                                    fontSize: MediaQuery.of(context).size.width * 0.045,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: MediaQuery.of(context).size.width * 0.02,
-                                  horizontal: MediaQuery.of(context).size.width * 0.026,
-                                ),
-                                child: TextFormField(
-                                  controller: _drSelected,
-                                  decoration: InputDecoration(
-                                    fillColor: AppColors3.whiteColor,
-                                    filled: true,
-                                    hintText: 'Seleccione una opción...',
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: MediaQuery.of(context).size.width * 0.03,
-                                    ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    suffixIcon: Icon(
-                                      Icons.arrow_drop_down_circle_outlined,
-                                      size: MediaQuery.of(context).size.width * 0.085,
-                                      color: AppColors3.primaryColor,
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor,
-                                        width: 1,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _showdrChooseWidget = false;
+                      });
+                    },
+                    child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                        child: Container(
+                            color: AppColors3.blackColor.withOpacity(0.27),
+                            child: SizedBox(
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height,
+                                child: Column(
+                                    children: [
+                                      TitleContainer(
+                                        decoration: const BoxDecoration(
+                                            color: AppColors3.primaryColor,
+                                            borderRadius: BorderRadius.only(
+                                                topLeft: Radius.circular(10),
+                                                topRight: Radius.circular(10)
+                                            )
+                                        ),
+                                        margin: EdgeInsets.only(
+                                          top: MediaQuery.of(context).size.height * 0.12,
+                                          left: MediaQuery.of(context).size.width * 0.03,
+                                          right: MediaQuery.of(context).size.width * 0.03,
+                                        ),
+                                        child: Text(
+                                          'Doctor: ',
+                                          style: TextStyle(
+                                            color: AppColors3.whiteColor,
+                                            fontSize: MediaQuery.of(context).size.width * 0.045,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
                                       ),
-                                    ),
-                                  ),
-                                  readOnly: true,
-                                  onTap: () {
-                                      animationController.reverse().then((_){
-                                        _showdrChooseWidget = false;
-                                        animationController.reset();
-                                    });
-                                  },
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: MediaQuery.of(context).size.width * 0.025,
-                                ),
-                                child: DoctorsMenu(
-                                  //users.where((user) => user['role'] == 1).map((user)
-                                  doctors: doctorUsers,
-                                  optSelectedToRecieve: _optSelected,
-                                  onAssignedDoctor: _onAssignedDoctor),)
-                                ])))),
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context).size.width * 0.025,
+                                          left: MediaQuery.of(context).size.width * 0.03,
+                                          right: MediaQuery.of(context).size.width * 0.03,
+                                        ),
+                                        child: TextFormField(
+                                          controller: _drSelected,
+                                          decoration: InputDecoration(
+                                            fillColor: AppColors3.whiteColor,
+                                            filled: true,
+                                            hintText: 'Seleccione una opción...',
+                                            contentPadding: EdgeInsets.symmetric(
+                                              horizontal: MediaQuery.of(context).size.width * 0.03,
+                                            ),
+                                            border: const OutlineInputBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    bottomRight: Radius.circular(10),
+                                                    bottomLeft: Radius.circular(10)
+                                                ),
+                                                borderSide: BorderSide(
+                                                  color: AppColors3.primaryColor,
+                                                  width: 1,
+                                                )
+                                            ),
+                                            enabledBorder: const OutlineInputBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    bottomRight: Radius.circular(10),
+                                                    bottomLeft: Radius.circular(10)
+                                                ),
+                                                borderSide: BorderSide(
+                                                  color: AppColors3.primaryColor,
+                                                  width: 1,
+                                                )
+                                            ),
+                                            focusedBorder: const OutlineInputBorder(
+                                                borderRadius: BorderRadius.only(
+                                                    bottomRight: Radius.circular(10),
+                                                    bottomLeft: Radius.circular(10)
+                                                ),
+                                                borderSide: BorderSide(
+                                                  color: AppColors3.primaryColor,
+                                                  width: 1,
+                                                )
+                                            ),
+                                            suffixIcon: Icon(
+                                              Icons.arrow_drop_down_circle_outlined,
+                                              size: MediaQuery.of(context).size.width * 0.085,
+                                              color: AppColors3.primaryColor,
+                                            ),
+                                          ),
+                                          readOnly: true,
+                                          onTap: () {
+                                            animationController.reverse().then((_){
+                                              _showdrChooseWidget = false;
+                                              animationController.reset();
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: MediaQuery.of(context).size.width * 0.03,
+                                        ),
+                                        child: DoctorsMenu(
+                                          //users.where((user) => user['role'] == 1).map((user)
+                                            doctors: doctorUsers,
+                                            optSelectedToRecieve: _optSelected,
+                                            onAssignedDoctor: _onAssignedDoctor),)
+                                    ])))),
+                  ),
                     builder: (context, doctorChooseOp){
                     return Opacity(opacity: opacidad.value,child: doctorChooseOp);
                   },)),
               Visibility(
                 visible: showBlurr,
-                child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                    child: Container(
-                      color: AppColors3.blackColor.withOpacity(0.27),
-                    )),
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      showBlurr = false;
+                    });
+                  },
+                  child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                      child: Container(
+                        color: AppColors3.blackColor.withOpacity(0.27),
+                      )),
+                )
               ),
             ]))));
   }

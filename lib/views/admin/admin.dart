@@ -405,11 +405,16 @@ class _AssistantAdminState extends State<AssistantAdmin> {
             ),
             Visibility(
               visible: _showBlurr,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                  child: Container(
-                    color: Colors.black54.withOpacity(0.3),
-                  )))])));}
+                child: GestureDetector(
+                  onTap: () {
+                    _showBlurr = false;
+                  },
+                  child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                      child: Container(
+                        color: Colors.black54.withOpacity(0.3),
+                      )),
+                ))])));}
 
   Widget _buildBody() {
     switch (_selectedScreen) {

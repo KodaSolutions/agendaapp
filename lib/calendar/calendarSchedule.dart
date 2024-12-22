@@ -487,7 +487,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                                       color: isInCurrentMonth ? AppColors3.primaryColor.withOpacity(0.5) :
                                       AppColors3.primaryColor.withOpacity(0.35),
                                     ),
-                                      color: isInCurrentMonth ? Colors.transparent : AppColors3.secundaryColor
+                                      color: isInCurrentMonth ? AppColors3.bgColor : AppColors3.bgColor
                                   ),
                                   child: Stack(
                                     children: [
@@ -496,7 +496,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                                         child: Text(
                                           details.date.day.toString(),
                                           style: TextStyle(
-                                            color: isInCurrentMonth ? AppColors3.whiteColor : AppColors3.whiteColor.withOpacity(0.9),
+                                            color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.secundaryColor.withOpacity(0.9),
                                             fontSize: MediaQuery.of(context).size.width * 0.06,
                                           ),
                                         ),
