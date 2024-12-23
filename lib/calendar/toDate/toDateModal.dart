@@ -14,7 +14,7 @@ import '../../projectStyles/appColors.dart';
 import '../../utils/listenerApptm.dart';
 
 class AppointmentScreen extends StatefulWidget {
-  final void Function(bool, int?, String, String, bool, String) reachTop;
+  final void Function(bool, int?, String, String, bool, String, bool, bool) reachTop;
   final bool isDocLog;
   final DateTime selectedDate;
   final int? expandedIndex;
@@ -22,10 +22,11 @@ class AppointmentScreen extends StatefulWidget {
   final String? firtsIndexTouchDate;
   final bool btnToReachTop;
   final String dateLookandFill;
+  final bool showBlurr;
 
 
   const AppointmentScreen(
-      {Key? key,
+      {super.key,
       required this.selectedDate,
       required this.reachTop,
       required this.expandedIndex,
@@ -33,8 +34,7 @@ class AppointmentScreen extends StatefulWidget {
       this.firtsIndexTouchHour,
       this.firtsIndexTouchDate,
       required this.btnToReachTop,
-      required this.dateLookandFill})
-      : super(key: key);
+      required this.dateLookandFill, required this.showBlurr,});
 
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
@@ -45,7 +45,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
   bool isDocLog = false;
   bool _showBlurr = false;
   late Future<List<Appointment>> appointments;
-  late bool modalReachTop;
+  bool modalReachTop = false;// todo cambio aqui
   final Listenerapptm _listenerapptm = Listenerapptm();
   TextEditingController _timerController = TextEditingController();
   TextEditingController timerControllertoShow = TextEditingController();
@@ -68,6 +68,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
   int movIndex = 0;
   bool dragStatus = false; //false = start
   bool lockBtn = false;
+  bool sendMsg = false;
 
   DateTime dateToLockBtn = DateTime(
     DateTime.now().year,
@@ -104,6 +105,25 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
   late String formattedTime;
   late DateTime dateTimeToinitModal;
 
+  void handleButtonPress() {
+    setState(() {
+      _dateLookandFill = dateOnly!;
+      positionBtnIcon = !positionBtnIcon;
+      modalReachTop = positionBtnIcon;
+      widget.reachTop(
+        modalReachTop,
+        expandedIndex,
+        _timerController.text,
+        _dateController.text,
+        positionBtnIcon,
+        _dateLookandFill,
+        _showBlurr,
+        sendMsg,
+      );
+    });
+  }
+
+
   @override
   void initState() {
     widget.selectedDate.isBefore(dateToLockBtn) ? lockBtn = true : lockBtn = false;
@@ -121,8 +141,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
       dateOnly = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
       dateTimeToinitModal = DateTime.parse(dateOnly!);
     }
-    print('widgetIsDocLog2${widget.isDocLog}');
-
+    positionBtnIcon ? _showBlurr = widget.showBlurr : null;
   }
 
   String slideDirection = 'No slide detected';
@@ -131,6 +150,14 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
   bool firstStop = false;
   bool isDragginDismisEnd = false;
   bool isDragginDismisStart = false;
+
+  void onSendMsg (bool sendMsg){
+    setState(() {
+      _showBlurr = true;
+      this.sendMsg = true;
+    });
+    handleButtonPress();
+  }
 
   void changeAptms(){
     _listenerapptm.setChange(
@@ -153,67 +180,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
     _dateController.dispose();
     timerControllertoShow.dispose();
     keyboardVisibilitySubscription.cancel();
-  }
-
-  Future<List<Appointment>> fetchAppointments(DateTime selectedDate,
-      {int? id}) async {
-    String baseUrl =
-        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinments';
-    String baseUrl2 =
-        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinmentsAssit';
-    String url = id != null ? '$baseUrl/$id' : baseUrl2;
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? token = prefs.getString('jwt_token');
-
-    if (token == null) {
-      throw Exception('No token found');
-    }
-
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
-      if (data.containsKey('appointments') && data['appointments'] != null) {
-        List<dynamic> appointmentsJson = data['appointments'];
-
-        List<Appointment> allAppointments =
-        appointmentsJson.map((json) => Appointment.fromJson(json)).toList();
-        return allAppointments.where((appointment) => appointment.appointmentDate != null &&
-            appointment.appointmentDate!.year == selectedDate.year &&
-            appointment.appointmentDate!.month == selectedDate.month &&
-            appointment.appointmentDate!.day == selectedDate.day).toList();
-      } else {
-        return [];
-      }
-    } else {
-      throw Exception('Vefique conexión a internet');
-    }
-  }
-
-  Future<void> initializeAppointments(DateTime date) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      int? userId = prefs.getInt('user_id');
-      if (userId != null) {
-        setState(() {
-          appointments = fetchAppointments(date, id: userId);
-        });
-      } else {
-        setState(() {
-          appointments = fetchAppointments(date);
-        });
-      }
-    } catch (e) {
-      setState(() {
-        appointments = Future.error("Error retrieving user ID: $e");
-      });
-    }
   }
 
   @override
@@ -306,7 +272,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
                                     dateOnly = DateFormat('yyyy-MM-dd').format(dateTimeToinitModal);
                                     dateTimeToinitModal.isBefore(dateToLockBtn) ? lockBtn = true : lockBtn = false;
                                     dateTimeToinitModal = DateTime.parse(dateOnly!);
-                                    initializeAppointments(dateTimeToinitModal);
+                                    //initializeAppointments(dateTimeToinitModal);
                                     changeAptms();
                                   });
                                 },
@@ -420,7 +386,9 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
                         _timerController.text,
                         _dateController.text,
                         positionBtnIcon,
-                        _dateLookandFill);
+                        _dateLookandFill,
+                        _showBlurr,
+                        sendMsg);
                   }
                 },
                 dateLookandFill: widget.dateLookandFill,
@@ -428,7 +396,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
                 expandedIndexToCharge: expandedIndex,
                 listenerapptm: _listenerapptm,
                   firtsIndexTouchDate: widget.firtsIndexTouchDate,
-                  firtsIndexTouchHour: widget.firtsIndexTouchHour, onShowBlurr: onShowBlurrModal,
+                  firtsIndexTouchHour: widget.firtsIndexTouchHour,
+                  onShowBlurr: onShowBlurrModal,
               ),),
 
 
@@ -464,6 +433,11 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
             ],
           ),
         ),
+ /*       Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.red,
+        ),*/
 
         Visibility(
           visible: _showBlurr,
@@ -493,8 +467,12 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
           child: IconButton(
             padding: EdgeInsets.zero,
             onPressed: () {
-              setState(() {
+              handleButtonPress();
+              /*setState(() {
                 _dateLookandFill = dateOnly!;
+
+                //
+                //
                 if (positionBtnIcon == false) {
                   positionBtnIcon = true;
                   modalReachTop = true;
@@ -516,7 +494,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
                       positionBtnIcon,
                       _dateLookandFill);
                 }
-              });
+              });*/
             },
             icon: Icon(
               !positionBtnIcon
@@ -529,4 +507,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
         ),
       ]);
   }
+
+  // Método para construir cada opción de Radio
 }

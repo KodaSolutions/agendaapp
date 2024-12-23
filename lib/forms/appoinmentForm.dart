@@ -902,65 +902,65 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                   visible: isTimerShow,
                   child: AnimatedBuilder(
                     animation: animationController,
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                      child: Container(
-                        color: AppColors3.blackColor.withOpacity(0.27),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.width * 0.46),
-                            TitleContainer(
-                              child: Text(
-                                'Hora:',
-                                style: TextStyle(
-                                  color: AppColors3.whiteColor,
-                                  fontSize:
-                                  MediaQuery.of(context).size.width * 0.045,
-                                  fontWeight: FontWeight.bold,
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                        child: Container(
+                          color: AppColors3.blackColor.withOpacity(0.27),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(height: MediaQuery.of(context).size.width * 0.46),
+                              TitleContainer(
+                                child: Text(
+                                  'Hora:',
+                                  style: TextStyle(
+                                    color: AppColors3.whiteColor,
+                                    fontSize:
+                                    MediaQuery.of(context).size.width * 0.045,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
-                            ),
-                            FieldsPading(
-                              child: FieldsToWrite(
-                                fillColor: AppColors3.whiteColor,
-                                labelText: 'HH:MM',
-                                readOnly: true,
-                                controller: _timeController,
-                                suffixIcon: const Icon(Icons.access_time),
-                                onTap: () {
-                                  animationController.reverse().then((_){
-                                    isTimerShow = false;
-                                    animationController.reset();
-                                  });},
+                              FieldsPading(
+                                child: FieldsToWrite(
+                                  fillColor: AppColors3.whiteColor,
+                                  labelText: 'HH:MM',
+                                  readOnly: true,
+                                  controller: _timeController,
+                                  suffixIcon: const Icon(Icons.access_time),
+                                  onTap: () {
+                                    animationController.reverse().then((_){
+                                      isTimerShow = false;
+                                      animationController.reset();
+                                    });},
+                                ),
                               ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(
-                                horizontal: MediaQuery.of(context).size.width * 0.02,
+                              Container(
+                                margin: EdgeInsets.symmetric(
+                                  horizontal: MediaQuery.of(context).size.width * 0.02,
+                                ),
+                                padding: EdgeInsets.only(
+                                  bottom: MediaQuery.of(context).size.width * 0.025,
+                                  left: MediaQuery.of(context).size.width * 0.038,
+                                ),
+                                width: MediaQuery.of(context).size.width,
+                                height: MediaQuery.of(context).size.height * 0.35,
+                                decoration: BoxDecoration(
+                                  border:
+                                  Border.all(color: AppColors3.blackColor.withOpacity(0.5), width: 0.5),
+                                  color: AppColors3.whiteColor,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: TimerFly(onTimeChoose: _onTimeChoose),
                               ),
-                              padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(context).size.width * 0.025,
-                                left: MediaQuery.of(context).size.width * 0.038,
-                              ),
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height * 0.35,
-                              decoration: BoxDecoration(
-                                border:
-                                Border.all(color: AppColors3.blackColor.withOpacity(0.5), width: 0.5),
-                                color: AppColors3.whiteColor,
-                                borderRadius: BorderRadius.circular(15),
-                              ),
-                              child: TimerFly(onTimeChoose: _onTimeChoose),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
                     builder: (context, timerOp){
                       return Opacity(opacity: opacidad.value, child: timerOp);
                     },
-                  )
+                  ),
                 ),
               ///calendario
               Visibility(
@@ -1095,13 +1095,13 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                     return Opacity(opacity: opacidad.value,child: doctorChooseOp);
                   },)),
               Visibility(
-                visible: showBlurr,
-                child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                    child: Container(
-                      color: AppColors3.blackColor.withOpacity(0.27),
-                    )),
-              ),
+                  visible: showBlurr,
+                  child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                      child: Container(
+                        color: AppColors3.blackColor.withOpacity(0.27),
+                      )),
+                ),
             ]))));
   }
 }

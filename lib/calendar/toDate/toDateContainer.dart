@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:agenda_app/calendar/toDate/toDateApptmInfo.dart';
+import 'package:agenda_app/utils/PopUpTabs/sendMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
@@ -21,7 +22,8 @@ class ToDateContainer extends StatefulWidget {
   final String dateLookandFill;
   final DateTime selectedDate;
   final int? expandedIndexToCharge;
-  const ToDateContainer({super.key, required this.reachTop, this.firtsIndexTouchHour, this.firtsIndexTouchDate, required this.dateLookandFill, required this.selectedDate, this.expandedIndexToCharge, this.listenerapptm, required this.onShowBlurr, required this.isDocLog});
+  const ToDateContainer({super.key, required this.reachTop, this.firtsIndexTouchHour, this.firtsIndexTouchDate,
+    required this.dateLookandFill, required this.selectedDate, this.expandedIndexToCharge, this.listenerapptm, required this.onShowBlurr, required this.isDocLog});
 
   @override
   State<ToDateContainer> createState() => _ToDateContainerState();
@@ -31,7 +33,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   List<SlidableController> slidableControllers = [];
   final Listenerslidable listenerslidable = Listenerslidable();
 
-  //
   bool isDocLog = false;
   late Future<List<Appointment>> appointments;
   late bool modalReachTop;
@@ -80,6 +81,14 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
     widget.onShowBlurr(showBlurr);
   }
 
+  Future<bool> showSendMsgDialog(BuildContext context, String? clientName, int clientId, String? phone) async {
+    return await showDialog<bool>(
+      barrierColor: Colors.transparent,
+      context: context,
+      builder: (context) => SendMsgDialog(phone: phone!, clientName: clientName!, clientId: clientId),//cambiar cuando ya tenga los datos
+    ) ?? false;
+  }
+
   //final void Function(bool, int?, String, String, bool, String) reachTop;
 
   void reachTop (bool modalReachTop , int? _expandedIndex, String _timerController, String _dateController, bool positionBtnIcon, String _dateLookandFill){
@@ -99,16 +108,19 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   }
 
   Future<void> initializeAppointments(DateTime date) async {
+    print('initializeAppointments toDateContainer');
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int? userId = prefs.getInt('user_id');
       if (userId != null) {
         setState(() {
           appointments = fetchAppointments(date, id: userId);
+          print('app1 $appointments');
         });
       } else {
         setState(() {
           appointments = fetchAppointments(date);
+          print('app2 $appointments');
         });
       }
     } catch (e) {
@@ -235,7 +247,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
      });
      slidableControllers.add(controller);
    }
-   print('widgetIsDocLog1${widget.isDocLog}');
     super.initState();
   }
 
@@ -310,7 +321,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                         context,
                                         widget,
                                         appointment.id,
-                                        widget.isDocLog,
                                         refreshAppointments,
                                       );
                                       if (result) {
@@ -333,10 +343,8 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                     onPressed: (context) async {
                                       widget.onShowBlurr(true);
                                         bool result = await showDeleteAppointmentDialog(
-                                          context,
-                                          widget,
+                                          context, widget,
                                           appointment.id,
-                                          widget.isDocLog,
                                           refreshAppointments,
                                         );
                                         if (result) {
@@ -351,6 +359,24 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                     icon: Icons.delete,
                                     label: 'Eliminar',
                                   ),
+                                  SlidableAction(
+                                    onPressed: (context) async {
+                                      widget.onShowBlurr(true);
+                                      await showSendMsgDialog(
+                                        context,
+                                        filteredAppointments[index].clientName,
+                                        filteredAppointments[index].id!,
+                                        '', //TODO pasarle el numero de cel
+                                      ).then((_){
+                                        widget.onShowBlurr(false);
+                                      });
+                                      ///aquifly
+                                    },
+                                    backgroundColor: AppColors3.primaryColor,
+                                    foregroundColor: AppColors3.whiteColor,
+                                    icon: Icons.send,
+                                    label: 'Mensajes',
+                                  ),
                                 ],
                               ),
                               child: ApptmInfo(
@@ -359,7 +385,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                 firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate, 
                                 listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments, 
                                 expandedIndexToCharge: expandedIndex, initializateApptm: _initializateApptm, listenerslidable: listenerslidable, 
-                                onShowBlurrModal: onShowBlurrModal, isDocLog: widget.isDocLog,
+                                onShowBlurrModal: onShowBlurrModal,
                               )));
                     });
               }

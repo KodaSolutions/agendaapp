@@ -72,6 +72,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
   String _timerOfTheFstIndexTouched = '';
   String _dateOfTheFstIndexTouched = '';
   String _dateLookandFill = '';
+  bool showBlurr = false;
 
   @override
   void initState() {
@@ -81,6 +82,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
     currentMonth = _calendarController.displayDate?.month;
     visibleYear = now.year;
     _loadAppointments();
+    print('calendar $showBlurr');
   }
 
   @override
@@ -166,11 +168,12 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
       BuildContext context,
       CalendarTapDetails details,
       bool varmodalReachTop,
-      _expandedIndex,
+      expandedIndex,
       _timerOfTheFstIndexTouched,
       _dateOfTheFstIndexTouched,
       _btnToReachTop,
-      _dateLookandFill) {
+      _dateLookandFill,
+      _showBlurr) {
     showModalBottomSheet(
       backgroundColor: !varmodalReachTop
           ? Colors.transparent
@@ -199,7 +202,8 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                       String timerOfTheFstIndexTouched,
                       String dateOfTheFstIndexTouched,
                       bool auxToReachTop,
-                      String dateLookandFill) {
+                      String dateLookandFill,
+                      bool showBlurr, bool sendMsg) {
                     setState(() {
                       if (!varmodalReachTop) {
                         Navigator.pop(context);
@@ -210,6 +214,8 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                         _expandedIndex = expandedIndex;
                         _showModalCalledscndTime = true;
                         _dateLookandFill = dateLookandFill;
+                        this.showBlurr = showBlurr;
+                        print('calendarSchedule $showBlurr');
                         _showModaltoDate(
                             context,
                             details,
@@ -218,7 +224,10 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                             _timerOfTheFstIndexTouched,
                             _dateOfTheFstIndexTouched,
                             _btnToReachTop,
-                            _dateLookandFill);
+                            _dateLookandFill,
+                            this.showBlurr);
+                        print('calendarSchedule2 $showBlurr');
+
                       } else {
                         varmodalReachTop = reachTop;
                         if (auxToReachTop == false) {
@@ -226,7 +235,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                         }
                       }
                     });
-                  }),
+                  }, showBlurr: showBlurr),
             ));
       },
     ).then((_) {
@@ -325,15 +334,13 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                     if (details.targetElement == CalendarElement.calendarCell ||
                         details.targetElement == CalendarElement.appointment) {
                       _VarmodalReachTop = false;
-                      _showModaltoDate(
-                          context,
-                          details,
-                          _VarmodalReachTop,
+                      _showModaltoDate(context, details, _VarmodalReachTop,
                           null,
                           _timerOfTheFstIndexTouched,
                           _dateOfTheFstIndexTouched,
                           _btnToReachTop,
-                          _dateLookandFill);
+                          _dateLookandFill,
+                          showBlurr);
                     }
                   },
                   onViewChanged: (ViewChangedDetails details) {
