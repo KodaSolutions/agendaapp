@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 Future<List<Map<String, dynamic>>> loadUsersWithRoles() async {
   try {
@@ -26,5 +27,14 @@ Future<List<Map<String, dynamic>>> loadUsersWithRoles() async {
     throw Exception('Error: $e');
   }
 }
+
+//funcion enviar mensaje por whats
+Future<void> sendWhatsMsg(
+    {required String phone, required String bodymsg}) async {
+  if (!await launchUrl(Uri.parse('https://wa.me/$phone?text=$bodymsg'))) {
+    throw Exception('No se puede enviar mensaje a $phone');
+  }
+}
+
 
 

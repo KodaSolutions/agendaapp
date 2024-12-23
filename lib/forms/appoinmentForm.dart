@@ -1244,6 +1244,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                 ),
                                 padding: EdgeInsets.only(
                                   bottom: MediaQuery.of(context).size.width * 0.025,
+                                  left: MediaQuery.of(context).size.width * 0.038,
                                 ),
                                 width: MediaQuery.of(context).size.width,
                                 height: MediaQuery.of(context).size.height * 0.35,
@@ -1259,11 +1260,10 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                           ),
                         ),
                       ),
-                    ),
                     builder: (context, timerOp){
                       return Opacity(opacity: opacidad.value, child: timerOp);
                     },
-                  )
+                  ),
                 ),
               ///calendario
               Visibility(
@@ -1440,6 +1440,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                     return Opacity(opacity: opacidad.value,child: doctorChooseOp);
                   },)),
               Visibility(
+
                 visible: showBlurr,
                 child: GestureDetector(
                   onTap: () {

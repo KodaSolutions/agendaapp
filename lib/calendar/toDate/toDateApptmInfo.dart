@@ -14,7 +14,6 @@ import '../../utils/listenerSlidable.dart';
 import '../../utils/timer.dart';
 
 class ApptmInfo extends StatefulWidget {
-  final bool isDocLog;
   final Function(bool) onShowBlurrModal;
   final Listenerapptm? listenerapptm;
   final Listenerslidable? listenerslidable;
@@ -29,12 +28,12 @@ class ApptmInfo extends StatefulWidget {
   final String? firtsIndexTouchHour;
   final String? firtsIndexTouchDate;
   final int? expandedIndexToCharge;
-  final void Function(bool, int?, String, String, bool, String) reachTop;
+  final Function(bool, int?, String, String, bool, String) reachTop;
   final Function (bool, DateTime) initializateApptm;
   const ApptmInfo({super.key, required this.clientName, required this.treatmentType, required this.index, required this.dateLookandFill, required this.reachTop,
     required this.appointment, required this.timeParts, this.firtsIndexTouchHour, this.firtsIndexTouchDate, this.expandedIndexToCharge,
     required this.selectedDate, this.listenerapptm, required this.filteredAppointments, required this.initializateApptm, this.listenerslidable,
-    required this.onShowBlurrModal, required this.isDocLog});
+    required this.onShowBlurrModal,});
 
   @override
   State<ApptmInfo> createState() => _ApptmInfoState();
@@ -110,6 +109,8 @@ class _ApptmInfoState extends State<ApptmInfo> {
 
   Future<List<Appointment>> fetchAppointments(DateTime selectedDate,
       {int? id}) async {
+    print('initializeAppointments toDateApptmInfo');
+
     String baseUrl =
         'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinments';
     String baseUrl2 =
@@ -194,7 +195,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
           });
         }
     });
-    print('widgetIsDocLog3${widget.isDocLog}');
     super.initState();
   }
 
@@ -261,7 +261,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
-                                widget.appointment.doctorId == 1 ? 'Dr 1' : 'Dr 2',
+                                widget.appointment.doctorId == 1 ? 'Dr 1' : 'Dr 2',///Todo desharcode
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: MediaQuery.of(context).size.width * 0.05,
@@ -445,7 +445,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
                                             widget.onShowBlurrModal(true);
                                             showDeleteAppointmentDialog(
                                                 context, widget, widget.appointment.id,
-                                                widget.isDocLog,
                                                 refreshAppointments).then((_){
                                               widget.onShowBlurrModal(false);
                                             });
@@ -480,7 +479,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
                                                   timeController: _timerController,
                                                   fetchAppointments: fetchAppointments,
                                                 );
-                                              },).then((result) {
+                                              }).then((result) {
                                                 if (result == true) {
                                                   widget.onShowBlurrModal(false);
                                                   setState(() {
