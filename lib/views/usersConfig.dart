@@ -193,17 +193,24 @@ class _UsersConfigState extends State<UsersConfig> {
             ])),
         Visibility(
           visible: blurr,
-          child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: Center(
-              child: MOdifyUser(
-                  kBoardVisibility: keyboardVisibilityManager.visibleKeyboard,
-                  onShowBlurr: onShowBlurr, name: name),
-                  ))))
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                blurr = false;
+              });
+            },
+            child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.black54.withOpacity(0.3),
+                    ),
+                    child: Center(
+                      child: MOdifyUser(
+                          kBoardVisibility: keyboardVisibilityManager.visibleKeyboard,
+                          onShowBlurr: onShowBlurr, name: name),
+                    ))),
+          ))
     ]);
   }
 }

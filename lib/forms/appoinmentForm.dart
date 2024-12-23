@@ -1285,6 +1285,17 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     TitleContainer(
+                                      decoration: const BoxDecoration(
+                                          color: AppColors3.primaryColor,
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(10),
+                                              topRight: Radius.circular(10)
+                                          )
+                                      ),
+                                      margin: EdgeInsets.only(
+                                        left: MediaQuery.of(context).size.width * 0.03,
+                                        right: MediaQuery.of(context).size.width * 0.03,
+                                      ),
                                       child: Text(
                                         'Fecha:',
                                         style: TextStyle(
@@ -1295,15 +1306,54 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                       ),
                                     ),
                                     Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          vertical: MediaQuery.of(context).size.width * 0.02,
-                                          horizontal: MediaQuery.of(context).size.width * 0.02),
+                                      padding: EdgeInsets.only(
+                                        bottom: MediaQuery.of(context).size.width * 0.025,
+                                        left: MediaQuery.of(context).size.width * 0.03,
+                                        right: MediaQuery.of(context).size.width * 0.03,
+                                      ),
                                       child: FieldsToWrite(
-                                        fillColor: AppColors3.whiteColor,
+                                        inputdecoration: InputDecoration(
+                                          suffixIcon: const Icon(Icons.calendar_today),
+                                          fillColor: AppColors3.whiteColor,
+                                          filled: true,
+                                          hintText: 'DD/MM/AAAA',
+                                          contentPadding: EdgeInsets.symmetric(
+                                            horizontal: MediaQuery.of(context).size.width * 0.03,
+                                          ),
+                                          border: const OutlineInputBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  bottomRight: Radius.circular(10),
+                                                  bottomLeft: Radius.circular(10)
+                                              ),
+                                              borderSide: BorderSide(
+                                                color: AppColors3.primaryColor,
+                                                width: 1,
+                                              )
+                                          ),
+                                          enabledBorder: const OutlineInputBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  bottomRight: Radius.circular(10),
+                                                  bottomLeft: Radius.circular(10)
+                                              ),
+                                              borderSide: BorderSide(
+                                                color: AppColors3.primaryColor,
+                                                width: 1,
+                                              )
+                                          ),
+                                          focusedBorder: const OutlineInputBorder(
+                                              borderRadius: BorderRadius.only(
+                                                  bottomRight: Radius.circular(10),
+                                                  bottomLeft: Radius.circular(10)
+                                              ),
+                                              borderSide: BorderSide(
+                                                color: AppColors3.primaryColor,
+                                                width: 1,
+                                              )
+                                          ),
+                                        ),
                                         readOnly: true,
-                                        labelText: 'DD/M/AAAA',
+                                        labelText: 'DD/MM/AAAA',
                                         controller: _dateController,
-                                        suffixIcon: const Icon(Icons.calendar_today),
                                         onTap: () {
                                           animationController.reverse().then((_){
                                             _showCalendar = false;
