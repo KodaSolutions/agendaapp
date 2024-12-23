@@ -48,7 +48,6 @@ Future<List<Appointment2>> fetchAppointmentsByDate(int userId, String date) asyn
       print('Sin conexión a internet, cargando datos locales de appointments para la fecha: $formattedDate...');
       List<Map<String, dynamic>> localAppointments = await dbService.getAppointmentsByDate(formattedDate);
       appointments = localAppointments.map((appointmentMap) => Appointment2.fromJson(appointmentMap)).toList();
-      print('test $appointments');
     }
   }catch(e) {
     print('Error al realizar la solicitud o cargar datos locales: $e');

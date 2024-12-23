@@ -1260,11 +1260,11 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                           ),
                         ),
                       ),
+                  ),
                     builder: (context, timerOp){
                       return Opacity(opacity: opacidad.value, child: timerOp);
                     },
-                  ),
-                ),
+                ),),
               ///calendario
               Visibility(
                   visible: _showCalendar,
@@ -1490,7 +1490,6 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                     return Opacity(opacity: opacidad.value,child: doctorChooseOp);
                   },)),
               Visibility(
-
                 visible: showBlurr,
                 child: GestureDetector(
                   onTap: () {
@@ -1504,7 +1503,6 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                         color: AppColors3.blackColor.withOpacity(0.27),
                       )),
                 )
-              ),
-            ]))));
+              )]))));
   }
 }

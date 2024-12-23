@@ -63,7 +63,6 @@ class _ClientsAutocompleteState extends State<ClientsAutocomplete> {
       },
       displayStringForOption: (Client option) => option.name,
       onSelected: (Client selection) {
-        print('Seleccionado ${selection.name}');
       },
     );
   }

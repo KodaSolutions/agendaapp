@@ -108,19 +108,16 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   }
 
   Future<void> initializeAppointments(DateTime date) async {
-    print('initializeAppointments toDateContainer');
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       int? userId = prefs.getInt('user_id');
       if (userId != null) {
         setState(() {
           appointments = fetchAppointments(date, id: userId);
-          print('app1 $appointments');
         });
       } else {
         setState(() {
           appointments = fetchAppointments(date);
-          print('app2 $appointments');
         });
       }
     } catch (e) {

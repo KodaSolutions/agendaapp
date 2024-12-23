@@ -82,7 +82,6 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
     currentMonth = _calendarController.displayDate?.month;
     visibleYear = now.year;
     _loadAppointments();
-    print('calendar $showBlurr');
   }
 
   @override
@@ -123,8 +122,6 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
             'Authorization': 'Bearer ${await getToken()}',
           },
         );
-        print('hejre ${response.body}');
-
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(response.body);
           if (jsonResponse is Map<String, dynamic> && jsonResponse['appointments'] is List) {
@@ -226,8 +223,6 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                             _btnToReachTop,
                             _dateLookandFill,
                             this.showBlurr);
-                        print('calendarSchedule2 $showBlurr');
-
                       } else {
                         varmodalReachTop = reachTop;
                         if (auxToReachTop == false) {
