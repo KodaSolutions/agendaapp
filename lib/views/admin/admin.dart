@@ -198,7 +198,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                                     ? 'Para hoy'
                                     : '',
                                 style: TextStyle(
-                                  color: AppColors3.primaryColorMoreStrong,
+                                  color: AppColors3.primaryColor,
                                   fontSize: screenWidth! < 370.00
                                       ? MediaQuery.of(context).size.width * 0.078
                                       : MediaQuery.of(context).size.width * 0.082,
@@ -405,11 +405,16 @@ class _AssistantAdminState extends State<AssistantAdmin> {
             ),
             Visibility(
               visible: _showBlurr,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                  child: Container(
-                    color: Colors.black54.withOpacity(0.3),
-                  )))])));}
+                child: GestureDetector(
+                  onTap: () {
+                    _showBlurr = false;
+                  },
+                  child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                      child: Container(
+                        color: Colors.black54.withOpacity(0.3),
+                      )),
+                ))])));}
 
   Widget _buildBody() {
     switch (_selectedScreen) {

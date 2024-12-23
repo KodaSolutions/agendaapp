@@ -65,9 +65,10 @@ class _AddClientAndAppointmentState extends State<AddClientAndAppointment> {
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.only(
-          left: MediaQuery.of(context).size.width * 0.02,
-          right: MediaQuery.of(context).size.width * 0.02,
-          bottom: MediaQuery.of(context).size.width * 0.04,
+          left: MediaQuery.of(context).size.width * 0.03,
+          right: MediaQuery.of(context).size.width * 0.03,
+          bottom: MediaQuery.of(context).size.width * 0.03,
+          top: MediaQuery.of(context).size.width * 0.02,
         ),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
@@ -101,15 +102,18 @@ class _AddClientAndAppointmentState extends State<AddClientAndAppointment> {
             Container(
               margin: EdgeInsets.only(
                   top: MediaQuery.of(context).size.width * 0.035,
-                  bottom: MediaQuery.of(context).size.width * 0.02),
+              ),
               padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.width * 0.02,
                 horizontal: MediaQuery.of(context).size.width * 0.02,
               ),
               alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                color: AppColors3.primaryColor,
-                borderRadius: BorderRadius.circular(10),
+              decoration: const BoxDecoration(
+                  color: AppColors3.primaryColor,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)
+                  )
               ),
               child: Text(
                 'Nombre del cliente:',
@@ -130,33 +134,57 @@ class _AddClientAndAppointmentState extends State<AddClientAndAppointment> {
                   color: Colors.red,
                 ),) : null,
                 contentPadding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * 0.03),
+                    horizontal: MediaQuery.of(context).size.width * 0.03,
+                ),
                 hintText: 'Nombre completo',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(
-                        color: AppColors3.primaryColor)),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: AppColors3.primaryColor)),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),),
+                border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
+                ),
+                enabledBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
+                ),
+                focusedBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
+                ),
               ),
               onTap: () {},
             ),
             Container(
               margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.width * 0.035,
-                  bottom: MediaQuery.of(context).size.width * 0.02),
+                  top: MediaQuery.of(context).size.width * 0.02,
+              ),
               padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.width * 0.02,
                 horizontal: MediaQuery.of(context).size.width * 0.02,
               ),
               alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                color: AppColors3.primaryColor,
-                borderRadius: BorderRadius.circular(10),
+              decoration: const BoxDecoration(
+                  color: AppColors3.primaryColor,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)
+                  )
               ),
               child: Text(
                 'No. Celular:',
@@ -183,31 +211,57 @@ class _AddClientAndAppointmentState extends State<AddClientAndAppointment> {
                 contentPadding: EdgeInsets.symmetric(
                     horizontal: MediaQuery.of(context).size.width * 0.03),
                 hintText: 'No. Celular',
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(
-                        color: AppColors3.primaryColor)),
-                enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: AppColors3.primaryColor)),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),),
+                hintStyle: TextStyle(
+                    color: AppColors3.primaryColorMoreStrong.withOpacity(0.3)
+                ),
+                border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
+                ),
+                enabledBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
+                ),
+                focusedBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
+                ),
               ),
               onTap: () {},
             ),
             Container(
               margin: EdgeInsets.only(
-                  top: MediaQuery.of(context).size.width * 0.035,
-                  bottom: MediaQuery.of(context).size.width * 0.02),
+                  top: MediaQuery.of(context).size.width * 0.02,
+              ),
               padding: EdgeInsets.symmetric(
                 vertical: MediaQuery.of(context).size.width * 0.02,
                 horizontal: MediaQuery.of(context).size.width * 0.02,
               ),
               alignment: Alignment.centerLeft,
-              decoration: BoxDecoration(
-                color: AppColors3.primaryColor,
-                borderRadius: BorderRadius.circular(10),
+              decoration: const BoxDecoration(
+                  color: AppColors3.primaryColor,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10),
+                      topRight: Radius.circular(10)
+                  )
               ),
               child: Text(
                 'Correo electrónico:',
@@ -220,7 +274,7 @@ class _AddClientAndAppointmentState extends State<AddClientAndAppointment> {
             ),
             Padding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).size.width * 0.05),
+                  bottom: MediaQuery.of(context).size.width * 0.06),
               child: TextFormField(
                 controller: emailController,
                 inputFormatters: [
@@ -231,46 +285,74 @@ class _AddClientAndAppointmentState extends State<AddClientAndAppointment> {
                   contentPadding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width * 0.03),
                   hintText: 'Correo electrónico',
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(
-                          color: AppColors3.primaryColor)),
-                  enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(color: AppColors3.primaryColor)),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),),
+                  hintStyle: TextStyle(
+                    color: AppColors3.primaryColorMoreStrong.withOpacity(0.3)
+                  ),
+                  border: const OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)
+                      ),
+                      borderSide: BorderSide(
+                        color: AppColors3.primaryColor,
+                        width: 1,
+                      )
+                  ),
+                  enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)
+                      ),
+                      borderSide: BorderSide(
+                        color: AppColors3.primaryColor,
+                        width: 1,
+                      )
+                  ),
+                  focusedBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomRight: Radius.circular(10),
+                          bottomLeft: Radius.circular(10)
+                      ),
+                      borderSide: BorderSide(
+                        color: AppColors3.primaryColor,
+                        width: 1,
+                      )
+                  ),
                 ),
                 onTap: () {},
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                onSendDataToAppointmentForm();
-              },
-              style: ElevatedButton.styleFrom(
-                surfaceTintColor: Colors.white,
-                splashFactory: InkRipple.splashFactory,
-                minimumSize: const Size(0, 0),
-                padding: EdgeInsets.symmetric(
-                    vertical: MediaQuery.of(context).size.height * 0.02,
-                    horizontal: MediaQuery.of(context).size.width * 0.02),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: const BorderSide(color: AppColors3.primaryColor, width: 2),
-                ),
-                backgroundColor: Colors.white,
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).size.height * 0.02,
               ),
-              child: Text(
-                textAlign: TextAlign.center,
-                'Agregar cliente y crear cita',
-                style: TextStyle(
-                  color: AppColors3.primaryColor,
-                  fontSize: MediaQuery.of(context).size.width * 0.05,
+              child: ElevatedButton(
+                onPressed: () {
+                  onSendDataToAppointmentForm();
+                },
+                style: ElevatedButton.styleFrom(
+                  surfaceTintColor: Colors.white,
+                  splashFactory: InkRipple.splashFactory,
+                  minimumSize: const Size(0, 0),
+                  padding: EdgeInsets.symmetric(
+                      vertical: MediaQuery.of(context).size.height * 0.025,
+                      horizontal: MediaQuery.of(context).size.width * 0.03),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                    side: const BorderSide(color: AppColors3.primaryColor, width: 2),
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+                child: Text(
+                  textAlign: TextAlign.center,
+                  'Agregar cliente y crear cita',
+                  style: TextStyle(
+                    color: AppColors3.primaryColor,
+                    fontSize: MediaQuery.of(context).size.width * 0.05,
+                  ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       );

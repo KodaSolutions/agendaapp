@@ -21,29 +21,50 @@ class _CardUsersState extends State<CardUsers> {
     return Container(
         margin: EdgeInsets.symmetric(
             horizontal:  MediaQuery.of(context).size.width * 0.02,
-            vertical: MediaQuery.of(context).size.width * 0.01),
+            vertical: MediaQuery.of(context).size.width * 0.02),
         padding: EdgeInsets.symmetric(
-          vertical: MediaQuery.of(context).size.width * 0.02,
-          horizontal: MediaQuery.of(context).size.width * 0.02,
+          vertical: MediaQuery.of(context).size.width * 0.04,
+          horizontal: MediaQuery.of(context).size.width * 0.01,
         ),
-        child: Column(
+      decoration: BoxDecoration(
+        color: AppColors3.whiteColor,
+          borderRadius: const BorderRadius.all(
+              Radius.circular(10),
+          ),
+        border: Border.all(
+          color: Colors.transparent,
+          width: 2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors3.primaryColorMoreStrong.withOpacity(0.1),
+            blurRadius: 3,
+            spreadRadius: 1,
+            offset: const Offset(3, 3),
+          )
+        ],
+      ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            Container(
+              padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.035),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    highlightTextTitle(widget.users[widget.index]['name'], widget.query),
+                    Text(widget.users[widget.index]['role'] == 1 ? 'Médico Veterinario' :
+                    widget.users[widget.index]['role'] == 2 ? 'Asistente' : 'Administrador',
+                      style: TextStyle(
+                        color: AppColors3.primaryColor.withOpacity(0.4),
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                      ),),
+                  ],
+                )
+            ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      highlightTextTitle(widget.users[widget.index]['name'], widget.query),
-                      Text(widget.users[widget.index]['role'] == 1 ? 'Médico Veterinario' :
-                      widget.users[widget.index]['role'] == 2 ? 'Asistente' : 'Administrador',
-                        style: TextStyle(
-                          color: AppColors3.primaryColor.withOpacity(0.4),
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
-                        ),),
-                    ],
-                  )
-                ),
                 IconButton(
                     onPressed: (){
                       setState(() {
@@ -51,20 +72,18 @@ class _CardUsersState extends State<CardUsers> {
                       });
                     }, icon: Icon(Icons.edit_document,
                   color: AppColors3.primaryColor,
-                  size: MediaQuery.of(context).size.width * 0.075,)),
-
+                  size: MediaQuery.of(context).size.width * 0.065,)),
                 IconButton(
                     onPressed: (){
-                  setState(() {
-                  });
-                }, icon: Icon(Icons.delete,
+                      setState(() {
+                      });
+                    }, icon: Icon(Icons.delete,
                   color: AppColors3.redDelete,
-                  size: MediaQuery.of(context).size.width * 0.075,)),
+                  size: MediaQuery.of(context).size.width * 0.065,)),
               ],
-            ),
-            const Divider(),
+            )
           ],
-        ));
+        ),);
   }
 
   Widget highlightTextTitle(String text, String query) {

@@ -126,7 +126,7 @@ class _UsersConfigState extends State<UsersConfig> {
               margin: EdgeInsets.only(
                 right: MediaQuery.of(context).size.width * 0.03,
                 left: MediaQuery.of(context).size.width * 0.03,
-                bottom: MediaQuery.of(context).size.width * 0.04,
+                bottom: MediaQuery.of(context).size.width * 0.03,
                 top: MediaQuery.of(context).size.width * 0.02,
               ),
               child: Row(
@@ -138,51 +138,58 @@ class _UsersConfigState extends State<UsersConfig> {
                       ],
                       controller: seek,
                       placeholder: 'Buscar usuario...',
-                      prefix: const Padding(
-                        padding: EdgeInsets.only(left: 8.0),
+                      prefix: Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
                         child: Icon(
                           CupertinoIcons.search,
                           size: 20.0,
-                          color: CupertinoColors.systemGrey,
+                          color: CupertinoColors.systemGrey.withOpacity(0.6),
                         ),
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(color: CupertinoColors.systemGrey, width: 1.0),
+                        border: Border.all(color: CupertinoColors.systemGrey.withOpacity(0.6), width: 2),
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       onChanged: (val){
                         filterByUsers();
                               }))
                     ]))),
-            if(filteredUsers.isNotEmpty)...[SliverList(
-              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                return CardUsers(
-                  users: filteredUsers,
-                  index: index,
-                  onModifyUser: onModifyUser, query: seek.text,
-                );
-              }, childCount: filteredUsers.length)),]
-          else ...[
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const SizedBox(height: 200),
-                  Center(
-                      child: isLoadingUsers
-                          ? const CircularProgressIndicator(
-                        color: Colors.black,
-                      )
-                          : Text(
-                        "No se han encontrado usuarios",
-                        style: TextStyle(
-                            color: AppColors3.primaryColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize:
-                            MediaQuery.of(context).size.width *
-                                0.06),
-                            ))
-                ]))
-              ]
+          SliverPadding(
+              padding: EdgeInsets.only(
+                  bottom: MediaQuery.of(context).size.width * 0.1,
+                  right: MediaQuery.of(context).size.width * 0.01,
+                  left: MediaQuery.of(context).size.width * 0.01
+              ),
+            sliver: filteredUsers.isNotEmpty ? SliverList(
+                delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                  return CardUsers(
+                    users: filteredUsers,
+                    index: index,
+                    onModifyUser: onModifyUser, query: seek.text,
+                  );
+                },
+                    childCount: filteredUsers.length
+                )
+            ) : SliverToBoxAdapter(
+                child: Column(
+                    children: [
+                      const SizedBox(height: 200),
+                      Center(
+                          child: isLoadingUsers
+                              ? const CircularProgressIndicator(
+                            color: Colors.black,
+                          )
+                              : Text(
+                            "No se han encontrado usuarios",
+                            style: TextStyle(
+                                color: AppColors3.primaryColor,
+                                fontWeight: FontWeight.bold,
+                                fontSize:
+                                MediaQuery.of(context).size.width *
+                                    0.06),
+                          ))
+                    ])),
+          )
             ])),
         Visibility(
           visible: blurr,

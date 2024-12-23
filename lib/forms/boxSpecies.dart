@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../projectStyles/appColors.dart';
+
 class Pet extends StatefulWidget {
   final Function(String?) onPet;
   const Pet({super.key, required this.onPet});
@@ -23,15 +25,44 @@ class _PetState extends State<Pet> {
           fillColor: Colors.white,
           filled: true,
           floatingLabelBehavior: FloatingLabelBehavior.never,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(10),
+          border: const OutlineInputBorder(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(10),
+                  bottomLeft: Radius.circular(10)
+              ),
+              borderSide: BorderSide(
+                color: AppColors3.primaryColor,
+                width: 1,
+              )
+          ),
+          enabledBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(10),
+                  bottomLeft: Radius.circular(10)
+              ),
+              borderSide: BorderSide(
+                color: AppColors3.primaryColor,
+                width: 1,
+              )
+          ),
+          focusedBorder: const OutlineInputBorder(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(10),
+                  bottomLeft: Radius.circular(10)
+              ),
+              borderSide: BorderSide(
+                color: AppColors3.primaryColor,
+                width: 1,
+              )
           ),
           contentPadding: EdgeInsets.symmetric(
             horizontal: MediaQuery.of(context).size.width * 0.02,
-            vertical: MediaQuery.of(context).size.width * 0.037,
+            vertical: MediaQuery.of(context).size.width * 0.03,
           ),
-          labelText: 'Seleecione especie'
+          labelText: 'Seleccione especie'
       ),
+      iconDisabledColor: AppColors3.primaryColor,
+      iconEnabledColor: AppColors3.primaryColor,
       value: selectedOpt,
       items: listPet.map((edo) {
         return DropdownMenuItem(

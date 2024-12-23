@@ -47,269 +47,214 @@ class _TimerFlyState extends State<TimerFly> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Expanded(
-          child: Row(children: [
-        ///hrs
-        SizedBox(
-            width: MediaQuery.of(context).size.width * 0.29,
-            child: ListWheelScrollView.useDelegate(
-                controller: hourcontroller,
-                perspective: 0.001,
-                diameterRatio: 0.96,
-                physics: const FixedExtentScrollPhysics(),
-                itemExtent: MediaQuery.of(context).size.width * 0.18,
-                onSelectedItemChanged: (value) {
-                  setState(() {
-                    selectedIndexHours = value;
-                    print(selectedIndexHours);
-                  });
-                },
-                childDelegate: ListWheelChildLoopingListDelegate(
-                    children: List.generate(12, (index) {
-                  final Color colorforhours = index == selectedIndexHours
-                      ? AppColors3.primaryColor
-                      : Colors.grey;
-
-                  return Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: index != selectedIndexHours
-                              ? MediaQuery.of(context).size.width * 0.04
-                              : MediaQuery.of(context).size.width * 0.0),
-                      decoration: index == selectedIndexHours
-                          ? const BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                  color: AppColors3.primaryColor,
-                                  width: 2,
-                                ),
-                                bottom: BorderSide(
-                                  color: AppColors3.primaryColor,
-                                  width: 2,
-                                ),
-                              ),
-                              color: Colors.white,
-                            )
-                          : index == 11
-                              ? const BoxDecoration(
-                                  border: Border(
-                                    top: BorderSide(
-                                      color: Colors.grey,
-                                      width: 2,
-                                    ),
-                                  ),
-                                )
-                              : index == 1
-                                  ? const BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Colors.grey,
-                                          width: 2,
-                                        ),
-                                      ),
-                                    )
-                                  : null,
-                      child: Center(
-                          child: Text(index == 0 ? '12' : index.toString(),
-                              style: TextStyle(
-                                fontSize: index == selectedIndexHours
-                                    ? MediaQuery.of(context).size.width * 0.11
-                                    : MediaQuery.of(context).size.width * 0.12,
-                                color: colorforhours,
-                              ))));
-                })))),
-        Text(
-          ':',
-          style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.125,
-            color: AppColors3.primaryColor,
+    return Stack(
+      children: [
+        Container(
+          height: MediaQuery.of(context).size.width * 0.495,
+          color: Colors.transparent,
+          margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                height: MediaQuery.of(context).size.width * 0.166,
+                decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
+                    )
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                height: MediaQuery.of(context).size.width * 0.166,
+                decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
+                    )
+                ),
+              )
+            ],
           ),
         ),
+        Column(
+            children: [
+              Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(Radius.circular(10)),
+                        border: Border(
+                          top: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
+                          bottom: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
+                          left: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
+                          right: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
+                        )
+                    ),
+                    margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                    child: Row(
+                        children: [
+                          ///hrs
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.29,
+                              child: ListWheelScrollView.useDelegate(
+                                  controller: hourcontroller,
+                                  perspective: 0.001,
+                                  diameterRatio: 0.96,
+                                  physics: const FixedExtentScrollPhysics(),
+                                  itemExtent: MediaQuery.of(context).size.width * 0.18,
+                                  onSelectedItemChanged: (value) {
+                                    setState(() {
+                                      selectedIndexHours = value;
+                                      print(selectedIndexHours);
+                                    });
+                                  },
+                                  childDelegate: ListWheelChildLoopingListDelegate(
+                                      children: List.generate(12, (index) {
+                                        final Color colorforhours = index == selectedIndexHours
+                                            ? AppColors3.primaryColor
+                                            : Colors.grey;
 
-        ///mins
+                                        return Container(
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: index != selectedIndexHours
+                                                    ? MediaQuery.of(context).size.width * 0.04
+                                                    : MediaQuery.of(context).size.width * 0.0),
+                                            child: Center(
+                                                child: Text(index == 0 ? '12' : index.toString(),
+                                                    style: TextStyle(
+                                                      fontSize: index == selectedIndexHours
+                                                          ? MediaQuery.of(context).size.width * 0.11
+                                                          : MediaQuery.of(context).size.width * 0.12,
+                                                      color: colorforhours,
+                                                    ))));
+                                      })))),
+                          Text(
+                            ':',
+                            style: TextStyle(
+                              fontSize: MediaQuery.of(context).size.width * 0.125,
+                              color: AppColors3.primaryColor,
+                            ),
+                          ),
 
-        SizedBox(
-            width: MediaQuery.of(context).size.width * 0.29,
-            child: ListWheelScrollView.useDelegate(
-                onSelectedItemChanged: (value) {
-                  setState(() {
-                    selectedIndexMins = value;
-                    print(selectedIndexMins);
-                  });
-                },
-                controller: minsController,
-                perspective: 0.001,
-                diameterRatio: 0.96,
-                physics: const FixedExtentScrollPhysics(),
-                itemExtent: MediaQuery.of(context).size.width * 0.18,
-                childDelegate: ListWheelChildLoopingListDelegate(
-                    children: List.generate(60, (index) {
-                  final Color colorformins = index == selectedIndexMins
-                      ? AppColors3.primaryColor
-                      : Colors.grey;
-                  return Container(
-                      decoration: index == selectedIndexMins
-                          ? const BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                  color: AppColors3.primaryColor,
-                                  width: 2,
-                                ),
-                                bottom: BorderSide(
-                                  color: AppColors3.primaryColor,
-                                  width: 2,
-                                ),
-                              ),
-                              color: Colors.white,
-                            )
-                          : index == 59 && index == 59
-                              ? const BoxDecoration(
-                                  border: Border(
-                                    top: BorderSide(
-                                      color: Colors.grey,
-                                      width: 2,
-                                    ),
-                                  ),
-                                )
-                              : index == 1
-                                  ? const BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Colors.grey,
-                                          width: 2,
-                                        ),
-                                      ),
-                                    )
-                                  : null,
-                      child: Center(
-                          child: Text(index < 10 ? '0$index' : index.toString(),
-                              style: TextStyle(
-                                  fontSize: index == selectedIndexMins
-                                      ? MediaQuery.of(context).size.width * 0.11
-                                      : MediaQuery.of(context).size.width *
-                                          0.12,
-                                  color: colorformins))));
-                })))),
+                          ///mins
 
-        ///am/pm
-        Container(
-            margin: EdgeInsets.only(
-                right: MediaQuery.of(context).size.width * 0.0,
-                left: MediaQuery.of(context).size.width * 0.03),
-            width: MediaQuery.of(context).size.width * 0.23,
-            child: ListWheelScrollView.useDelegate(
-                controller: AmPmController,
-                onSelectedItemChanged: (value) {
-                  setState(() {
-                    selectedIndexAmPm = value;
-                    print(selectedIndexAmPm);
-                  });
-                },
-                perspective: 0.001,
-                diameterRatio: 0.96,
-                physics: const FixedExtentScrollPhysics(),
-                itemExtent: MediaQuery.of(context).size.width * 0.18,
-                childDelegate: ListWheelChildBuilderDelegate(
-                    childCount: 2,
-                    builder: (context, index) {
-                      final Color colorforitems = index == selectedIndexAmPm
-                          ? AppColors3.primaryColor
-                          : Colors.grey;
-                      final String text = index == 0 ? 'p.m' : 'a.m';
-                      return Container(
-                          decoration: index == selectedIndexAmPm
-                              ? const BoxDecoration(
-                                  border: Border(
-                                    top: BorderSide(
-                                      color: AppColors3.primaryColor,
-                                      width: 2,
-                                    ),
-                                    bottom: BorderSide(
-                                      color: AppColors3.primaryColor,
-                                      width: 2,
-                                    ),
-                                  ),
-                                  color: Colors.white,
-                                )
-                              : index - 1 == selectedIndexAmPm
-                                  ? const BoxDecoration(
-                                      border: Border(
-                                        bottom: BorderSide(
-                                          color: Colors.grey,
-                                          width: 2,
-                                        ),
-                                      ),
-                                    )
-                                  : index + 1 == selectedIndexAmPm
-                                      ? const BoxDecoration(
-                                          border: Border(
-                                            top: BorderSide(
-                                              color: Colors.grey,
-                                              width: 2,
-                                            ),
-                                          ),
-                                        )
-                                      : null,
-                          child: Center(
-                              child: Text(text,
-                                  style: TextStyle(
-                                      fontSize: index == selectedIndexAmPm
-                                          ? MediaQuery.of(context).size.width *
-                                              0.11
-                                          : MediaQuery.of(context).size.width *
-                                              0.12,
-                                      color: colorforitems))));
-                    })))
-      ])),
-      Padding(
-          padding: EdgeInsets.only(
-            top: MediaQuery.of(context).size.width * 0.04,
-          ),
-          child: ElevatedButton(
-              onPressed: () {
-                DateTime now = DateTime.now();
-                selectedIndexAmPm == 1
-                    ? selectedIndexHours == 0
-                        ? hour = 24
-                        : hour = selectedIndexHours
-                    : selectedIndexAmPm == 0
-                        ? selectedIndexHours == 0
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.29,
+                              child: ListWheelScrollView.useDelegate(
+                                  onSelectedItemChanged: (value) {
+                                    setState(() {
+                                      selectedIndexMins = value;
+                                      print(selectedIndexMins);
+                                    });
+                                  },
+                                  controller: minsController,
+                                  perspective: 0.001,
+                                  diameterRatio: 0.96,
+                                  physics: const FixedExtentScrollPhysics(),
+                                  itemExtent: MediaQuery.of(context).size.width * 0.18,
+                                  childDelegate: ListWheelChildLoopingListDelegate(
+                                      children: List.generate(60, (index) {
+                                        final Color colorformins = index == selectedIndexMins
+                                            ? AppColors3.primaryColor
+                                            : Colors.grey;
+                                        return Container(
+                                            child: Center(
+                                                child: Text(index < 10 ? '0$index' : index.toString(),
+                                                    style: TextStyle(
+                                                        fontSize: index == selectedIndexMins
+                                                            ? MediaQuery.of(context).size.width * 0.11
+                                                            : MediaQuery.of(context).size.width *
+                                                            0.12,
+                                                        color: colorformins))));
+                                      })))),
+
+                          ///am/pm
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.23,
+                              child: ListWheelScrollView.useDelegate(
+                                  controller: AmPmController,
+                                  onSelectedItemChanged: (value) {
+                                    setState(() {
+                                      selectedIndexAmPm = value;
+                                      print(selectedIndexAmPm);
+                                    });
+                                  },
+                                  perspective: 0.001,
+                                  diameterRatio: 0.96,
+                                  physics: const FixedExtentScrollPhysics(),
+                                  itemExtent: MediaQuery.of(context).size.width * 0.18,
+                                  childDelegate: ListWheelChildBuilderDelegate(
+                                      childCount: 2,
+                                      builder: (context, index) {
+                                        final Color colorforitems = index == selectedIndexAmPm
+                                            ? AppColors3.primaryColor
+                                            : Colors.grey;
+                                        final String text = index == 0 ? 'p.m.' : 'a.m.';
+                                        return Container(
+                                            child: Center(
+                                                child: Text(text,
+                                                    style: TextStyle(
+                                                        fontSize: index == selectedIndexAmPm
+                                                            ? MediaQuery.of(context).size.width *
+                                                            0.11
+                                                            : MediaQuery.of(context).size.width *
+                                                            0.12,
+                                                        color: colorforitems))));
+                                      })))
+                        ]),
+                  )
+              ),
+              Padding(
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.width * 0.04,
+                  ),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        DateTime now = DateTime.now();
+                        selectedIndexAmPm == 1
+                            ? selectedIndexHours == 0
+                            ? hour = 24
+                            : hour = selectedIndexHours
+                            : selectedIndexAmPm == 0
+                            ? selectedIndexHours == 0
                             ? hour = 12
                             : hour = selectedIndexHours + 12
-                        : null;
+                            : null;
 
-                DateTime fullTime = DateTime(
-                    now.year, now.month, now.day, hour, selectedIndexMins);
-                String formattedTime = DateFormat('HH:mm:ss').format(fullTime);
-                setState(() {
-                  print('selectedDate>>> ${fullTime.hour}');
+                        DateTime fullTime = DateTime(
+                            now.year, now.month, now.day, hour, selectedIndexMins);
+                        String formattedTime = DateFormat('HH:mm:ss').format(fullTime);
+                        setState(() {
+                          print('selectedDate>>> ${fullTime.hour}');
 
-                  timeController.text = formattedTime;
-                });
+                          timeController.text = formattedTime;
+                        });
 
-                widget.onTimeChoose(
-                  _isTimerShow,
-                  timeController,
-                  selectedIndexAmPm,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 2,
-                surfaceTintColor: Colors.white,
-                splashFactory: InkRipple.splashFactory,
-                padding: EdgeInsets.symmetric(
-                    vertical: 0,
-                    horizontal: MediaQuery.of(context).size.width * 0.1),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0),
-                  side: const BorderSide(color: AppColors3.primaryColor, width: 2),
-                ),
-                backgroundColor: AppColors3.primaryColor,
-              ),
-              child: const Text(
-                'Guardar',
-                style: TextStyle(fontSize: 22, color: Colors.white),
-              )))
-    ]);
+                        widget.onTimeChoose(
+                          _isTimerShow,
+                          timeController,
+                          selectedIndexAmPm,
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        elevation: 2,
+                        surfaceTintColor: Colors.white,
+                        splashFactory: InkRipple.splashFactory,
+                        padding: EdgeInsets.symmetric(
+                            vertical: 0,
+                            horizontal: MediaQuery.of(context).size.width * 0.1),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          side: const BorderSide(color: AppColors3.primaryColor, width: 2),
+                        ),
+                        backgroundColor: AppColors3.primaryColor,
+                      ),
+                      child: const Text(
+                        'Guardar',
+                        style: TextStyle(fontSize: 22, color: Colors.white),
+                      )))
+            ]),
+      ],
+    );
   }
 }
