@@ -49,12 +49,11 @@ class _MOdifyUserState extends State<MOdifyUser> {
           bottom: keyBoardV ? MediaQuery.of(context).size.width * 0.4 : 0,
         ),
         padding: EdgeInsets.only(
-            right: MediaQuery.of(context).size.width * 0.02,
-            left: MediaQuery.of(context).size.width * 0.02,
+            right: MediaQuery.of(context).size.width * 0.03,
+            left: MediaQuery.of(context).size.width * 0.03,
             bottom: MediaQuery.of(context).size.width * 0.03,
         ),
         decoration: BoxDecoration(
-          border: Border.all(color: AppColors3.blackColor),
           borderRadius: BorderRadius.circular(10),
           color: AppColors3.whiteColor,
         ),
@@ -62,16 +61,29 @@ class _MOdifyUserState extends State<MOdifyUser> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(onPressed: (){
-                  widget.onShowBlurr(false);
-                }, icon: const Icon(CupertinoIcons.xmark)),
+                Text(
+                  'Modificar usuario',
+                  style: TextStyle(
+                    color: AppColors3.primaryColor,
+                    fontSize: MediaQuery.of(context).size.width * 0.07,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  onPressed: (){
+                    widget.onShowBlurr(false);
+                  },
+                  icon: const Icon(CupertinoIcons.xmark),
+                ),
               ],
             ),
             Column(
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                  margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.02),
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
                   width: double.infinity,
                   decoration: const BoxDecoration(
                     color: AppColors3.primaryColor,
@@ -90,10 +102,35 @@ class _MOdifyUserState extends State<MOdifyUser> {
                   decoration: const InputDecoration(
                     floatingLabelBehavior: FloatingLabelBehavior.never,
                     labelText: 'Modificar nombre',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(10),
-                        bottomRight: Radius.circular(10),),
+                    border: const OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(10),
+                            bottomLeft: Radius.circular(10)
+                        ),
+                        borderSide: BorderSide(
+                          color: AppColors3.primaryColor,
+                          width: 1,
+                        )
+                    ),
+                    enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(10),
+                            bottomLeft: Radius.circular(10)
+                        ),
+                        borderSide: BorderSide(
+                          color: AppColors3.primaryColor,
+                          width: 1,
+                        )
+                    ),
+                    focusedBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomRight: Radius.circular(10),
+                            bottomLeft: Radius.circular(10)
+                        ),
+                        borderSide: BorderSide(
+                          color: AppColors3.primaryColor,
+                          width: 1,
+                        )
                     ),
                   ),
                   onTap: (){
@@ -111,8 +148,8 @@ class _MOdifyUserState extends State<MOdifyUser> {
               ],
             ),
             Container(
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.04),
-              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+              margin: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03),
+              padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04, vertical: MediaQuery.of(context).size.width * 0.02),
               width: double.infinity,
               decoration: const BoxDecoration(
                 color: AppColors3.primaryColor,
@@ -129,22 +166,65 @@ class _MOdifyUserState extends State<MOdifyUser> {
             ),
             TextFormField(
               controller: pswController,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 floatingLabelBehavior: FloatingLabelBehavior.never,
-                labelText: 'Modificar contraseña',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),),
+                labelText: 'Nueva contraseña...',
+                labelStyle: TextStyle(
+                  color: AppColors3.primaryColorMoreStrong.withOpacity(0.3)
+                ),
+                border: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
+                ),
+                enabledBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
+                ),
+                focusedBorder: const OutlineInputBorder(
+                    borderRadius: BorderRadius.only(
+                        bottomRight: Radius.circular(10),
+                        bottomLeft: Radius.circular(10)
+                    ),
+                    borderSide: BorderSide(
+                      color: AppColors3.primaryColor,
+                      width: 1,
+                    )
                 ),
               ),
             ),
-            Padding(padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.04),
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                ),
-                onPressed: (){}, child: const Text('Aceptar')),),
+            Padding(
+              padding: EdgeInsets.only(
+                top: MediaQuery.of(context).size.width * 0.04,
+                bottom: MediaQuery.of(context).size.width * 0.01,
+              ),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.08, vertical: MediaQuery.of(context).size.width * 0.03),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                    backgroundColor: AppColors3.primaryColor,
+                  ),
+                  onPressed: (){},
+                  child: const Text(
+                    'Aceptar',
+                    style: TextStyle(
+                      color: AppColors3.whiteColor,
+                      fontSize: 15,
+                    ),
+                  )
+              ),
+            ),
           ],
         ),
       ),
