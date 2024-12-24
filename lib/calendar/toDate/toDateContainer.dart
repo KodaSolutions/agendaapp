@@ -255,6 +255,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -381,8 +382,8 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                 reachTop: reachTop, appointment: appointment, timeParts: timeParts, selectedDate: widget.selectedDate,
                                 firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate, 
                                 listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments, 
-                                expandedIndexToCharge: expandedIndex, initializateApptm: _initializateApptm, listenerslidable: listenerslidable, 
-                                onShowBlurrModal: onShowBlurrModal,
+                                expandedIndexToCharge: widget.expandedIndexToCharge, initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
+                                onShowBlurrModal: onShowBlurrModal, isDocLog: false,
                               )));
                     });
               }

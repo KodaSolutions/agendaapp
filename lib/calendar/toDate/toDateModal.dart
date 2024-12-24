@@ -14,7 +14,7 @@ import '../../projectStyles/appColors.dart';
 import '../../utils/listenerApptm.dart';
 
 class AppointmentScreen extends StatefulWidget {
-  final void Function(bool, int?, String, String, bool, String, bool, bool) reachTop;
+  final void Function(bool, int?, String, String, bool, String) reachTop;
   final bool isDocLog;
   final DateTime selectedDate;
   final int? expandedIndex;
@@ -22,7 +22,6 @@ class AppointmentScreen extends StatefulWidget {
   final String? firtsIndexTouchDate;
   final bool btnToReachTop;
   final String dateLookandFill;
-  final bool showBlurr;
 
 
   const AppointmentScreen(
@@ -34,7 +33,7 @@ class AppointmentScreen extends StatefulWidget {
       this.firtsIndexTouchHour,
       this.firtsIndexTouchDate,
       required this.btnToReachTop,
-      required this.dateLookandFill, required this.showBlurr,});
+      required this.dateLookandFill});
 
   @override
   _AppointmentScreenState createState() => _AppointmentScreenState();
@@ -91,6 +90,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
     }
   }
 
+
+
   double? screenWidth;
   double? screenHeight;
 
@@ -100,6 +101,67 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
   }
+
+  /*Future<List<Appointment>> fetchAppointments(DateTime selectedDate,
+      {int? id}) async {
+    String baseUrl =
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinments';
+    String baseUrl2 =
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinmentsAssit';
+    String url = id != null ? '$baseUrl/$id' : baseUrl2;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? token = prefs.getString('jwt_token');
+
+    if (token == null) {
+      throw Exception('No token found');
+    }
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = jsonDecode(response.body);
+      if (data.containsKey('appointments') && data['appointments'] != null) {
+        List<dynamic> appointmentsJson = data['appointments'];
+
+        List<Appointment> allAppointments =
+        appointmentsJson.map((json) => Appointment.fromJson(json)).toList();
+        return allAppointments.where((appointment) => appointment.appointmentDate != null &&
+            appointment.appointmentDate!.year == selectedDate.year &&
+            appointment.appointmentDate!.month == selectedDate.month &&
+            appointment.appointmentDate!.day == selectedDate.day).toList();
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception('Vefique conexión a internet');
+    }
+  }
+
+  Future<void> initializeAppointments(DateTime date) async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      int? userId = prefs.getInt('user_id');
+      if (userId != null) {
+        setState(() {
+          appointments = fetchAppointments(date, id: userId);
+        });
+      } else {
+        setState(() {
+          appointments = fetchAppointments(date);
+        });
+      }
+    } catch (e) {
+      setState(() {
+        appointments = Future.error("Error retrieving user ID: $e");
+      });
+    }
+  }*/
 
   late DateTime dateTime;
   late String formattedTime;
@@ -117,8 +179,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
         _dateController.text,
         positionBtnIcon,
         _dateLookandFill,
-        _showBlurr,
-        sendMsg,
       );
     });
   }
@@ -141,7 +201,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
       dateOnly = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
       dateTimeToinitModal = DateTime.parse(dateOnly!);
     }
-    positionBtnIcon ? _showBlurr = widget.showBlurr : null;
+    //positionBtnIcon ? _showBlurr = widget.showBlurr : null;
   }
 
   String slideDirection = 'No slide detected';
@@ -273,6 +333,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
                                     dateTimeToinitModal.isBefore(dateToLockBtn) ? lockBtn = true : lockBtn = false;
                                     dateTimeToinitModal = DateTime.parse(dateOnly!);
                                     //initializeAppointments(dateTimeToinitModal);
+                                    expandedIndex = null;
                                     changeAptms();
                                   });
                                 },
@@ -368,7 +429,8 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
               Expanded(
                 child: ToDateContainer(
                   isDocLog: widget.isDocLog,
-                reachTop: (bool reachTop,
+                reachTop: (
+                    bool reachTop,
                     int? expandedIndex,
                     String timerOfTheFstIndexTouched,
                     String dateOfTheFstIndexTouched,
@@ -386,9 +448,7 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
                         _timerController.text,
                         _dateController.text,
                         positionBtnIcon,
-                        _dateLookandFill,
-                        _showBlurr,
-                        sendMsg);
+                        _dateLookandFill);
                   }
                 },
                 dateLookandFill: widget.dateLookandFill,

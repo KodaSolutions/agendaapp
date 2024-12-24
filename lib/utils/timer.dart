@@ -4,26 +4,24 @@ import 'package:intl/intl.dart';
 import '../projectStyles/appColors.dart';
 
 class TimerFly extends StatefulWidget {
+  final String? hour;
   final void Function(bool, TextEditingController, int) onTimeChoose;
 
-  TimerFly({super.key, required this.onTimeChoose});
+  TimerFly({super.key, required this.onTimeChoose, this.hour});
 
   @override
   State<TimerFly> createState() => _TimerFlyState();
 }
 
 class _TimerFlyState extends State<TimerFly> {
-  final ScrollController hourcontroller =
-      FixedExtentScrollController(initialItem: 12);
-  final ScrollController minsController =
-      FixedExtentScrollController(initialItem: 0);
-  final ScrollController AmPmController =
-      FixedExtentScrollController(initialItem: 0);
+  late FixedExtentScrollController hourController;
+  late FixedExtentScrollController minsController;
+  late FixedExtentScrollController amPmController;
   final timeController = TextEditingController();
 
-  int selectedIndexAmPm = 0;
-  int selectedIndexMins = 0;
   int selectedIndexHours = 0;
+  int selectedIndexMins = 0;
+  int selectedIndexAmPm = 0;
   int hour = 0;
   int minuts = 0;
 
@@ -39,25 +37,35 @@ class _TimerFlyState extends State<TimerFly> {
     diameterRatio = (smallestDimension! * 0.0028);
     print(diameterRatio);
   }
-
   @override
   void initState() {
     super.initState();
-  }
+    if (widget.hour != null) {
+      final timeParts = widget.hour!.split(' ');
+      final time = timeParts[0].split(':');
+      final period = timeParts[1];
 
+      selectedIndexHours = (int.parse(time[0]) % 12);
+      selectedIndexMins = int.parse(time[1]);
+      selectedIndexAmPm = (period.toUpperCase() == 'PM') ? 0 : 1;
+    }
+
+    hourController = FixedExtentScrollController(initialItem: selectedIndexHours);
+    minsController = FixedExtentScrollController(initialItem: selectedIndexMins);
+    amPmController = FixedExtentScrollController(initialItem: selectedIndexAmPm);
+  }
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Container(
-          height: MediaQuery.of(context).size.width * 0.495,
           color: Colors.transparent,
           margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Container(
-                margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
+                margin: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.width * 0.04),
                 height: MediaQuery.of(context).size.width * 0.166,
                 decoration: BoxDecoration(
                     border: Border(
@@ -66,8 +74,8 @@ class _TimerFlyState extends State<TimerFly> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.04),
                 height: MediaQuery.of(context).size.width * 0.166,
+                margin: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.width * 0.04),
                 decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
@@ -83,21 +91,16 @@ class _TimerFlyState extends State<TimerFly> {
                   child: Container(
                     decoration: BoxDecoration(
                         borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        border: Border(
-                          top: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
-                          bottom: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
-                          left: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
-                          right: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
-                        )
+                        border: Border.all(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2)
                     ),
                     margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           ///hrs
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.29,
+                          Flexible(
                               child: ListWheelScrollView.useDelegate(
-                                  controller: hourcontroller,
+                                  controller: hourController,
                                   perspective: 0.001,
                                   diameterRatio: 0.96,
                                   physics: const FixedExtentScrollPhysics(),
@@ -105,7 +108,6 @@ class _TimerFlyState extends State<TimerFly> {
                                   onSelectedItemChanged: (value) {
                                     setState(() {
                                       selectedIndexHours = value;
-                                      print(selectedIndexHours);
                                     });
                                   },
                                   childDelegate: ListWheelChildLoopingListDelegate(
@@ -128,23 +130,19 @@ class _TimerFlyState extends State<TimerFly> {
                                                       color: colorforhours,
                                                     ))));
                                       })))),
-                          Text(
+                          Flexible(
+                            child: Text(
                             ':',
                             style: TextStyle(
                               fontSize: MediaQuery.of(context).size.width * 0.125,
                               color: AppColors3.primaryColor,
-                            ),
-                          ),
-
+                            ))),
                           ///mins
-
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.29,
+                          Flexible(
                               child: ListWheelScrollView.useDelegate(
                                   onSelectedItemChanged: (value) {
                                     setState(() {
                                       selectedIndexMins = value;
-                                      print(selectedIndexMins);
                                     });
                                   },
                                   controller: minsController,
@@ -169,14 +167,12 @@ class _TimerFlyState extends State<TimerFly> {
                                       })))),
 
                           ///am/pm
-                          SizedBox(
-                              width: MediaQuery.of(context).size.width * 0.23,
+                          Flexible(
                               child: ListWheelScrollView.useDelegate(
-                                  controller: AmPmController,
+                                  controller: amPmController,
                                   onSelectedItemChanged: (value) {
                                     setState(() {
                                       selectedIndexAmPm = value;
-                                      print(selectedIndexAmPm);
                                     });
                                   },
                                   perspective: 0.001,
@@ -190,16 +186,15 @@ class _TimerFlyState extends State<TimerFly> {
                                             ? AppColors3.primaryColor
                                             : Colors.grey;
                                         final String text = index == 0 ? 'p.m.' : 'a.m.';
-                                        return Container(
-                                            child: Center(
-                                                child: Text(text,
-                                                    style: TextStyle(
-                                                        fontSize: index == selectedIndexAmPm
-                                                            ? MediaQuery.of(context).size.width *
-                                                            0.11
-                                                            : MediaQuery.of(context).size.width *
-                                                            0.12,
-                                                        color: colorforitems))));
+                                        return Center(
+                                            child: Text(text,
+                                                style: TextStyle(
+                                                    fontSize: index == selectedIndexAmPm
+                                                        ? MediaQuery.of(context).size.width *
+                                                        0.11
+                                                        : MediaQuery.of(context).size.width *
+                                                        0.12,
+                                                    color: colorforitems)));
                                       })))
                         ]),
                   )
