@@ -64,6 +64,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   bool isDragX = false;
   int itemDragX = 0;
   int helperModalDeleteClient = 0; //1 para complete, 2 para execute 3 para dismmis
+  int? oldIndex = 0;
 
   void hideBorderRadius(){
     listenerslidable.setChange(
@@ -383,8 +384,12 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                 firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate, 
                                 listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments, 
                                 expandedIndexToCharge: widget.expandedIndexToCharge, initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
-                                onShowBlurrModal: onShowBlurrModal, isDocLog: false,
-                              )));
+                                onShowBlurrModal: onShowBlurrModal, isDocLog: false, onExpand: (int? newIndex) {
+                                setState(() {
+                                  expandedIndex = newIndex;
+                                });
+                              }),
+                              ));
                     });
               }
             }));

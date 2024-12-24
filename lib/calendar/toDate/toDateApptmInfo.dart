@@ -29,12 +29,13 @@ class ApptmInfo extends StatefulWidget {
   final String? firtsIndexTouchHour;
   final String? firtsIndexTouchDate;
   final int? expandedIndexToCharge;
+  final Function(int?) onExpand;
   final void Function(bool, int?, String, String, bool, String) reachTop;
   final Function (bool, DateTime) initializateApptm;
   const ApptmInfo({super.key, required this.clientName, required this.treatmentType, required this.index, required this.dateLookandFill, required this.reachTop,
     required this.appointment, required this.timeParts, this.firtsIndexTouchHour, this.firtsIndexTouchDate, this.expandedIndexToCharge,
     required this.selectedDate, this.listenerapptm, required this.filteredAppointments, required this.initializateApptm, this.listenerslidable,
-    required this.onShowBlurrModal, required this.isDocLog,});
+    required this.onShowBlurrModal, required this.isDocLog, required this.onExpand,});
 
   @override
   State<ApptmInfo> createState() => _ApptmInfoState();
@@ -160,9 +161,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
     index = widget.index;
     _oldIndex = null;
     expandedIndex = widget.expandedIndexToCharge;
-    print('expandedIndex3 $expandedIndex');
-
-    //isTaped = expandedIndex != null;
+    isTaped = expandedIndex != null;
     if (widget.firtsIndexTouchHour != null) {
 
       _timerController.text = widget.firtsIndexTouchHour!;
@@ -212,14 +211,9 @@ class _ApptmInfoState extends State<ApptmInfo> {
               setState(() {
                 expandedIndex = null;
                 isTaped = false;
-                print('expand $expandedIndex');
-                print('wwexpand ${widget.index}');
-                print('isTaped $isTaped');
-                print('/////////////////////');
               });
             } else {
               setState(() {
-                _oldIndex = expandedIndex;
                 Appointment appointmetsToModify = widget.filteredAppointments[index];
                 _timerController.text = DateFormat('HH:mm').format(appointmetsToModify.appointmentDate!);
                 DateTime formattedTime24hrs = DateFormat('HH:mm').parse(_timerController.text);
@@ -231,9 +225,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
                 isTaped = true;
                 modalReachTop = true;
                 widget.reachTop(modalReachTop, expandedIndex, _timerController.text, _dateController.text, positionBtnIcon, _dateLookandFill);
-                print('expand $expandedIndex');
-                print('wwexpand ${widget.index}');
-                print('isTaped $isTaped');
               });
             }
           },
@@ -251,11 +242,11 @@ class _ApptmInfoState extends State<ApptmInfo> {
               ),
               border: expandedIndex == widget.index ? Border.all(
                 color: AppColors3.primaryColor,
-                width: 1.5) : _oldIndex == null && isTaped == false? Border.all(
-                  color: AppColors3.redDelete,
-                  width: 1.5)  : _oldIndex != null && isTaped == true? Border.all(
-                  color: AppColors3.blackColor,
-                  width: 1.5) : null
+                width: 1.5) : expandedIndex == null && isTaped == false ? Border.all(
+                  color: AppColors3.primaryColor,
+                  width: 1.5) : Border.all(
+                  color: AppColors3.primaryColor.withOpacity(0.3),
+                  width: 1.5)
             ),
             alignment: Alignment.center,
             child: Row(
