@@ -47,7 +47,6 @@ class AuthService2 {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt_token', data['token']);
         await prefs.setInt('user_id', data['user']['id']);
-        print('hola: ${data['user']}');
         SessionManager.instance.isDoctor = data['user']['role'] == 'doctor';
         SessionManager.instance.Nombre = data['user']['name'];
 

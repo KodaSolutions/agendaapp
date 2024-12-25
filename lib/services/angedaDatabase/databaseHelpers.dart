@@ -136,7 +136,6 @@ class DatabaseHelpers {
         List<Map<String, dynamic>> appointments = data.map((json) => json as Map<String, dynamic>).toList();
         await dbService.insertAppointments(appointments);
         print('Datos de appointments sincronizados correctamente');
-        print('appt: $appointments');
       }else{
         print('Error al sincronizar appointments: ${response.statusCode}');
       }

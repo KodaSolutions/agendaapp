@@ -14,6 +14,7 @@ import '../../utils/listenerSlidable.dart';
 import '../../utils/timer.dart';
 
 class ApptmInfo extends StatefulWidget {
+  final bool isDocLog;
   final Function(bool) onShowBlurrModal;
   final Listenerapptm? listenerapptm;
   final Listenerslidable? listenerslidable;
@@ -28,12 +29,13 @@ class ApptmInfo extends StatefulWidget {
   final String? firtsIndexTouchHour;
   final String? firtsIndexTouchDate;
   final int? expandedIndexToCharge;
-  final Function(bool, int?, String, String, bool, String) reachTop;
+  final Function(int?) onExpand;
+  final void Function(bool, int?, String, String, bool, String) reachTop;
   final Function (bool, DateTime) initializateApptm;
   const ApptmInfo({super.key, required this.clientName, required this.treatmentType, required this.index, required this.dateLookandFill, required this.reachTop,
     required this.appointment, required this.timeParts, this.firtsIndexTouchHour, this.firtsIndexTouchDate, this.expandedIndexToCharge,
     required this.selectedDate, this.listenerapptm, required this.filteredAppointments, required this.initializateApptm, this.listenerslidable,
-    required this.onShowBlurrModal,});
+    required this.onShowBlurrModal, required this.isDocLog, required this.onExpand,});
 
   @override
   State<ApptmInfo> createState() => _ApptmInfoState();
@@ -161,6 +163,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
     expandedIndex = widget.expandedIndexToCharge;
     isTaped = expandedIndex != null;
     if (widget.firtsIndexTouchHour != null) {
+
       _timerController.text = widget.firtsIndexTouchHour!;
       antiqueHour = widget.firtsIndexTouchHour!;
     }
@@ -237,16 +240,13 @@ class _ApptmInfoState extends State<ApptmInfo> {
                 topLeft: const Radius.circular(15),
                 bottomLeft: const Radius.circular(15),
               ),
-              border: _oldIndex != index ? Border.all(
-                color: expandedIndex == index ? AppColors3.primaryColor : !isTaped && expandedIndex != index ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
-                width: 1.5,
-              ) : const Border(
-                left: BorderSide(color: AppColors3.primaryColor, width: 1.5),
-                top: BorderSide(color: AppColors3.primaryColor, width: 1.5),
-                bottom: BorderSide(color: AppColors3.primaryColor, width: 1.5),
-                right: BorderSide(color: AppColors3.primaryColor, width: 1.5),
-              ),
-              color: AppColors3.whiteColor,
+              border: expandedIndex == widget.index ? Border.all(
+                color: AppColors3.primaryColor,
+                width: 1.5) : expandedIndex == null && isTaped == false ? Border.all(
+                  color: AppColors3.primaryColor,
+                  width: 1.5) : Border.all(
+                  color: AppColors3.primaryColor.withOpacity(0.3),
+                  width: 1.5)
             ),
             alignment: Alignment.center,
             child: Row(
@@ -296,7 +296,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
                         widget.treatmentType,
                         style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.05,
-                          color: expandedIndex == widget.index ? AppColors3.blackColor : !isTaped && expandedIndex != widget.index ? AppColors3.blackColor : AppColors3.primaryColor.withOpacity(0.3),
+                          color: expandedIndex == index ? AppColors3.blackColor : !isTaped && expandedIndex != index ? AppColors3.blackColor : AppColors3.primaryColor.withOpacity(0.3),
                         ),
                       ),
                       ///componentes de la segunda card >>>>>>
@@ -356,7 +356,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
                             decoration: const BoxDecoration(
                                 color: AppColors3.whiteColor
                             ),
-                            clipBehavior: Clip.hardEdge, // Recort
+                            clipBehavior: Clip.hardEdge,
                             child: CalendarioCita(onDayToAppointFormSelected: _onDateToAppointmentForm),
                           ),
                           Container(
@@ -401,19 +401,19 @@ class _ApptmInfoState extends State<ApptmInfo> {
                                   },
                                 ),
                               ),
-                          AnimatedContainer(duration: const Duration(milliseconds: 85),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 85),
                             //padding: const EdgeInsets.only(left: , right: 1, bottom: 10),
                             margin: EdgeInsets.only(
                                 bottom: _isTimerShow ? MediaQuery.of(context).size.width * 0.03 : 0,
-                                left: MediaQuery.of(context).size.width * 0.01,
-                                right: MediaQuery.of(context).size.width * 0.01,
                             ),
-                            height: _isTimerShow ? 250 : 0,
+                            height: _isTimerShow ? 310 : 0,
                             decoration: const BoxDecoration(
                                 color: AppColors3.whiteColor
                             ),
-                            clipBehavior: Clip.hardEdge,
-                            child: TimerFly(onTimeChoose: _onTimeChoose),
+                            child: TimerFly(
+                                hour: _timerController.text == '' ? null : _timerController.text,
+                                onTimeChoose: _onTimeChoose),
                           ),
                           Visibility(
                               visible: !isCalendarShow && !_isTimerShow,
