@@ -1,11 +1,14 @@
 import 'package:agenda_app/projectStyles/appColors.dart';
 import 'package:flutter/material.dart';
 
+import '../../services/userService.dart';
+import '../../views/usersConfig.dart';
+
 class CardUsers extends StatefulWidget {
   final List<Map<String, dynamic>> users;
   final String query;
   final int index;
-  final Function (String, int, bool) onModifyUser;
+  final Function (String, int, bool, String) onModifyUser;
   const CardUsers({super.key, required this.users, required this.index, required this.onModifyUser, required this.query});
 
   @override
@@ -15,7 +18,72 @@ class CardUsers extends StatefulWidget {
 class _CardUsersState extends State<CardUsers> {
 
   int? cardSelected;
+  @override
+  void initState() {
+    super.initState();
+    selectedUserId = widget.users[widget.index]['id'];
+    user = widget.users[widget.index]['name'];
+  }
+  ///funciones editar y eliminar
+  String? user;
+  bool isUserSel = false;
+  String? selectedUserId;
+  void onSelUser(String? displayText, String? userId) {
+    setState(() {
+      user = displayText;
+      selectedUserId = userId;
+      isUserSel = displayText != null && userId != null;
+    });
+  }
+  void deleteUser() async {
+    if (selectedUserId == null) return;
+    bool? confirm = await showDialog<bool>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirmar eliminación'),
+          content: Text('¿Está seguro que desea eliminar al usuario: $user?'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: const Text('Eliminar'),
+            ),
+          ],
+        );
+      },
+    );
 
+    if (confirm != true) return;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return const Center(child: CircularProgressIndicator());
+      },
+    );
+    final result = await UserServices.deleteUser(selectedUserId!);
+    if (mounted) {
+      Navigator.of(context).pop();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message']),
+          backgroundColor: result['success'] ? Colors.green : Colors.red,
+        ),
+      );
+
+      if (result['success']) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const UsersConfig()),
+        );
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -52,9 +120,9 @@ class _CardUsersState extends State<CardUsers> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    highlightTextTitle(widget.users[widget.index]['name'], widget.query),
-                    Text(widget.users[widget.index]['role'] == 1 ? 'Médico Veterinario' :
-                    widget.users[widget.index]['role'] == 2 ? 'Asistente' : 'Administrador',
+                    highlightTextTitle(widget.users[widget.index]['name'] , widget.query),
+                    Text(widget.users[widget.index]['role'] == 1 ? 'Médico Veterinario -' ' ${widget.users[widget.index]['identification']}' :
+                    widget.users[widget.index]['role'] == 2 ? 'Asistente -' ' ${widget.users[widget.index]['identification']}' : 'Administrador -' ' ${widget.users[widget.index]['identification']}',
                       style: TextStyle(
                         color: AppColors3.primaryColor.withOpacity(0.4),
                         fontSize: MediaQuery.of(context).size.width * 0.04,
@@ -66,18 +134,22 @@ class _CardUsersState extends State<CardUsers> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                    onPressed: (){
-                      setState(() {
-                        widget.onModifyUser(widget.users[widget.index]['name'], widget.index, true);
-                      });
-                    }, icon: Icon(Icons.edit_document,
-                  color: AppColors3.primaryColor,
-                  size: MediaQuery.of(context).size.width * 0.065,)),
+                    onPressed: () {
+                      widget.onModifyUser(
+                        widget.users[widget.index]['name'],
+                        widget.index,
+                        true,
+                        widget.users[widget.index]['id'],
+                      );
+                    },
+                    icon: Icon(
+                      Icons.edit_document,
+                      color: AppColors3.primaryColor,
+                      size: MediaQuery.of(context).size.width * 0.065,
+                    )
+                ),
                 IconButton(
-                    onPressed: (){
-                      setState(() {
-                      });
-                    }, icon: Icon(Icons.delete,
+                    onPressed: deleteUser, icon: Icon(Icons.delete,
                   color: AppColors3.redDelete,
                   size: MediaQuery.of(context).size.width * 0.065,)),
               ],
