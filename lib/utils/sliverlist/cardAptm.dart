@@ -3,7 +3,6 @@ import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import '../../projectStyles/appColors.dart';
 
 class CardAptm extends StatefulWidget {

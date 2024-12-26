@@ -41,6 +41,8 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   late Appointment appointment;
   String _dateLookandFill = '';
 
+  int? oldIndex;
+
   //late DateTime selectedDate2;
   TextEditingController _timerController = TextEditingController();
   TextEditingController timerControllertoShow = TextEditingController();
@@ -64,7 +66,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   bool isDragX = false;
   int itemDragX = 0;
   int helperModalDeleteClient = 0; //1 para complete, 2 para execute 3 para dismmis
-  int? oldIndex = 0;
+  late List<GlobalKey<ApptmInfoState>> keys; // Lista de GlobalKeys para los hijos
 
   void hideBorderRadius(){
     listenerslidable.setChange(
@@ -256,7 +258,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -286,9 +287,10 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
               } else {
                 List<Appointment> filteredAppointments = snapshot.data!;
                 return ListView.builder(
-                    physics: const BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                     itemCount: filteredAppointments.length,
                     itemBuilder: (context, index) {
+                      keys = List.generate(10, (_) => GlobalKey<ApptmInfoState>()); // Cambia el tamaño según tus datos
                       Appointment appointment = filteredAppointments[index];
                       String time = (appointment.appointmentDate != null)
                           ? DateFormat('hh:mm a')
@@ -369,7 +371,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                       ).then((_){
                                         widget.onShowBlurr(false);
                                       });
-                                      ///aquifly
+                                      ///aquif
                                     },
                                     backgroundColor: AppColors3.primaryColor,
                                     foregroundColor: AppColors3.whiteColor,
@@ -379,16 +381,14 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                 ],
                               ),
                               child: ApptmInfo(
+                                key: keys[index], // Asignar GlobalKey al hijo
                                 clientName: clientName, treatmentType: treatmentType, index: index, dateLookandFill: _dateLookandFill,
                                 reachTop: reachTop, appointment: appointment, timeParts: timeParts, selectedDate: widget.selectedDate,
                                 firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate, 
                                 listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments, 
                                 expandedIndexToCharge: widget.expandedIndexToCharge, initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
-                                onShowBlurrModal: onShowBlurrModal, isDocLog: false, onExpand: (int? newIndex) {
-                                setState(() {
-                                  expandedIndex = newIndex;
-                                });
-                              }),
+                                onShowBlurrModal: onShowBlurrModal, isDocLog: false,
+                              ),
                               ));
                     });
               }

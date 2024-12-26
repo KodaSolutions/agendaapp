@@ -1,13 +1,9 @@
 import 'dart:convert';
-import 'dart:ui';
-import 'package:agenda_app/usersConfig/apmntList.dart';
 import 'package:agenda_app/utils/sliverlist/cardAptm.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../regEx.dart';
 import '../../kboardVisibilityManager.dart';
 import '../calendar/calendarSchedule.dart';
 import '../projectStyles/appColors.dart';

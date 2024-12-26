@@ -2,7 +2,6 @@ import 'package:agenda_app/projectStyles/appColors.dart';
 import 'package:agenda_app/services/angedaDatabase/databaseHelpers.dart';
 import 'package:agenda_app/views/login.dart';
 import 'package:flutter/material.dart';
-//
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/services.dart';
