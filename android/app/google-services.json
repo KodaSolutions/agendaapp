@@ -1,8 +1,8 @@
 {
   "project_info": {
-    "project_number": "838261028996",
-    "project_id": "beauteapp-a78cb",
-    "storage_bucket": "beauteapp-a78cb.appspot.com"
+    "project_number": "925169889755",
+    "project_id": "agendaapp-e5568",
+    "storage_bucket": "agendaapp-e5568.firebasestorage.app"
   },
   "client": [
     {
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAgE43MrFpFFuuCwz-Pilwqr1nyhVrTBuU"
+          "current_key": "AIzaSyDqxgtePzaPhe-SQ74itYWt-P7n8AvD_28"
         }
       ],
       "services": {
