@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:agenda_app/calendar/toDate/toDateContainer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -29,19 +30,18 @@ class ApptmInfo extends StatefulWidget {
   final String? firtsIndexTouchHour;
   final String? firtsIndexTouchDate;
   final int? expandedIndexToCharge;
-  final Function(int?) onExpand;
   final void Function(bool, int?, String, String, bool, String) reachTop;
   final Function (bool, DateTime) initializateApptm;
   const ApptmInfo({super.key, required this.clientName, required this.treatmentType, required this.index, required this.dateLookandFill, required this.reachTop,
     required this.appointment, required this.timeParts, this.firtsIndexTouchHour, this.firtsIndexTouchDate, this.expandedIndexToCharge,
     required this.selectedDate, this.listenerapptm, required this.filteredAppointments, required this.initializateApptm, this.listenerslidable,
-    required this.onShowBlurrModal, required this.isDocLog, required this.onExpand,});
+    required this.onShowBlurrModal, required this.isDocLog});
 
   @override
-  State<ApptmInfo> createState() => _ApptmInfoState();
+  State<ApptmInfo> createState() => ApptmInfoState();
 }
 
-class _ApptmInfoState extends State<ApptmInfo> {
+class ApptmInfoState extends State<ApptmInfo> {
 
   late Future<List<Appointment>> appointments;
   late List<Appointment> filteredAppointments;
@@ -58,7 +58,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
   bool isTaped = false;
   late int index;
   late bool modalReachTop;
-  int? _oldIndex;
+  int? oldIndex;
   bool isDragX = false;
   int itemDragX = 0;
   bool positionBtnIcon = false;
@@ -67,9 +67,8 @@ class _ApptmInfoState extends State<ApptmInfo> {
   //
   TextEditingController _timerController = TextEditingController();
   TextEditingController timerControllertoShow = TextEditingController();
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
   //
-
   void _onDateToAppointmentForm(
       String dateToAppointmentForm, bool showCalendar) {
     setState(() {
@@ -159,7 +158,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
   void initState() {
     // TODO: implement initState
     index = widget.index;
-    _oldIndex = null;
     expandedIndex = widget.expandedIndexToCharge;
     isTaped = expandedIndex != null;
     if (widget.firtsIndexTouchHour != null) {
@@ -482,7 +480,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
                                               }).then((result) {
                                                 if (result == true) {
                                                   widget.onShowBlurrModal(false);
-                                                  setState(() {
                                                     modalReachTop = true;
                                                     expandedIndex = null;
                                                     isTaped = false;
@@ -501,7 +498,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
                                                         positionBtnIcon,
                                                         _dateLookandFillAfterSave);
                                                     widget.initializateApptm(true, dateSelected);
-                                                  });
                                                 } else {
                                                   widget.onShowBlurrModal(false);
                                                   _timerController.text = antiqueHour;
