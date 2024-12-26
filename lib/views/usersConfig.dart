@@ -23,6 +23,7 @@ class _UsersConfigState extends State<UsersConfig> {
   String? error;
   bool blurr = false;
   String name = '';
+  String? selectedUserId;
   TextEditingController seek = TextEditingController();
   List<Map<String, dynamic>> filteredUsers = [];
 
@@ -54,12 +55,12 @@ class _UsersConfigState extends State<UsersConfig> {
 
   }
 
-  void onModifyUser (String name, int index, bool blurr){
+  void onModifyUser(String name, int index, bool blurr, String userId) {
     setState(() {
       this.name = name;
       this.blurr = blurr;
+      this.selectedUserId = userId;
     });
-
   }
 
   void filterByUsers() {
@@ -208,7 +209,7 @@ class _UsersConfigState extends State<UsersConfig> {
                     child: Center(
                       child: MOdifyUser(
                           kBoardVisibility: keyboardVisibilityManager.visibleKeyboard,
-                          onShowBlurr: onShowBlurr, name: name),
+                          onShowBlurr: onShowBlurr, name: name, userId: selectedUserId ?? ''),
                     ))),
           ))
     ]);
