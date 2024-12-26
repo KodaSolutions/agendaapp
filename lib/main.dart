@@ -10,72 +10,31 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 void main() async {
+
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-
-  print('Iniciando configuración de Firebase...');
   await Firebase.initializeApp();
-  print('Firebase inicializado');
-
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-
-  // Agregar listener para cuando la app está en background
-  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-  // Solicitar permisos con más detalle
   NotificationSettings settings = await messaging.requestPermission(
     alert: true,
     badge: true,
     sound: true,
-    provisional: false,
-    criticalAlert: true,
-    announcement: true,
   );
-  print('Estado de permisos detallado:');
-  print('- Alert: ${settings.alert}');
-  print('- Badge: ${settings.badge}');
-  print('- Sound: ${settings.sound}');
-  //print('- Provisional: ${settings.provisional}');
-
-  // Configurar todos los listeners posibles
-  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('💬 MENSAJE EN PRIMER PLANO RECIBIDO:');
-    print('- Título: ${message.notification?.title}');
-    print('- Cuerpo: ${message.notification?.body}');
-    print('- Data: ${message.data}');
-    print('- Mensaje completo: ${message.toMap()}');
-  });
-
-  FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-    print('🔔 APP ABIERTA DESDE NOTIFICACIÓN:');
-    print('- Título: ${message.notification?.title}');
-    print('- Cuerpo: ${message.notification?.body}');
-    print('- Data: ${message.data}');
-  });
-
+  print('Permiso de notificación aceptado: ${settings.authorizationStatus}');
   try {
     String? fcmToken = await messaging.getToken();
-    print('📱 FCM Token obtenido: $fcmToken');
-
-    // Escuchar renovaciones de token
-    FirebaseMessaging.instance.onTokenRefresh.listen((newToken) {
-      print('🔄 Token FCM renovado: $newToken');
-    });
+    print('FCM Token: $fcmToken');
   } catch (e) {
-    print('❌ Error al obtener token FCM: $e');
+    print('Error al obtener el token FCM: $e');
   }
-
-  runApp(const MyApp());
-}
-
-// Handler para mensajes en background
-Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('📨 Mensaje recibido en background:');
-  print('- Título: ${message.notification?.title}');
-  print('- Cuerpo: ${message.notification?.body}');
-  print('- Data: ${message.data}');
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Mensaje recibido en primer plano (app abierta): ${message.notification?.title}');
+  });
+  runApp(
+    const MyApp(),
+  );
 }
 
 class MyApp extends StatefulWidget {
