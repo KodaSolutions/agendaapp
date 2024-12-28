@@ -457,9 +457,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
                   firtsIndexTouchHour: widget.firtsIndexTouchHour,
                   onShowBlurr: onShowBlurrModal,
               ),),
-
-
-            ///
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors3.primaryColor,
@@ -491,11 +488,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
             ],
           ),
         ),
- /*       Container(
-          width: double.infinity,
-          height: double.infinity,
-          color: Colors.red,
-        ),*/
 
         Visibility(
           visible: _showBlurr,
@@ -526,33 +518,6 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
             padding: EdgeInsets.zero,
             onPressed: () {
               handleButtonPress();
-              /*setState(() {
-                _dateLookandFill = dateOnly!;
-
-                //
-                //
-                if (positionBtnIcon == false) {
-                  positionBtnIcon = true;
-                  modalReachTop = true;
-                  widget.reachTop(
-                      modalReachTop,
-                      expandedIndex,
-                      _timerController.text,
-                      _dateController.text,
-                      positionBtnIcon,
-                      _dateLookandFill);
-                } else {
-                  positionBtnIcon = false;
-                  modalReachTop = false;
-                  widget.reachTop(
-                      modalReachTop,
-                      expandedIndex,
-                      _timerController.text,
-                      _dateController.text,
-                      positionBtnIcon,
-                      _dateLookandFill);
-                }
-              });*/
             },
             icon: Icon(
               !positionBtnIcon
@@ -565,6 +530,4 @@ class _AppointmentScreenState extends State<AppointmentScreen> with SingleTicker
         ),
       ]);
   }
-
-  // Método para construir cada opción de Radio
 }

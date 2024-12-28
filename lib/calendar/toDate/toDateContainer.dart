@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../../models/appointmentModel.dart';
 import '../../projectStyles/appColors.dart';
+import '../../usersConfig/functions.dart';
 import '../../utils/PopUpTabs/deleteAppointment.dart';
 import '../../utils/listenerApptm.dart';
 import '../../utils/listenerSlidable.dart';
@@ -44,9 +45,9 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   int? oldIndex;
 
   //late DateTime selectedDate2;
-  TextEditingController _timerController = TextEditingController();
+  final TextEditingController _timerController = TextEditingController();
   TextEditingController timerControllertoShow = TextEditingController();
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
   String antiqueHour = '';
   String antiqueDate = '';
   bool _isTimerShow = false;
@@ -66,7 +67,9 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   bool isDragX = false;
   int itemDragX = 0;
   int helperModalDeleteClient = 0; //1 para complete, 2 para execute 3 para dismmis
-  late List<GlobalKey<ApptmInfoState>> keys; // Lista de GlobalKeys para los hijos
+  late List<ExpansionTileController> tileControllers;
+  var appointmentsList = [];
+  String nameDoctor = '';
 
   void hideBorderRadius(){
     listenerslidable.setChange(
@@ -92,8 +95,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
     ) ?? false;
   }
 
-  //final void Function(bool, int?, String, String, bool, String) reachTop;
-
   void reachTop (bool modalReachTop , int? _expandedIndex, String _timerController, String _dateController, bool positionBtnIcon, String _dateLookandFill){
       expandedIndex = _expandedIndex;
       widget.reachTop(
@@ -110,6 +111,49 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
     }
   }
 
+  void initializeSlidableControllers(int number) {
+    slidableControllers.clear();
+    for (int i = 0; i < number; i++) {
+      final controller = SlidableController(this);
+      controller.animation.addListener(() {
+        double dragRatio = controller.ratio;
+        switch (controller.animation.status) {
+          case AnimationStatus.completed:
+            setState(() {
+              helperModalDeleteClient = 1;
+            });
+            break;
+          case AnimationStatus.forward:
+            setState(() {
+              helperModalDeleteClient = 2;
+            });
+            break;
+          case AnimationStatus.dismissed:
+            setState(() {
+              helperModalDeleteClient = 3;
+            });
+            break;
+          default:
+            break;
+        }
+        if (dragRatio != 0) {
+          setState(() {
+            isDragX = true;
+            itemDragX = i;
+            hideBorderRadius();
+          });
+        } else {
+          setState(() {
+            itemDragX = i;
+            isDragX = false;
+            showBorderRadius();
+          });
+        }
+      });
+      slidableControllers.add(controller);
+    }
+  }
+
   Future<void> initializeAppointments(DateTime date) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -118,10 +162,17 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
         setState(() {
           appointments = fetchAppointments(date, id: userId);
         });
+        appointmentsList = await appointments;
+        tileControllers =  List.generate(appointmentsList.length, (_) => ExpansionTileController());
+        initializeSlidableControllers(appointmentsList.length);
       } else {
         setState(() {
           appointments = fetchAppointments(date);
         });
+        appointmentsList = await appointments;
+        tileControllers =  List.generate(appointmentsList.length, (_) => ExpansionTileController());
+        initializeSlidableControllers(appointmentsList.length);
+
       }
     } catch (e) {
       setState(() {
@@ -129,13 +180,35 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
       });
     }
   }
+  bool isLoadingUsers = false;
+  String? error;
+  List<Map<String, dynamic>> doctorUsers = [];
+  //
+  Future<void> loadUserswithRole() async {
+    setState(() {
+      isLoadingUsers = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersWithRoles();
+      setState(() {
+        doctorUsers = usersList.where((user) => user['role'] == 1)
+            .map((user) => {'id': user['id'], 'name': user['name'], 'role': user['role']})
+            .toList();
+        isLoadingUsers = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingUsers = false;
+        error = e.toString();
+      });
+    }
+  }
 
   Future<List<Appointment>> fetchAppointments(DateTime selectedDate,
       {int? id}) async {
-    String baseUrl =
-        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinments';
-    String baseUrl2 =
-        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinmentsAssit';
+    String baseUrl = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinments';
+    String baseUrl2 = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppoinmentsAssit';
     String url = id != null ? '$baseUrl/$id' : baseUrl2;
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? token = prefs.getString('jwt_token');
@@ -157,10 +230,8 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
       if (data.containsKey('appointments') && data['appointments'] != null) {
         List<dynamic> appointmentsJson = data['appointments'];
 
-        List<Appointment> allAppointments =
-        appointmentsJson.map((json) => Appointment.fromJson(json)).toList();
-        return allAppointments
-            .where((appointment) =>
+        List<Appointment> allAppointments = appointmentsJson.map((json) => Appointment.fromJson(json)).toList();
+        return allAppointments.where((appointment) =>
         appointment.appointmentDate != null &&
             appointment.appointmentDate!.year == selectedDate.year &&
             appointment.appointmentDate!.month == selectedDate.month &&
@@ -208,44 +279,9 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
        }
      });
    });
-   for (int i = 0; i < 10; i++) {
-     final controller = SlidableController(this);
-     controller.animation.addListener(() {
-       double dragRatio = controller.ratio;
-       switch (controller.animation.status) {
-         case AnimationStatus.completed:
-           setState(() {
-             helperModalDeleteClient = 1;
-           });
-           break;
-         case AnimationStatus.forward:
-           setState(() {
-             helperModalDeleteClient = 2;
-           });
-           break;
-         case AnimationStatus.dismissed:
-           setState(() {
-             helperModalDeleteClient = 3;
-           });
-           break;
-         default:
-           break;
-       }
-       if (dragRatio != 0) {
-         setState(() {
-           isDragX = true;
-           itemDragX = i;
-           hideBorderRadius();
-         });
-       } else {
-         setState(() {
-           itemDragX = i;
-           isDragX = false;
-           showBorderRadius();
-         });
-       }
-     });
-     slidableControllers.add(controller);
+   loadUserswithRole();
+   if(widget.expandedIndexToCharge != null){
+     oldIndex = widget.expandedIndexToCharge;
    }
     super.initState();
   }
@@ -290,15 +326,12 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                 physics: const BouncingScrollPhysics(),
                     itemCount: filteredAppointments.length,
                     itemBuilder: (context, index) {
-                      keys = List.generate(10, (_) => GlobalKey<ApptmInfoState>()); // Cambia el tamaño según tus datos
-                      Appointment appointment = filteredAppointments[index];
-                      String time = (appointment.appointmentDate != null)
+                  Appointment appointment = filteredAppointments[index];
+                  String time = (appointment.appointmentDate != null)
                           ? DateFormat('hh:mm a')
                           .format(appointment.appointmentDate!)
                           : 'Hora desconocida';
                       List<String> timeParts = time.split(' ');
-                      String clientName = appointment.clientName ?? 'Cliente desconocido';
-                      String treatmentType = appointment.treatmentType ?? 'Sin tratamiento';
                       ///este gesture detector le pertenece a al container que muesta info y sirve para la animacion de borrar
                       return Container(
                         color: Colors.transparent,
@@ -381,13 +414,23 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                 ],
                               ),
                               child: ApptmInfo(
-                                key: keys[index], // Asignar GlobalKey al hijo
-                                clientName: clientName, treatmentType: treatmentType, index: index, dateLookandFill: _dateLookandFill,
+                                doctorUsers: doctorUsers,
+                                tileController: tileControllers[index],
+                                index: index, dateLookandFill: _dateLookandFill,
                                 reachTop: reachTop, appointment: appointment, timeParts: timeParts, selectedDate: widget.selectedDate,
                                 firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate, 
                                 listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments, 
                                 expandedIndexToCharge: widget.expandedIndexToCharge, initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
                                 onShowBlurrModal: onShowBlurrModal, isDocLog: false,
+                                  oldIndex: oldIndex,
+                                  onExpansionChanged: (int newIndex) {
+                                    setState(() {
+                                      if (oldIndex != null && oldIndex != newIndex) {
+                                        tileControllers[oldIndex!].collapse();
+                                      }
+                                      oldIndex = newIndex;
+                                    });
+                                  },
                               ),
                               ));
                     });

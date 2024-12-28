@@ -23,7 +23,6 @@ class _CardAptmState extends State<CardAptm> {
   int? oldIndex;
   bool isUserSel = false;
   String? selectedUserId;
-  final List<ExpansionTileController> activeControllers = [];
   var formatter = new DateFormat('dd-MM-yyyy');
 
 
