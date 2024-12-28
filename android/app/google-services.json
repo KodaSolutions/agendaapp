@@ -7,15 +7,15 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:838261028996:android:d646cf2f4e886c21b76ad1",
+        "mobilesdk_app_id": "1:925169889755:android:3fae00195f32a5c84677fe",
         "android_client_info": {
-          "package_name": "com.example.agenda_app"
+          "package_name": "com.koda.agendaApp"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDqxgtePzaPhe-SQ74itYWt-P7n8AvD_28"
+          "current_key": "AIzaSyCQyHi_2TR5TnhZcdn2oQjBglprvIX_1pI"
         }
       ],
       "services": {
