@@ -31,6 +31,8 @@ class _AppConfigState extends State<AppConfig> {
   final _formKey = GlobalKey<FormState>();
   String? user;
   bool isValidationActive = false;
+  bool errorNewPsw = false;
+  String errorNewpsw = '';
   int? roleId;
 
   void onSelRol(int? id) {
@@ -189,7 +191,7 @@ class _AppConfigState extends State<AppConfig> {
 
   void changePassword() async {
     if (selectedUserId == null || newPswController.text.isEmpty) return;
-
+    print('lle ${errorNewpsw.length}');
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -205,7 +207,8 @@ class _AppConfigState extends State<AppConfig> {
 
     if (mounted) {
       Navigator.of(context).pop(); // Cerrar el indicador de carga
-
+      errorNewPsw = false;
+      user = null;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           padding: EdgeInsets.only(
@@ -290,7 +293,7 @@ class _AppConfigState extends State<AppConfig> {
                     ),
                     padding: EdgeInsets.symmetric(
                       horizontal: MediaQuery.of(context).size.width * 0.01,
-                      vertical: MediaQuery.of(context).size.width * 0.03,
+                      vertical: MediaQuery.of(context).size.width * 0.015,
                     ),
                     width: MediaQuery.of(context).size.width,
                     decoration: const BoxDecoration(
@@ -303,7 +306,7 @@ class _AppConfigState extends State<AppConfig> {
                       children: [
                         Padding(
                             padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.width * 0.03,
+                              bottom: MediaQuery.of(context).size.width * 0.02,
                             ),
                             child: Column(
                               children: [
@@ -315,10 +318,7 @@ class _AppConfigState extends State<AppConfig> {
                                         style: TextStyle(
                                             color: AppColors3.primaryColor,
                                             fontWeight: FontWeight.bold,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.065)),
+                                            fontSize: MediaQuery.of(context).size.width * 0.065)),
                                   ],
                                 ),
                                 const Row(
@@ -364,17 +364,12 @@ class _AppConfigState extends State<AppConfig> {
                               ],
                               decoration: InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
-                                    vertical:
-                                    MediaQuery.of(context).size.width *
-                                        0.035,
-                                    horizontal:
-                                    MediaQuery.of(context).size.width *
-                                        0.02,
+                                    vertical: MediaQuery.of(context).size.width * 0.035, horizontal:
+                                    MediaQuery.of(context).size.width * 0.02,
                                   ),
                                   filled: emailFocus.hasFocus ? true : false,
-                                  fillColor:
-                                  AppColors3.greyColor.withOpacity(0.2),
-                                  hintText: 'Ingrese correo electrónico'),
+                                  fillColor: AppColors3.greyColor.withOpacity(0.2),
+                                  hintText: 'Ingrese correo electrónico (opcional)'),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'El correo es obligatorio';
@@ -399,23 +394,21 @@ class _AppConfigState extends State<AppConfig> {
                               ],
                               decoration: InputDecoration(
                                   contentPadding: EdgeInsets.symmetric(
-                                      horizontal:
-                                      MediaQuery.of(context).size.width * 0.02,
-                                      vertical: MediaQuery.of(context).size.width *
-                                          0.035),
+                                      horizontal: MediaQuery.of(context).size.width * 0.02,
+                                      vertical: MediaQuery.of(context).size.width * 0.035),
                                   filled: pswFocus.hasFocus ? true : false,
                                   fillColor:
                                   AppColors3.greyColor.withOpacity(0.2),
                                   hintText: 'Contraseña'),
-                             /* validator: (value) {
+                              validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'La contraseña es obligatoria';
                                 }
-                                if (value.length != 3) {
+                                if (value.length != 4) {
                                   return 'La contraseña debe tener 4 caracteres';
                                 }
                                 return null;
-                              },*/
+                              },
                             ),
                           ],
                         ),),
@@ -518,7 +511,8 @@ class _AppConfigState extends State<AppConfig> {
                               ],
                             ),
                           ),
-                          Padding(padding: EdgeInsets.only(
+                          Padding(
+                            padding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.width * 0.05,
                           ),
                           child: Visibility(
@@ -534,22 +528,39 @@ class _AppConfigState extends State<AppConfig> {
                               TextFormField(
                                 controller: newPswController,
                                 focusNode: newPswFocus,
+                                keyboardType: TextInputType.number,
+                                inputFormatters: [
+                                  FilteringTextInputFormatter.digitsOnly,
+                                  LengthLimitingTextInputFormatter(4),
+                                  RegEx(type: InputFormatterType.numeric),
+                                ],
                                 decoration: InputDecoration(
+                                  errorText: errorNewPsw ? 'La contraseña debe tener 4 dígitos' : null,
                                     contentPadding: EdgeInsets.symmetric(
                                         horizontal: MediaQuery.of(context).size.width * 0.02,
                                         vertical: MediaQuery.of(context).size.width * 0.035
                                     ),
                                     suffixIcon: IconButton(
-                                        onPressed: isUserSel ? changePassword : null,
+                                        onPressed: isUserSel && errorNewpsw.length == 4 ? changePassword : (){
+                                          setState(() {
+                                            errorNewPsw = true;
+                                          });
+                                        },
                                         icon: Icon(
                                           Icons.check,
-                                          color: isUserSel ? Colors.green : Colors.grey,
+                                          color: errorNewpsw.length != 4 ? Colors.grey : Colors.green,
                                         )
                                     ),
                                     filled: newPswFocus.hasFocus,
                                     fillColor: AppColors3.greyColor.withOpacity(0.2),
                                     hintText: 'Nueva contraseña'
                                 ),
+                                onChanged: (text){
+                                  setState(() {
+                                    errorNewpsw = text;
+                                  });
+
+                                },
                               ),
                             ],
                           ),),),

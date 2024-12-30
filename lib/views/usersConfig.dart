@@ -5,6 +5,7 @@ import 'package:agenda_app/usersConfig/functions.dart';
 import 'package:agenda_app/utils/PopUpTabs/modifyUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../forms/appConfig.dart';
 import '../projectStyles/appColors.dart';
 import '../utils/sliverlist/cardUsers.dart';
 
@@ -153,7 +154,14 @@ class _UsersConfigState extends State<UsersConfig> {
                       ),
                       onChanged: (val){
                         filterByUsers();
-                              }))
+                              })),
+                  IconButton(onPressed: (){
+                    Navigator.of(context).push(
+                      CupertinoPageRoute(
+                        builder: (context) => AppConfig(),
+                      ),
+                    );
+                  }, icon: Icon(Icons.person_add, size: MediaQuery.of(context).size.width * 0.082,))
                     ]))),
           SliverPadding(
               padding: EdgeInsets.only(

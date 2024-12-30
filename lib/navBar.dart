@@ -1,8 +1,10 @@
+import 'package:agenda_app/forms/msgForm.dart';
 import 'package:agenda_app/projectStyles/appColors.dart';
 import 'package:agenda_app/services/auth_service.dart';
 import 'package:agenda_app/forms/appConfig.dart';
 import 'package:agenda_app/usersConfig/editProfile.dart';
 import 'package:agenda_app/usersConfig/functions.dart';
+import 'package:agenda_app/views/msgConfig.dart';
 import 'package:agenda_app/views/newAppointments.dart';
 import 'package:agenda_app/views/usersConfig.dart';
 import 'package:flutter/cupertino.dart';
@@ -141,35 +143,6 @@ class _navBarState extends State<navBar> {
                               ),
                             ),
                           ),
-                          InkWell(
-                            splashColor: AppColors3.primaryColor.withOpacity(0.2),
-                            onTap: (){
-                              Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  builder: (context) => EditProfile(),
-                                ),
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).size.width * 0.03,
-                                    bottom: MediaQuery.of(context).size.width * 0.03,
-                                    left: MediaQuery.of(context).size.width * 0.03,
-                                    right: MediaQuery.of(context).size.width * 0.03,
-                                  ),
-                                  child: Icon(CupertinoIcons.profile_circled,
-                                    size: MediaQuery.of(context).size.width * 0.075,
-                                  color: AppColors3.primaryColorMoreStrong,
-                                  ),
-                        ),
-                        Text('Editar perfil', style: TextStyle(
-                            color: AppColors3.primaryColorMoreStrong,
-                            fontSize: MediaQuery.of(context).size.width * 0.045)),
-                      ],
-                    ),
-                  ),
                           Visibility(
                             visible: userRole == 'asistente' || userRole == 'admin',
                             child: InkWell(
@@ -205,6 +178,35 @@ class _navBarState extends State<navBar> {
                                   ),
                                 ],
                               ),
+                            ),
+                          ),
+                          InkWell(
+                            splashColor: AppColors3.primaryColor.withOpacity(0.2),
+                            onTap: (){
+                              Navigator.of(context).push(
+                                CupertinoPageRoute(
+                                  builder: (context) => MsgConfig(),
+                                ),
+                              );
+                            },
+                            child: Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    top: MediaQuery.of(context).size.width * 0.03,
+                                    bottom: MediaQuery.of(context).size.width * 0.03,
+                                    left: MediaQuery.of(context).size.width * 0.03,
+                                    right: MediaQuery.of(context).size.width * 0.03,
+                                  ),
+                                  child: Icon(Icons.send_and_archive,
+                                    size: MediaQuery.of(context).size.width * 0.075,
+                                    color: AppColors3.primaryColorMoreStrong,
+                                  ),
+                                ),
+                                Text('Msjs predeterminados', style: TextStyle(
+                                    color: AppColors3.primaryColorMoreStrong,
+                                    fontSize: MediaQuery.of(context).size.width * 0.045)),
+                              ],
                             ),
                           ),
                           Visibility(
