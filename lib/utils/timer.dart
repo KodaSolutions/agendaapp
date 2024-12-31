@@ -18,6 +18,8 @@ class _TimerFlyState extends State<TimerFly> {
   late FixedExtentScrollController minsController;
   late FixedExtentScrollController amPmController;
   final timeController = TextEditingController();
+  int previousMinsIndex = 0; // Almacena el índice anterior para los minutos
+
 
   int selectedIndexHours = 0;
   int selectedIndexMins = 0;
@@ -46,14 +48,25 @@ class _TimerFlyState extends State<TimerFly> {
       final period = timeParts[1];
 
       selectedIndexHours = (int.parse(time[0]) % 12);
-      selectedIndexMins = int.parse(time[1]);
+
+      // Redondear minutos al intervalo más cercano de 20
+      int rawMinutes = int.parse(time[1]);
+      selectedIndexMins = (rawMinutes / 20).round() * 20;
+      if (selectedIndexMins >= 60) {
+        selectedIndexMins = 0;
+        selectedIndexHours = (selectedIndexHours + 1) % 12;
+      }
+
       selectedIndexAmPm = (period.toUpperCase() == 'PM') ? 0 : 1;
+      previousMinsIndex = selectedIndexMins ~/ 20;
+
     }
 
     hourController = FixedExtentScrollController(initialItem: selectedIndexHours);
-    minsController = FixedExtentScrollController(initialItem: selectedIndexMins);
+    minsController = FixedExtentScrollController(initialItem: selectedIndexMins ~/ 20); // Ajuste para trabajar con intervalos
     amPmController = FixedExtentScrollController(initialItem: selectedIndexAmPm);
   }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -137,34 +150,61 @@ class _TimerFlyState extends State<TimerFly> {
                               fontSize: MediaQuery.of(context).size.width * 0.125,
                               color: AppColors3.primaryColor,
                             ))),
-                          ///mins
                           Flexible(
-                              child: ListWheelScrollView.useDelegate(
-                                  onSelectedItemChanged: (value) {
-                                    setState(() {
-                                      selectedIndexMins = value;
-                                    });
-                                  },
-                                  controller: minsController,
-                                  perspective: 0.001,
-                                  diameterRatio: 0.96,
-                                  physics: const FixedExtentScrollPhysics(),
-                                  itemExtent: MediaQuery.of(context).size.width * 0.18,
-                                  childDelegate: ListWheelChildLoopingListDelegate(
-                                      children: List.generate(60, (index) {
-                                        final Color colorformins = index == selectedIndexMins
-                                            ? AppColors3.primaryColor
-                                            : Colors.grey;
-                                        return Container(
-                                            child: Center(
-                                                child: Text(index < 10 ? '0$index' : index.toString(),
-                                                    style: TextStyle(
-                                                        fontSize: index == selectedIndexMins
-                                                            ? MediaQuery.of(context).size.width * 0.11
-                                                            : MediaQuery.of(context).size.width *
-                                                            0.12,
-                                                        color: colorformins))));
-                                      })))),
+                            child: ListWheelScrollView.useDelegate(
+                              onSelectedItemChanged: (value) {
+                                setState(() {
+                                  int newMinsValue = value * 20;
+
+                                  if (value == 0 && previousMinsIndex == 2) {
+                                    if (selectedIndexHours == 11) {
+                                      selectedIndexHours = 0;
+                                      //hourController.jumpToItem(0); //si quieremos el cambio instantaneo
+                                      hourController.animateToItem( //cambio animado
+                                        selectedIndexHours,
+                                        duration: const Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    } else {
+                                      selectedIndexHours = (selectedIndexHours + 1) % 12;
+                                      hourController.animateToItem(
+                                        selectedIndexHours,
+                                        duration: const Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    }
+                                  }
+                                  previousMinsIndex = value;
+                                  selectedIndexMins = newMinsValue;
+                                });
+                              },
+                              controller: minsController,
+                              perspective: 0.001,
+                              diameterRatio: 0.96,
+                              physics: const FixedExtentScrollPhysics(),
+                              itemExtent: MediaQuery.of(context).size.width * 0.18,
+                              childDelegate: ListWheelChildLoopingListDelegate(
+                                children: List.generate(3, (index) {
+                                  final int minute = index * 20;
+                                  final Color colorformins = minute == selectedIndexMins
+                                      ? AppColors3.primaryColor
+                                      : Colors.grey;
+
+                                  return Center(
+                                    child: Text(
+                                      minute < 10 ? '0$minute' : minute.toString(),
+                                      style: TextStyle(
+                                        fontSize: minute == selectedIndexMins
+                                            ? MediaQuery.of(context).size.width * 0.11
+                                            : MediaQuery.of(context).size.width * 0.12,
+                                        color: colorformins,
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+                            ),
+                          ),
 
                           ///am/pm
                           Flexible(
@@ -220,8 +260,6 @@ class _TimerFlyState extends State<TimerFly> {
                             now.year, now.month, now.day, hour, selectedIndexMins);
                         String formattedTime = DateFormat('HH:mm:ss').format(fullTime);
                         setState(() {
-                          print('selectedDate>>> ${fullTime.hour}');
-
                           timeController.text = formattedTime;
                         });
 
