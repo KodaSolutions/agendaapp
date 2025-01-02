@@ -2,11 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../projectStyles/appColors.dart';
+import '../services/customMessagesService.dart';
 
 class MsgForm extends StatefulWidget {
+  final int? id;
   final String? title;
   final String? bodyMsg;
-  const MsgForm({super.key, this.title, this.bodyMsg});
+  const MsgForm({super.key, this.title, this.bodyMsg, this.id});
 
   @override
   State<MsgForm> createState() => _MsgFormState();
@@ -14,8 +16,10 @@ class MsgForm extends StatefulWidget {
 
 class _MsgFormState extends State<MsgForm> {
 
-  TextEditingController titleController = TextEditingController();
-  TextEditingController bodyMsgController = TextEditingController();
+  final CustomMessageService messageService = CustomMessageService();
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController bodyMsgController = TextEditingController();
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -23,11 +27,57 @@ class _MsgFormState extends State<MsgForm> {
     if(widget.title != null && widget.bodyMsg != null){
       titleController.text = widget.title!;
       bodyMsgController.text = widget.bodyMsg!;
-
     }
       super.initState();
   }
+  Future<void> saveMessage() async {
+    if (titleController.text.isEmpty || bodyMsgController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Por favor complete todos los campos')),
+      );
+      return;
+    }
 
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      if (widget.title == null) {
+        await messageService.createMessage(
+          title: titleController.text,
+          content: bodyMsgController.text,
+        );
+      } else {
+        await messageService.updateMessage(
+          id: widget.id!,
+          title: titleController.text,
+          content: bodyMsgController.text,
+        );
+      }
+
+      setState(() {
+        isLoading = false;
+      });
+
+      Navigator.of(context).pop(true);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(widget.title == null
+              ? 'Mensaje creado con éxito'
+              : 'Mensaje actualizado con éxito'
+          ),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -104,16 +154,14 @@ class _MsgFormState extends State<MsgForm> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                        ),
-                        onPressed: widget.title == null ?
-                            (){///codigo para CREAR
-                          }
-                            : (){
-                          ///codigo para MODIFICAR
-                        },
-                        child: Text('Guardar')),
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                      ),
+                      onPressed: isLoading ? null : saveMessage,
+                      child: isLoading
+                          ? const CircularProgressIndicator()
+                          : const Text('Guardar'),
+                    ),
                   ],
                 ),
               ],

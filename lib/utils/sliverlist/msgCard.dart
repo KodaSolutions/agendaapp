@@ -7,7 +7,7 @@ class MsgCard extends StatefulWidget {
   final Listenerslidable listenerslidable;
   final int index;
   final String query;
-  final List <Map<String, String>> filteredMsg;
+  final List <Map<String, dynamic>> filteredMsg;
   const MsgCard({super.key, required this.listenerslidable, required this.index, required this.query, required this.filteredMsg});
 
   @override
@@ -61,7 +61,7 @@ class _MsgCardState extends State<MsgCard> {
           Row(
             children: [
               Expanded(
-                child: highlightTextTitle(widget.filteredMsg[widget.index]['titulo']!, widget.query)),
+                child: highlightTextTitle(widget.filteredMsg[widget.index]['title']!, widget.query)),
             ],
           ),
           Row(
@@ -69,7 +69,7 @@ class _MsgCardState extends State<MsgCard> {
               Expanded(child: Text(
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
-                widget.filteredMsg[widget.index]['cuerpo']!,
+                widget.filteredMsg[widget.index]['content']!,
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width * 0.05
               ),),),

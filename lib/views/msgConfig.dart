@@ -8,7 +8,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../projectStyles/appColors.dart';
+import '../services/customMessagesService.dart';
 import '../utils/listenerSlidable.dart';
+
+final CustomMessageService messageService = CustomMessageService();
 
 class MsgConfig extends StatefulWidget {
   const MsgConfig({super.key});
@@ -22,47 +25,19 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
   List<SlidableController> slidableControllers = [];
   TextEditingController seekController = TextEditingController();
   bool showBlurr = false;
-  List <Map<String, String>> filteredMsg = [];
+  List<Map<String, dynamic>> messages = [];
+  List<Map<String, dynamic>> filteredMsg = [];
+  bool isLoading = true;
 
-  List<Map<String, String>> mensajes = [
-    {
-      "titulo": "Vacunación preventiva",
-      "cuerpo": "Recuerde vacunar a sus mascotas para protegerlas de enfermedades."
-    },
-    {
-      "titulo": "Horario extendido",
-      "cuerpo": "Nuestra veterinaria estará abierta hasta las 10 PM este viernes."
-    },
-    {
-      "titulo": "Adopción de mascotas",
-      "cuerpo": "Visítenos este sábado para conocer a mascotas en busca de un hogar."
-    },
-    {
-      "titulo": "Consulta gratuita",
-      "cuerpo": "Traiga a su mascota para una consulta gratuita este fin de semana."
-    },
-    {
-      "titulo": "Nueva sucursal",
-      "cuerpo": "¡Hemos abierto una nueva sucursal en el centro de la ciudad!"
-    },
-    {
-      "titulo": "Promoción en alimentos",
-      "cuerpo": "Descuento del 20% en alimentos premium para mascotas hasta el lunes."
-    },
-    {
-      "titulo": "Servicios de urgencias",
-      "cuerpo": "Ofrecemos servicios de urgencias veterinarias las 24 horas."
-    },
-  ];
+
   void filtrarMensajes(String query) {
     query = query.toLowerCase();
     setState(() {
       if (query.isEmpty) {
-        filteredMsg = mensajes;
+        filteredMsg = messages;
       } else {
-        filteredMsg = mensajes.where((mensaje) {
-          final titulo = mensaje["titulo"]?.toLowerCase() ?? "";
-          // final cuerpo = mensaje["cuerpo"]?.toLowerCase() ?? "";
+        filteredMsg = messages.where((mensaje) {
+          final titulo = mensaje["title"]?.toLowerCase() ?? "";
           return titulo.contains(query);
         }).toList();
       }
@@ -116,11 +91,26 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
   @override
   void initState() {
     // TODO: implement initState
-    filteredMsg = mensajes;//TODO esto tambien se quita y va cuando se haga el fetch
-    initializeSlidableControllers(mensajes.length);//TODO esto se quita de aqui cuando se haga el fetch de mensajes,para que se creen los controladores junto con los mensajes
-    super.initState();
-  }
 
+    super.initState();
+    fetchMessages();
+  }
+  Future<void> fetchMessages() async {
+    try {
+      final fetchedMessages = await messageService.getActiveMessages();
+      setState(() {
+        messages = fetchedMessages;
+        filteredMsg = fetchedMessages;
+        isLoading = false;
+        initializeSlidableControllers(messages.length);
+      });
+    } catch (e) {
+      print('Error al obtener mensajes: $e');
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
   @override
   void dispose() {
     for (var controller in slidableControllers) {
@@ -231,15 +221,29 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                                   },
                                 );
                                 if (confirm == true) {
-                                  print("Mensaje elimination");
+                                  try {
+                                    await messageService.deleteMessage(filteredMsg[index]['id']);
+                                    setState(() {
+                                      messages.removeAt(index);
+                                      filteredMsg.removeAt(index);
+                                      showBlurr = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Mensaje eliminado con éxito')),
+                                    );
+                                  } catch (e) {
+                                    setState(() {
+                                      showBlurr = false;
+                                    });
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Error al eliminar mensaje: $e')),
+                                    );
+                                  }
+                                } else {
                                   setState(() {
                                     showBlurr = false;
                                   });
-                                }else{
-                                  setState(() {
-                                    print("Mensaje cancelado");
-                                    showBlurr = false;
-                                  });                                }
+                                }
                               },
                               backgroundColor: AppColors3.redDelete,
                               foregroundColor: AppColors3.whiteColor,
@@ -251,8 +255,9 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                                 Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) => MsgForm(
-                                      title: mensajes[index]['titulo'] ?? 'Titulo no disponible',
-                                      bodyMsg: mensajes[index]['cuerpo'] ?? 'Texto no disponible',
+                                      id: filteredMsg[index]['id'],
+                                      title: filteredMsg[index]['title'],
+                                      bodyMsg: filteredMsg[index]['content'],
                                     ),
                                   ),
                                 );
