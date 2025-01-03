@@ -111,6 +111,42 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
       });
     }
   }
+  ///esta funcion esta pendiente, no hace lo que deberia, se agrego en el boton de crear
+  void reloadMsgs() async {
+    if (!mounted) return;
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final fetchedMessages = await messageService.getActiveMessages();
+      if (!mounted) return;
+
+      for (var controller in slidableControllers) {
+        controller.dispose(); // Limpiamos los controladores existentes
+      }
+
+      setState(() {
+        messages = fetchedMessages;
+        filteredMsg = List.from(fetchedMessages);
+        slidableControllers.clear();
+        isLoading = false;
+      });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          initializeSlidableControllers(messages.length);
+        }
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
+      print('Error al recargar mensajes: $e');
+    }
+  }
   @override
   void dispose() {
     for (var controller in slidableControllers) {
@@ -174,13 +210,16 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                                       filtrarMensajes(text);
                                     })),
                             const SizedBox(width: 20,),
-                            IconButton(onPressed: (){
-                              Navigator.of(context).push(
+                            IconButton(onPressed: () async {
+                              final result = await Navigator.of(context).push(
                                 CupertinoPageRoute(
                                   builder: (context) => const MsgForm(
                                   ),
                                 ),
                               );
+                              if (result != null && mounted) {
+                                 //reloadMsgs();
+                              }
                             }, icon: Icon(Icons.message_outlined, size: MediaQuery.of(context).size.width * 0.082,))
                           ]))
               ),
