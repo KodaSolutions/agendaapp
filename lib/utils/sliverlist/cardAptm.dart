@@ -1,4 +1,5 @@
 import 'package:agenda_app/calendar/calendarSchedule.dart';
+import 'package:agenda_app/services/approveApptService.dart';
 import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +12,8 @@ class CardAptm extends StatefulWidget {
   final Function(int) onExpansionChanged;
   final List<Appointment2> newAptm;
   final ExpansionTileController tileController;
-  const CardAptm({super.key, required this.index, this.oldIndex, required this.onExpansionChanged, required this.tileController, required this.newAptm});
+  final VoidCallback? onAppointmentUpdated;
+  const CardAptm({super.key, required this.index, this.oldIndex, required this.onExpansionChanged, required this.tileController, required this.newAptm, this.onAppointmentUpdated});
 
   @override
   State<CardAptm> createState() => _CardAptmState();
@@ -24,6 +26,8 @@ class _CardAptmState extends State<CardAptm> {
   bool isUserSel = false;
   String? selectedUserId;
   var formatter = new DateFormat('dd-MM-yyyy');
+  final approveApptService _approveApptService = approveApptService();
+  bool _isLoading = false;
 
 
   void onSelUser(String? displayText, String? userId) {
@@ -33,7 +37,85 @@ class _CardAptmState extends State<CardAptm> {
       isUserSel = displayText != null && userId != null;
     });
   }
+  Future<void> _approveAppointment() async {
+    if (!isUserSel || selectedUserId == null) return;
 
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _approveApptService.approveAppointment(
+        widget.newAptm[widget.index].id!,
+        int.parse(selectedUserId!),
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Cita aprobada exitosamente'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        widget.onAppointmentUpdated?.call();
+        widget.tileController.collapse();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+
+  Future<void> _rejectAppointment() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      await _approveApptService.rejectAppointment(
+        widget.newAptm[widget.index].id!,
+        'Cita rechazada por el administrador',
+      );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Cita rechazada exitosamente'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        widget.onAppointmentUpdated?.call();
+        widget.tileController.collapse();
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
   @override
   void initState() {
     super.initState();
@@ -205,15 +287,15 @@ class _CardAptmState extends State<CardAptm> {
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                     ),
-                                    onPressed: isUserSel ? () {
-                                    } : null,
+                                    onPressed: isUserSel ? (_isLoading ? null : _approveAppointment) : null,
                                     child: const Icon(Icons.check)),
                                 SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                                 ElevatedButton(
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                     ),
-                                    onPressed: (){}, child: const Icon(CupertinoIcons.xmark)),
+                                    onPressed: _isLoading ? null : _rejectAppointment,
+                                    child: const Icon(CupertinoIcons.xmark)),
                               ],
                             ),
                           ],
