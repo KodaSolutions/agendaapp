@@ -83,6 +83,31 @@ class _SelBoxUserState extends State<SelBoxUser> {
     try {
       final usersList = await loadUsersWithRoles();
       setState(() {
+        users = usersList
+            .where((user) => user['role'] == 1)
+            .map((user) => {'id': user['id'],
+          'name': user['name'],
+          'identification': user['identification'].toString(),
+          'role': user['role']})
+            .toList();
+        isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        isLoading = false;
+      });
+    }
+  }
+
+/*  Future<void> loadUserswithRole() async {
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersWithRoles();
+      setState(() {
         users = usersList;
         isLoading = false;
       });
@@ -92,7 +117,7 @@ class _SelBoxUserState extends State<SelBoxUser> {
         error = e.toString();
       });
     }
-  }
+  }*/
 
   /*Future<void> loadUsers() async {
     try {
@@ -105,8 +130,7 @@ class _SelBoxUserState extends State<SelBoxUser> {
           'id': user['id'].toString(),
           'name': user['name'].toString(),
           'identification': user['identification'].toString(),
-        })
-            .cast<Map<String, String>>()
+        }).cast<Map<String, String>>()
             .toList();
 
         setState(() {

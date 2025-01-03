@@ -27,6 +27,7 @@ class _UsersConfigState extends State<UsersConfig> {
   String? selectedUserId;
   TextEditingController seek = TextEditingController();
   List<Map<String, dynamic>> filteredUsers = [];
+  List<String> usersRoles = [];
 
 
   Future<void> loadUserswhitRole() async {
@@ -42,10 +43,12 @@ class _UsersConfigState extends State<UsersConfig> {
         isLoadingUsers = false;
       });
     } catch (e) {
-      setState(() {
-        isLoadingUsers = false;
-        error = e.toString();
-      });
+      if(mounted){
+        setState(() {
+          isLoadingUsers = false;
+          error = e.toString();
+        });
+      }
     }
   }
 

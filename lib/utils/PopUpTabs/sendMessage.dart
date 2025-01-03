@@ -121,6 +121,11 @@ class _SendMsgDialogState extends State<SendMsgDialog> {
                             ),),
                           ],
                         ),
+                        Row(
+                          children: [
+                            Text('${widget.phone}'),
+                          ],
+                        ),
                         if(widget.phone == '')
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -185,7 +190,7 @@ class _SendMsgDialogState extends State<SendMsgDialog> {
                               ),
                             ),
                             onPressed: selectedOption != null? () async {
-                              if(widget.phone != ''){
+                              if(widget.phone != '' && widget.phone!.length == 10){
                                 await sendWhatsMsg(phone: widget.phone!, bodymsg: 'bodymsg').then((_){
                                   Navigator.of(context).pop();
                                 });

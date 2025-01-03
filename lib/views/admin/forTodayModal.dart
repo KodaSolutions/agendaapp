@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../calendar/calendarSchedule.dart';
 import '../../projectStyles/appColors.dart';
+import '../../usersConfig/functions.dart';
 import '../../utils/sliverlist/notiCards.dart';
 
 class Fortodaymodal extends StatefulWidget {
@@ -57,6 +58,10 @@ class _FortodaymodalState extends State<Fortodaymodal> with SingleTickerProvider
   double heightCard = 0;
   double halfheightCard = 0;
   int totalCards = 0;
+  String? error;
+  bool isLoading = false;
+  List<Map<String, dynamic>> users = [];
+  String nameDoc = '';
 
   void onDragY (details){
     setState(() {
@@ -97,6 +102,7 @@ class _FortodaymodalState extends State<Fortodaymodal> with SingleTickerProvider
     super.initState();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 200));
     loadUserId();
+    loadUsersWithRole();
     dragYAnimation = Tween<double>(begin: 0.0, end: 0.0).animate(animationController)
       ..addListener(() {
         setState(() {
@@ -105,6 +111,37 @@ class _FortodaymodalState extends State<Fortodaymodal> with SingleTickerProvider
       });
   }
 
+  Future<void> loadUsersWithRole() async {
+    setState(() {
+      isLoading = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersWithRoles();
+      setState(() {
+        users = usersList.where((user) => user['id'] == userId.toString()).toList();
+        if (users.isNotEmpty) {
+          final fullName = users.first['name'];
+          final nameParts = fullName.split(' ');
+          if (nameParts.length > 1) {
+            nameDoc = '${nameParts[0]} ${nameParts[1][0]}.';
+          } else {
+            nameDoc = nameParts[0];
+          }
+        } else {
+          nameDoc = '';
+        }
+        isLoading = false;
+      });
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+          error = e.toString();
+        });
+      }
+    }
+  }
   @override
   void dispose() {
     animationController.dispose();
@@ -261,7 +298,9 @@ class _FortodaymodalState extends State<Fortodaymodal> with SingleTickerProvider
             } else {
               return Column(
                 children: snapshot.data!.map((appointment) {
-                  return NotiCards(appointment: appointment, onCalculateHeightCard: onCalculateHeightCard);
+                  return NotiCards(
+                      nameDoc: nameDoc,
+                      appointment: appointment, onCalculateHeightCard: onCalculateHeightCard);
                 }).toList(),
               );
             }

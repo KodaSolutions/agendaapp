@@ -313,6 +313,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
                   setState(() {
                     widget.onExpansionChanged(widget.index);
                     Appointment appointmetsToModify = widget.filteredAppointments[index];
+                    print('object ${appointmetsToModify.contactNumber}');
                     _timerController.text = DateFormat('HH:mm').format(appointmetsToModify.appointmentDate!);
                     DateTime formattedTime24hrs = DateFormat('HH:mm').parse(_timerController.text);
                     String formattedTime12hrs = DateFormat('h:mm a').format(formattedTime24hrs);

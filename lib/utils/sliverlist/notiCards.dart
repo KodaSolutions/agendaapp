@@ -64,10 +64,11 @@ String formatDate(DateTime date) {
 }
 
 class NotiCards extends StatefulWidget {
+  final String nameDoc;
   final Appointment2 appointment;
   final Function(double) onCalculateHeightCard;
 
-  const NotiCards({super.key, required this.appointment, required this.onCalculateHeightCard});
+  const NotiCards({super.key, required this.appointment, required this.onCalculateHeightCard, required this.nameDoc});
 
   @override
   _NotiCardsState createState() => _NotiCardsState();
@@ -204,7 +205,7 @@ class _NotiCardsState extends State<NotiCards> {
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                           color: AppColors3.whiteColor
                       ),
-                      child: Text( widget.appointment.doctorId == 1 ? 'Doctor 1' : 'Doctor 2',
+                      child: Text( widget.nameDoc,
                         style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04,
                         color: isRead ? AppColors3.blackColor.withOpacity(0.3) : AppColors3.blackColor),),
                     ),),

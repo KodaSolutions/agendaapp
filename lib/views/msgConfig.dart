@@ -214,9 +214,7 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                                   builder: (BuildContext context) {
                                     return const Material(
                                         color: Colors.transparent,
-                                        child: Center(
-                                            child: DeletePredMsg()
-                                        )
+                                        child: Center(child: DeletePredMsg())
                                     );
                                   },
                                 );
@@ -228,9 +226,9 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                                       filteredMsg.removeAt(index);
                                       showBlurr = false;
                                     });
-                                    ScaffoldMessenger.of(context).showSnackBar(
+                                    /*ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(content: Text('Mensaje eliminado con éxito')),
-                                    );
+                                    );*/
                                   } catch (e) {
                                     setState(() {
                                       showBlurr = false;
