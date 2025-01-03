@@ -26,6 +26,7 @@ class _CardAptmState extends State<CardAptm> {
   bool isUserSel = false;
   String? selectedUserId;
   var formatter = new DateFormat('dd-MM-yyyy');
+  var timeFormatter = DateFormat('h:mm a');
   final approveApptService _approveApptService = approveApptService();
   bool _isLoading = false;
 
@@ -118,6 +119,7 @@ class _CardAptmState extends State<CardAptm> {
   }
   @override
   void initState() {
+    print('${widget.newAptm[widget.index].appointmentDate}');
     super.initState();
   }
 
@@ -192,6 +194,23 @@ class _CardAptmState extends State<CardAptm> {
                     Text(
                       widget.newAptm[widget.index].appointmentDate != null
                           ? formatter.format(widget.newAptm[widget.index].appointmentDate!)
+                          : "No disponible",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.04),
+                    ),
+                  ],
+                ),Row(
+                  children: [
+                    Text(
+                      'Hora de cita: ',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                    ),
+                    Text(
+                      widget.newAptm[widget.index].appointmentDate != null
+                          ? timeFormatter.format(widget.newAptm[widget.index].appointmentDate!)
                           : "No disponible",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
