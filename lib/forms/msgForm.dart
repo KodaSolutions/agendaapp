@@ -76,6 +76,7 @@ class _MsgFormState extends State<MsgForm> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: $e')),
       );
+      print('Error: $e');
     }
   }
   @override

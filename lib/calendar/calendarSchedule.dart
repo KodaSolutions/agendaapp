@@ -354,6 +354,8 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                         details.date.month == currentMonth &&
                             details.date.year == visibleYear;
 
+
+
                     final bool hasEvent = _appointments.any((Appointment2
                             appointment) =>
                         appointment.appointmentDate != null &&
@@ -362,7 +364,13 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                             appointment.appointmentDate!.month &&
                         details.date.year == appointment.appointmentDate!.year);
 
-                    final bool hasEventDoc1 = _appointments.any(
+                    int eventCount = _appointments.where((appointment) =>
+                    appointment.appointmentDate != null &&
+                        appointment.appointmentDate!.day == details.date.day &&
+                        appointment.appointmentDate!.month == details.date.month &&
+                        appointment.appointmentDate!.year == details.date.year).length;
+
+                   /* final bool hasEventDoc1 = _appointments.any(
                         (Appointment2 appointment) =>
                             appointment.appointmentDate != null &&
                             details.date.day ==
@@ -382,7 +390,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                                 appointment.appointmentDate!.month &&
                             details.date.year ==
                                 appointment.appointmentDate!.year &&
-                            appointment.doctorId == 2);
+                            appointment.doctorId == 2);*/
 
                     if (isToday && hasEvent) {
                       return Container(
@@ -434,14 +442,14 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                         ),
                       );
                     } else {
-                      return hasEventDoc1 == true && hasEventDoc2 == false// && isInCurrentMonth == true
+                      return hasEvent// && isInCurrentMonth == true
                           ? Container(
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: AppColors3.primaryColor.withOpacity(0.3),
+                                  color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
                                 ),
-                                color: isInCurrentMonth ? Colors.transparent : AppColors3.secundaryColor
+                                color: isInCurrentMonth ? Colors.transparent : AppColors3.greyColor.withOpacity(0.2),
                               ),
                               child: Stack(
                                 children: [
@@ -450,122 +458,35 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                                     child: Text(
                                       details.date.day.toString(),
                                       style: TextStyle(
-                                        color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.9),
+                                        color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.45),
                                         fontSize: MediaQuery.of(context).size.width * 0.06,
                                       ),
                                     ),
                                   ),
                                   Align(
-                                    alignment: Alignment.bottomCenter,
+                                    alignment: Alignment.bottomRight,
                                     child: Container(
                                       margin: EdgeInsets.only(
-                                          bottom: MediaQuery.of(context).size.width * 0.01),
+                                          bottom: MediaQuery.of(context).size.width * 0.005,
+                                          right: MediaQuery.of(context).size.width * 0.005,
+                                      ),
                                       decoration: BoxDecoration(
                                           border: Border.all(color: isInCurrentMonth ? AppColors3.primaryColor
                                               : AppColors3.primaryColor.withOpacity(0.35)),
-                                          color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.35),
+                                          color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.2),
                                           //Colors.purple.withOpacity(0.35),
                                           shape: BoxShape.circle),
-                                      width: MediaQuery.of(context).size.width * 0.055,
-                                      height: MediaQuery.of(context).size.width * 0.055,
-                                    )
+                                      width: MediaQuery.of(context).size.width * 0.05,
+                                      height: MediaQuery.of(context).size.width * 0.05,
+                                      child: Center(child: Text('$eventCount',
+                                      style: TextStyle(
+                                        color: isInCurrentMonth ? AppColors3.whiteColor : AppColors3.greyColor.withOpacity(0.6),
+                                      ),),),
+                                    ),
                                   )
                                 ]
                               ))
-                          : hasEventDoc1 == false && hasEventDoc2 == true
-                              ? Container(
-                                  width: null,
-                                  height: null,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    //Colors.blue.withOpacity(0.35),
-                                    border: Border.all(
-                                      color: isInCurrentMonth ? AppColors3.primaryColor.withOpacity(0.5) :
-                                      AppColors3.primaryColor.withOpacity(0.35),
-                                    ),
-                                      color: isInCurrentMonth ? AppColors3.bgColor : AppColors3.bgColor
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          details.date.day.toString(),
-                                          style: TextStyle(
-                                            color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.secundaryColor.withOpacity(0.9),
-                                            fontSize: MediaQuery.of(context).size.width * 0.06,
-                                          ),
-                                        ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Container(
-                                          margin: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context).size.width * 0.01),
-                                          decoration: BoxDecoration(
-                                              color: isInCurrentMonth ? AppColors3.blackColor : AppColors3.blackColor.withOpacity(0.2),
-                                              shape: BoxShape.circle),
-                                          width: MediaQuery.of(context).size.width * 0.055,
-                                          height: MediaQuery.of(context).size.width * 0.055,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : hasEventDoc1 && hasEventDoc2
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: AppColors3.primaryColor.withOpacity(0.35)),
-                                        color: isInCurrentMonth ? Colors.transparent : AppColors3.secundaryColor
-                                      ),
-                                      child: Stack(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.center,
-                                            child: Text(
-                                              details.date.day.toString(),
-                                              style: TextStyle(
-                                                color: AppColors3.whiteColor,
-                                                fontSize: MediaQuery.of(context).size.width * 0.06,
-                                              ),
-                                            ),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.bottomCenter,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                      bottom: MediaQuery.of(context).size.width * 0.01),
-                                                  decoration: BoxDecoration(
-                                                       //const Color(0xFF9C27B0)),
-                                                      color: isInCurrentMonth ? AppColors3.blackColor : AppColors3.blackColor.withOpacity(0.2),
-                                                      shape: BoxShape.circle),
-                                                  width: MediaQuery.of(context).size.width * 0.055,
-                                                  height: MediaQuery.of(context).size.width * 0.055,
-                                                ),
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                      bottom: MediaQuery.of(context).size.width * 0.01),
-                                                  decoration: BoxDecoration(
-                                                      border: Border.all(
-                                                          color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3)),//const Color(0xFF8AB6DD),),
-                                                      color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
-                                                      shape: BoxShape.circle),
-                                                  width: MediaQuery.of(context).size.width * 0.055,
-                                                  height: MediaQuery.of(context).size.width * 0.055,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ))
-                                  : Container(
-                                      width: null,
-                                      height: null,
+                          : Container(
                                       decoration: BoxDecoration(
                                         color: AppColors3.whiteColor,
                                         border: Border.all(

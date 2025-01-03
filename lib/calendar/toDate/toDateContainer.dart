@@ -172,7 +172,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
         appointmentsList = await appointments;
         tileControllers =  List.generate(appointmentsList.length, (_) => ExpansionTileController());
         initializeSlidableControllers(appointmentsList.length);
-
       }
     } catch (e) {
       setState(() {
@@ -229,7 +228,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
       Map<String, dynamic> data = jsonDecode(response.body);
       if (data.containsKey('appointments') && data['appointments'] != null) {
         List<dynamic> appointmentsJson = data['appointments'];
-
         List<Appointment> allAppointments = appointmentsJson.map((json) => Appointment.fromJson(json)).toList();
         return allAppointments.where((appointment) =>
         appointment.appointmentDate != null &&
@@ -400,7 +398,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                         context,
                                         filteredAppointments[index].clientName,
                                         filteredAppointments[index].id!,
-                                        '', //TODO pasarle el numero de cel
+                                        filteredAppointments[index].contactNumber,
                                       ).then((_){
                                         widget.onShowBlurr(false);
                                       });

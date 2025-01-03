@@ -83,50 +83,22 @@ class _SelBoxUserState extends State<SelBoxUser> {
     try {
       final usersList = await loadUsersWithRoles();
       setState(() {
-        users = usersList;
+        users = usersList
+            .where((user) => user['role'] == 1)
+            .map((user) => {'id': user['id'],
+          'name': user['name'],
+          'identification': user['identification'].toString(),
+          'role': user['role']})
+            .toList();
         isLoading = false;
       });
     } catch (e) {
       setState(() {
-        isLoading = false;
         error = e.toString();
+        isLoading = false;
       });
     }
   }
-
-  /*Future<void> loadUsers() async {
-    try {
-      final response = await http.get(
-          Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/userAll')
-      );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final usersList = (data['user'] as List).where((user) => user['role_id'] != 3).map((user) => {
-          'id': user['id'].toString(),
-          'name': user['name'].toString(),
-          'identification': user['identification'].toString(),
-        })
-            .cast<Map<String, String>>()
-            .toList();
-
-        setState(() {
-          users = usersList;
-          selectedUser = null;
-          isLoading = false;
-        });
-      } else {
-        setState(() {
-          error = 'Error al cargar usuarios';
-          isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        error = e.toString();
-        isLoading = false;
-      });
-    }
-  }*/
 
   @override
   Widget build(BuildContext context) {

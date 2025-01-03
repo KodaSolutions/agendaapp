@@ -37,7 +37,6 @@ class _TimerFlyState extends State<TimerFly> {
     super.didChangeDependencies();
     smallestDimension = MediaQuery.of(context).size.shortestSide;
     diameterRatio = (smallestDimension! * 0.0028);
-    print(diameterRatio);
   }
   @override
   void initState() {
@@ -46,10 +45,7 @@ class _TimerFlyState extends State<TimerFly> {
       final timeParts = widget.hour!.split(' ');
       final time = timeParts[0].split(':');
       final period = timeParts[1];
-
       selectedIndexHours = (int.parse(time[0]) % 12);
-
-      // Redondear minutos al intervalo más cercano de 20
       int rawMinutes = int.parse(time[1]);
       selectedIndexMins = (rawMinutes / 20).round() * 20;
       if (selectedIndexMins >= 60) {
@@ -63,7 +59,7 @@ class _TimerFlyState extends State<TimerFly> {
     }
 
     hourController = FixedExtentScrollController(initialItem: selectedIndexHours);
-    minsController = FixedExtentScrollController(initialItem: selectedIndexMins ~/ 20); // Ajuste para trabajar con intervalos
+    minsController = FixedExtentScrollController(initialItem: selectedIndexMins ~/ 30);
     amPmController = FixedExtentScrollController(initialItem: selectedIndexAmPm);
   }
 
@@ -154,13 +150,12 @@ class _TimerFlyState extends State<TimerFly> {
                             child: ListWheelScrollView.useDelegate(
                               onSelectedItemChanged: (value) {
                                 setState(() {
-                                  int newMinsValue = value * 20;
+                                  int newMinsValue = value * 30;
 
-                                  if (value == 0 && previousMinsIndex == 2) {
+                                  if (value == 0 && previousMinsIndex == 1) {  //valores entre (0 y 30)
                                     if (selectedIndexHours == 11) {
                                       selectedIndexHours = 0;
-                                      //hourController.jumpToItem(0); //si quieremos el cambio instantaneo
-                                      hourController.animateToItem( //cambio animado
+                                      hourController.animateToItem(
                                         selectedIndexHours,
                                         duration: const Duration(milliseconds: 500),
                                         curve: Curves.easeInOut,
@@ -179,13 +174,13 @@ class _TimerFlyState extends State<TimerFly> {
                                 });
                               },
                               controller: minsController,
-                              perspective: 0.001,
+                              perspective: 0.0011,
                               diameterRatio: 0.96,
                               physics: const FixedExtentScrollPhysics(),
                               itemExtent: MediaQuery.of(context).size.width * 0.18,
                               childDelegate: ListWheelChildLoopingListDelegate(
-                                children: List.generate(3, (index) {
-                                  final int minute = index * 20;
+                                children: List.generate(2, (index) {
+                                  final int minute = index * 30;  // Cambiado de 20 a 30
                                   final Color colorformins = minute == selectedIndexMins
                                       ? AppColors3.primaryColor
                                       : Colors.grey;
