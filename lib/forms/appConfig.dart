@@ -276,8 +276,9 @@ class _AppConfigState extends State<AppConfig> {
                   Navigator.of(context).pop();
                 }, icon: Icon(CupertinoIcons.chevron_back, size: MediaQuery.of(context).size.width * 0.08,
                   color: AppColors3.primaryColor,)),
-                Text('Usuarios', style: TextStyle(
+                Text('Registrar usuario', style: TextStyle(
                   color: AppColors3.primaryColor,
+                  fontWeight: FontWeight.bold,
                   fontSize: MediaQuery.of(context).size.width * 0.065,
                 ),),
               ],
@@ -310,20 +311,10 @@ class _AppConfigState extends State<AppConfig> {
                             ),
                             child: Column(
                               children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                        textAlign: TextAlign.left,
-                                        'Registrar usuario',
-                                        style: TextStyle(
-                                            color: AppColors3.primaryColor,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: MediaQuery.of(context).size.width * 0.065)),
-                                  ],
-                                ),
                                 const Row(
                                   children: [
-                                    Text('Por favor llene los campos para completar el registro')
+                                    Expanded(child: Text('Por favor llene los campos para completar el registro'),
+                                    )
                                   ],
                                 )
                               ],

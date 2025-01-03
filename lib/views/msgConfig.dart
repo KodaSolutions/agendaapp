@@ -172,6 +172,7 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                 }, icon: Icon(CupertinoIcons.chevron_back, size: MediaQuery.of(context).size.width * 0.08,
                   color: AppColors3.primaryColor,)),
                 Text('Gestionar mensajes', style: TextStyle(
+                  fontWeight: FontWeight.bold,
                   color: AppColors3.primaryColor,
                   fontSize: MediaQuery.of(context).size.width * 0.065,
                 ),),

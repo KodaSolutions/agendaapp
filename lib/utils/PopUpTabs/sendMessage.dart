@@ -22,12 +22,11 @@ class _SendMsgDialogState extends State<SendMsgDialog> {
   String? selectedOption;
   List<Map<String, dynamic>> messages = [];
   bool isLoading = true;
-  String nonNumberMsg = '';
+  String nonNumberMsg = 'Este cliente no tiene un celular registrado.';
 
   @override
   void initState() {
     super.initState();
-    widget.phone != '' ? null : nonNumberMsg = "Este cliente no tiene un celular registrado.";
     fetchMessages();
   }
 
@@ -113,21 +112,12 @@ class _SendMsgDialogState extends State<SendMsgDialog> {
                         ),
                         Row(
                           children: [
-                            Text('${widget.phone}'),
+                            Text(widget.phone != 'null' ? widget.phone! : nonNumberMsg,
+                            style: TextStyle(
+                              color: widget.phone != 'null' ? AppColors3.primaryColor : AppColors3.redDelete
+                            ),),
                           ],
                         ),
-                        if(widget.phone == '')
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Text(nonNumberMsg,
-                                style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.width * 0.04,
-                                  color: AppColors3.redDelete,
-                                ),
-                              ),
-                            ],
-                          ),
                         if (isLoading)
                           const CircularProgressIndicator()
                         else
@@ -195,11 +185,12 @@ class _SendMsgDialogState extends State<SendMsgDialog> {
                             ),
                             onPressed: selectedOption != null ? () async {
                               if(widget.phone != '' && widget.phone!.length == 10) {
+                                final String phoneCode = '+52${widget.phone}';
                                 final selectedMessage = messages.firstWhere(
                                         (msg) => msg['id'].toString() == selectedOption
                                 );
                                 await sendWhatsMsg(
-                                    phone: widget.phone!,
+                                    phone: phoneCode,
                                     bodymsg: selectedMessage['content']
                                 ).then((_) {
                                   Navigator.of(context).pop();

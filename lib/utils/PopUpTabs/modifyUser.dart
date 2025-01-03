@@ -110,10 +110,10 @@ class _MOdifyUserState extends State<MOdifyUser> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Modificar usuario',
+                  'Reestablecer',
                   style: TextStyle(
                     color: AppColors3.primaryColor,
-                    fontSize: MediaQuery.of(context).size.width * 0.07,
+                    fontSize: MediaQuery.of(context).size.width * 0.065,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
