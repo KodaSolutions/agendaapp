@@ -281,10 +281,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
    if(widget.expandedIndexToCharge != null){
      oldIndex = widget.expandedIndexToCharge;
    }
-  /* if(appointment.contactNumber != null){
-     print('object ${appointment.contactNumber}');
-
-   }*/
     super.initState();
   }
 

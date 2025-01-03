@@ -29,7 +29,6 @@ class Fortodaymodal extends StatefulWidget {
           var end = const Offset(0.0, 0.0);
           var curve = Curves.linear;
           var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
           return SlideTransition(
             position: animation.drive(tween),
             child: child,

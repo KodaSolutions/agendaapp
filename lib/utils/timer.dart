@@ -37,7 +37,6 @@ class _TimerFlyState extends State<TimerFly> {
     super.didChangeDependencies();
     smallestDimension = MediaQuery.of(context).size.shortestSide;
     diameterRatio = (smallestDimension! * 0.0028);
-    print(diameterRatio);
   }
   @override
   void initState() {
@@ -46,10 +45,7 @@ class _TimerFlyState extends State<TimerFly> {
       final timeParts = widget.hour!.split(' ');
       final time = timeParts[0].split(':');
       final period = timeParts[1];
-
       selectedIndexHours = (int.parse(time[0]) % 12);
-
-      // Redondear minutos al intervalo más cercano de 20
       int rawMinutes = int.parse(time[1]);
       selectedIndexMins = (rawMinutes / 20).round() * 20;
       if (selectedIndexMins >= 60) {
@@ -63,7 +59,7 @@ class _TimerFlyState extends State<TimerFly> {
     }
 
     hourController = FixedExtentScrollController(initialItem: selectedIndexHours);
-    minsController = FixedExtentScrollController(initialItem: selectedIndexMins ~/ 20); // Ajuste para trabajar con intervalos
+    minsController = FixedExtentScrollController(initialItem: selectedIndexMins ~/ 30);
     amPmController = FixedExtentScrollController(initialItem: selectedIndexAmPm);
   }
 

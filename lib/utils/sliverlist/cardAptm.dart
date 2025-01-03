@@ -206,7 +206,6 @@ class _CardAptmState extends State<CardAptm> {
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                     ),
                                     onPressed: isUserSel ? () {
-                                      print('Doctor seleccionado: $selectedUserId');
                                     } : null,
                                     child: const Icon(Icons.check)),
                                 SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
