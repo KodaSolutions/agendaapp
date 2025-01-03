@@ -60,16 +60,27 @@ class _MsgFormState extends State<MsgForm> {
       setState(() {
         isLoading = false;
       });
+      if(mounted){
+        Navigator.of(context).pop(result);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            padding: EdgeInsets.only(
+              top: MediaQuery.of(context).size.width * 0.08,
+              bottom: MediaQuery.of(context).size.width * 0.08,
+              left: MediaQuery.of(context).size.width * 0.02,
+            ),
+            content: Text(widget.title == null
+                ? 'Mensaje creado con éxito'
+                : 'Mensaje actualizado con éxito', style: TextStyle(
+                fontSize: MediaQuery.of(context).size.width * 0.045,
 
-      Navigator.of(context).pop(result);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(widget.title == null
-              ? 'Mensaje creado con éxito'
-              : 'Mensaje actualizado con éxito'
+            ),
+            ),
           ),
-        ),
-      );
+        );
+      }
+
     } catch (e) {
       setState(() {
         isLoading = false;
@@ -94,6 +105,7 @@ class _MsgFormState extends State<MsgForm> {
               color: AppColors3.primaryColor,)),
             Text(widget.title == null ? 'Crear mensaje' : 'Editar mensaje',
               style: TextStyle(
+                fontWeight: FontWeight.bold,
               color: AppColors3.primaryColor,
               fontSize: MediaQuery.of(context).size.width * 0.065,
             ),),

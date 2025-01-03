@@ -346,7 +346,7 @@ class _ClientInfoState extends State<ClientInfo> {
                                   setState(() {
                                     setState(() {
                                       String phoneCode = '+52${phoneController.text.trim()}';
-                                      sendWhatsMsg(phone: phoneCode, bodymsg: 'Hola, $name. Te mando mensaje para reasignar tu cita en Beaute Clinique.\n');
+                                      sendWhatsMsg(phone: phoneCode, bodymsg: 'Hola, $name.\n');
                                     });
                                   });
                                 } : null,

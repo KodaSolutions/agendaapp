@@ -165,7 +165,7 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                         child: Text(
                               'Citas recibidas',
                               style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width * 0.085,
+                                fontSize: MediaQuery.of(context).size.width * 0.065,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors3.primaryColor,
                               ),

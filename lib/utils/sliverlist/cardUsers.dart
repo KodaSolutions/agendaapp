@@ -71,7 +71,14 @@ class _CardUsersState extends State<CardUsers> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(result['message']),
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).size.width * 0.08,
+            bottom: MediaQuery.of(context).size.width * 0.08,
+            left: MediaQuery.of(context).size.width * 0.02,
+          ),
+          content: Text(result['message'], style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width * 0.045
+          ),),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
         ),
       );

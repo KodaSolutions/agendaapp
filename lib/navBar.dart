@@ -82,10 +82,8 @@ class _navBarState extends State<navBar> {
                                 children: [
                                   CircleAvatar(
                                     radius: MediaQuery.of(context).size.width*0.05,
-                                    backgroundColor: AppColors3.primaryColor,
-                                    child: SvgPicture.asset(
-                                      'assets/icons/drIcon.svg',
-                                      colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                                    child: Image.asset(
+                                      'assets/icons/logoCVP.png',
                                       height: MediaQuery.of(context).size.width * 0.067,
                                     ),
                                   ),
@@ -97,7 +95,15 @@ class _navBarState extends State<navBar> {
                                         children: [
                                           Text(SessionManager.instance.Nombre == 'Dulce' ? 'Nombre Asistente' : SessionManager.instance.Nombre,
                                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width*0.05, color: AppColors3.primaryColorMoreStrong)),
-                                          Text('Nombre de tu empresa', style: TextStyle(color: AppColors3.primaryColor.withOpacity(0.8)),)
+                                          Row(
+                                            children: [
+                                              Text('CEVEPE', style: TextStyle(color: AppColors3.primaryColor),),
+                                              SizedBox(width: 5,),
+                                              Icon(Icons.pets, size: MediaQuery.of(context).size.width * 0.03,
+                                              color: AppColors3.primaryColor,
+                                              ),
+                                            ],
+                                          )
                                         ],
                                       )
                                   )
