@@ -43,13 +43,14 @@ class _MsgFormState extends State<MsgForm> {
     });
 
     try {
+      Map<String, dynamic> result;
       if (widget.title == null) {
-        await messageService.createMessage(
+        result = await messageService.createMessage(
           title: titleController.text,
           content: bodyMsgController.text,
         );
       } else {
-        await messageService.updateMessage(
+        result = await messageService.updateMessage(
           id: widget.id!,
           title: titleController.text,
           content: bodyMsgController.text,
@@ -60,7 +61,7 @@ class _MsgFormState extends State<MsgForm> {
         isLoading = false;
       });
 
-      Navigator.of(context).pop(true);
+      Navigator.of(context).pop(result);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(widget.title == null

@@ -190,7 +190,10 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                               }
                               oldIndex = newIndex;
                             });
-                          });
+                          }, onAppointmentUpdated: () {
+                        _loadAppointments();
+                      },
+                          );
                       },
                     childCount: _appointments.length,
                   ),

@@ -73,27 +73,34 @@ class CustomMessageService {
     required int id,
     required String title,
     required String content,
-    bool? active,
   }) async {
     try {
+      print('URL de actualización: $baseUrl/$id');
+      final requestBody = {
+        'title': title,
+        'content': content,
+      };
+      print('Datos a enviar: $requestBody');
+
       final response = await http.put(
         Uri.parse('$baseUrl/$id'),
         headers: {
           'Content-Type': 'application/json',
         },
-        body: jsonEncode({
-          'title': title,
-          'content': content,
-          if (active != null) 'active': active,
-        }),
+        body: jsonEncode(requestBody),
       );
 
+      print('Código de estado: ${response.statusCode}');
+      print('Respuesta del servidor: ${response.body}');
+
       if (response.statusCode == 200) {
-        return jsonDecode(response.body);
+        final decodedResponse = jsonDecode(response.body);
+        return Map<String, dynamic>.from(decodedResponse);
       } else {
         throw Exception('Error al actualizar mensaje: ${response.body}');
       }
     } catch (e) {
+      print('Error completo: $e');
       throw Exception('Error: $e');
     }
   }
