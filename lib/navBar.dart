@@ -150,7 +150,7 @@ class _navBarState extends State<navBar> {
                             ),
                           ),
                           Visibility(
-                            visible: userRole == 'asistente' || userRole == 'admin',
+                            visible: true,//userRole == 'asistente' || userRole == 'admin',
                             child: InkWell(
                               splashColor: AppColors3.primaryColor.withOpacity(0.2),
                               onTap: () {
