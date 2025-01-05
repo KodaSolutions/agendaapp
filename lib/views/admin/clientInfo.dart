@@ -194,7 +194,8 @@ class _ClientInfoState extends State<ClientInfo> {
     return Scaffold(
       backgroundColor: AppColors3.whiteColor,
       body: Stack(
-        children: [Column(
+        children: [
+          Column(
           children: [
             AppBar(
               leadingWidth: !editInfo ? null : 100,

@@ -40,6 +40,8 @@ class _AssistantAdminState extends State<AssistantAdmin> {
   late bool platform; //0 IOS 1 Androide
   bool _showBlurr = false;
   String currentScreen = "agenda";
+  bool isSwitched = false;
+
 
   void checkKeyboardVisibility() {
     keyboardVisibilitySubscription =
@@ -81,6 +83,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
     super.didChangeDependencies();
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
+    print(screenHeight);
   }
 
   @override
@@ -153,7 +156,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
         body: Stack(
           children: [
             Container(
-              margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.07),
+              margin: EdgeInsets.only(top: screenHeight! < 880.5 ? MediaQuery.of(context).size.height * 0.07 : MediaQuery.of(context).size.height * 0.045),///here
               decoration: const BoxDecoration(
                 color: AppColors3.bgColor,
               ),
@@ -210,6 +213,30 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              Column(
+                                children: [
+                                  AnimatedSwitcher(
+                                    duration: Duration(milliseconds: 1000), // Ajusta la duración de la animación
+                                    transitionBuilder: (child, animation) {
+                                      return FadeTransition(opacity: animation, child: child);
+                                    },
+                                    child: Switch(
+                                      key: ValueKey<bool>(isSwitched), // Cambia la clave para cada estado
+                                      value: isSwitched,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          isSwitched = value;
+                                        });
+                                      },
+                                      activeTrackColor: Colors.green.withOpacity(0.5),
+                                      activeColor: Colors.green,
+                                      inactiveTrackColor: Colors.red.withOpacity(0.5),
+                                      inactiveThumbColor: Colors.red,
+                                    ),
+                                  ),
+                                  Text( isSwitched ? 'Mis citas' : 'Todas las citas'),
+                                ],
+                              ),
                               IconButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () async {
@@ -252,8 +279,8 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                         boxShadow: [
                           BoxShadow(
                             color: AppColors3.blackColor.withOpacity(0.5),
-                            blurRadius: 5,
-                            offset: Offset(0, 5),
+                            blurRadius: 3,
+                            offset: Offset(0, 8),
                           )
                         ],
                           color: AppColors3.bgColor,

@@ -9,7 +9,8 @@ class CardUsers extends StatefulWidget {
   final String query;
   final int index;
   final Function (String, int, bool, String) onModifyUser;
-  const CardUsers({super.key, required this.users, required this.index, required this.onModifyUser, required this.query});
+  final Function (bool) onBlurr;
+  const CardUsers({super.key, required this.users, required this.index, required this.onModifyUser, required this.query, required this.onBlurr});
 
   @override
   State<CardUsers> createState() => _CardUsersState();
@@ -36,13 +37,18 @@ class _CardUsersState extends State<CardUsers> {
     });
   }
   void deleteUser() async {
+    widget.onBlurr(true);
     if (selectedUserId == null) return;
     bool? confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmar eliminación'),
-          content: Text('¿Está seguro que desea eliminar al usuario: $user?'),
+          title: const Text('Confirmar eliminación', style: TextStyle(
+            color: AppColors3.redDelete,
+          ),),
+          content: Text('¿Estás seguro que deseas eliminar al usuario: $user?', style: TextStyle(
+            fontSize: MediaQuery.of(context).size.width * 0.045
+          ),),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -57,7 +63,10 @@ class _CardUsersState extends State<CardUsers> {
       },
     );
 
-    if (confirm != true) return;
+    if (confirm != true) {
+      widget.onBlurr(false);
+      return;
+    }
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -68,7 +77,7 @@ class _CardUsersState extends State<CardUsers> {
     final result = await UserServices.deleteUser(selectedUserId!);
     if (mounted) {
       Navigator.of(context).pop();
-
+      widget.onBlurr(false);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           padding: EdgeInsets.only(

@@ -23,6 +23,7 @@ class _UsersConfigState extends State<UsersConfig> {
   List<Map<String, dynamic>> users = [];
   String? error;
   bool blurr = false;
+  bool onlyblurr = false;
   String name = '';
   String? selectedUserId;
   TextEditingController seek = TextEditingController();
@@ -38,7 +39,7 @@ class _UsersConfigState extends State<UsersConfig> {
     try {
       final usersList = await loadUsersWithRoles();
       setState(() {
-        users = usersList;
+        users = usersList.where((user) => user['id'] != 1.toString()).toList();//esto es para ocultar al admin
         filteredUsers = users;
         isLoadingUsers = false;
       });
@@ -64,6 +65,12 @@ class _UsersConfigState extends State<UsersConfig> {
       this.name = name;
       this.blurr = blurr;
       this.selectedUserId = userId;
+    });
+  }
+
+  void onBlurr(bool blurr) {
+    setState(() {
+      onlyblurr = blurr;
     });
   }
 
@@ -178,7 +185,7 @@ class _UsersConfigState extends State<UsersConfig> {
                   return CardUsers(
                     users: filteredUsers,
                     index: index,
-                    onModifyUser: onModifyUser, query: seek.text,
+                    onModifyUser: onModifyUser, query: seek.text, onBlurr: onBlurr,
                   );
                 },
                     childCount: filteredUsers.length
@@ -223,7 +230,18 @@ class _UsersConfigState extends State<UsersConfig> {
                           kBoardVisibility: keyboardVisibilityManager.visibleKeyboard,
                           onShowBlurr: onShowBlurr, name: name, userId: selectedUserId ?? ''),
                     ))),
-          ))
+          )),
+        Visibility(
+          visible: onlyblurr,
+          child: GestureDetector(
+            child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: AppColors3.whiteColor.withOpacity(0.3),
+                    ),
+                    )),
+          )),
     ]);
   }
 }

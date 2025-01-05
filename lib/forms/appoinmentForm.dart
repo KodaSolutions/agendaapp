@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
-import 'package:agenda_app/forms/boxSpecies.dart';
+import 'package:agenda_app/forms/boxes.dart';
 import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -88,6 +88,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
   late BuildContext dialogforappointment;
   String nameToCompare = '';
   String? specie;
+  String? apptmType;
   bool amPm = false;
   int? doctor_id_body = 0;
   bool platform = false; //ios False androide True
@@ -306,6 +307,9 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
 
   void onPet (String? pet) {
     specie = pet!;
+  }
+  void onApptmType (String? apptmType) {
+    this.apptmType = apptmType!;
   }
 
   void _onDateToAppointmentForm(
@@ -844,6 +848,29 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
                                 right: MediaQuery.of(context).size.width * 0.026
                             ),
                             child: Pet(onPet: onPet),),
+                          TitleContainer(
+                            decoration: const BoxDecoration(
+                                color: AppColors3.primaryColor,
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)
+                                )
+                            ),
+                            child: Text(
+                              'Tipo de consulta: ',
+                              style: TextStyle(
+                                color: AppColors3.whiteColor,
+                                fontSize: MediaQuery.of(context).size.width * 0.045,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.02,
+                                left: MediaQuery.of(context).size.width * 0.026,
+                                right: MediaQuery.of(context).size.width * 0.026
+                            ),
+                            child: ApptmType(onApptmType: onApptmType),),
                           TitleContainer(
                             decoration: const BoxDecoration(
                                 color: AppColors3.primaryColor,

@@ -200,6 +200,7 @@ class ClientFormState extends State<ClientForm> {
             margin: EdgeInsets.only(
                 left: MediaQuery.of(context).size.width * 0.03,
                 right: MediaQuery.of(context).size.width * 0.03,
+                bottom: visibleKeyboard ? MediaQuery.of(context).size.width * 0.6 : 0,
             ),
             padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.03),
             decoration: BoxDecoration(
@@ -218,7 +219,7 @@ class ClientFormState extends State<ClientForm> {
                         'Agregar cliente',
                         style: TextStyle(
                           fontSize:
-                          MediaQuery.of(context).size.width * 0.08,
+                          MediaQuery.of(context).size.width * 0.065,
                           fontWeight: FontWeight.bold,
                           color: AppColors3.primaryColor,
                         ),
@@ -530,15 +531,13 @@ class ClientFormState extends State<ClientForm> {
                                     ),
                                     fixedSize: Size(
                                       MediaQuery.of(context).size.width * 0.6,
-                                      MediaQuery.of(context).size.height * 0.075,
+                                      MediaQuery.of(context).size.height * 0.055,
                                     ),
                                     backgroundColor: Colors.white,
                                   ),
                                   child: Text('Agregar Cliente',
                                       style: TextStyle(
-                                        fontSize:
-                                        MediaQuery.of(context).size.width *
-                                            0.055,
+                                        fontSize: MediaQuery.of(context).size.width * 0.055,
                                         color: AppColors3.primaryColor,
                                       ))),
                             )
