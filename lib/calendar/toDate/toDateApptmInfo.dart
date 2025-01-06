@@ -17,7 +17,7 @@ import '../../utils/timer.dart';
 class ApptmInfo extends StatefulWidget {
   final List<Map<String, dynamic>> doctorUsers;
   final ExpansionTileController tileController;
-  final Function(int) onExpansionChanged;
+  final Function(int, bool) onExpansionChanged;
   final bool isDocLog;
   final Function(bool) onShowBlurrModal;
   final Listenerapptm? listenerapptm;
@@ -152,6 +152,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
         return [];
       }
     } else {
+      //widget.tileController.collapse();
       throw Exception('Vefique conexión a internet');
     }
   }
@@ -311,9 +312,8 @@ class _ApptmInfoState extends State<ApptmInfo> {
               onExpansionChanged: (tap){
                 if(tap){
                   setState(() {
-                    widget.onExpansionChanged(widget.index);
+                    widget.onExpansionChanged(widget.index, false);
                     Appointment appointmetsToModify = widget.filteredAppointments[index];
-                    print('object ${appointmetsToModify.contactNumber}');
                     _timerController.text = DateFormat('HH:mm').format(appointmetsToModify.appointmentDate!);
                     DateTime formattedTime24hrs = DateFormat('HH:mm').parse(_timerController.text);
                     String formattedTime12hrs = DateFormat('h:mm a').format(formattedTime24hrs);
@@ -527,24 +527,25 @@ class _ApptmInfoState extends State<ApptmInfo> {
                                     }).then((result) {
                                       if (result == true) {
                                         widget.onShowBlurrModal(false);
-                                        modalReachTop = true;
+                                        /*modalReachTop = true;
                                         expandedIndex = null;
                                         isTaped = false;
                                         positionBtnIcon = true;
-                                        _dateLookandFill = dateOnly!;
+                                        _dateLookandFill = dateOnly!;*/
                                         fetchAppointments(dateTimeToinitModal);
                                         late DateTime dateSelected = dateTimeToinitModal;
                                         DateTime date = dateTimeToinitModal;
                                         dateSelected = date;
                                         dateOnly = DateFormat('yyyy-MM-dd').format(dateSelected);
-                                        widget.reachTop(
+                                        /*widget.reachTop(
                                             modalReachTop,
                                             expandedIndex,
                                             _timerController.text,
                                             _dateController.text,
                                             positionBtnIcon,
-                                            _dateLookandFillAfterSave);
-                                        widget.initializateApptm(true, dateSelected);
+                                            _dateLookandFillAfterSave);*/
+                                        widget.initializateApptm(true, dateSelected);//3zu
+                                        widget.onExpansionChanged(widget.index, true);
                                       } else {
                                         widget.onShowBlurrModal(false);
                                         _timerController.text = antiqueHour;

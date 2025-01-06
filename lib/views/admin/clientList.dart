@@ -277,16 +277,13 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
         style: baseStyle,
       ));
     }
-
     return TextSpan(children: matches);
   }
 
   List<AlphabetListViewItemGroup> _createAlphabetizedData(List<Client> clients){
     final Map<String, List<Client>> data = {};
     String query = searchController.text;
-    List<Client> clientsWithT = clients
-        .where((c) => c.name[0].toUpperCase() == 'T')
-        .toList();
+    List<Client> clientsWithT = clients.where((c) => c.name[0].toUpperCase() == 'T').toList();
     helperClients = clientsWithT;
     for(Client client in clients){
       print(client.id);

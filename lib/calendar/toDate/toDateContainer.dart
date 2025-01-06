@@ -421,10 +421,13 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                 expandedIndexToCharge: widget.expandedIndexToCharge, initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
                                 onShowBlurrModal: onShowBlurrModal, isDocLog: false,
                                   oldIndex: oldIndex,
-                                  onExpansionChanged: (int newIndex) {
+                                  onExpansionChanged: (int newIndex, bool edit) {
                                     setState(() {
-                                      if (oldIndex != null && oldIndex != newIndex) {
+                                      if (oldIndex != null && oldIndex != newIndex && !edit) {
                                         tileControllers[oldIndex!].collapse();
+                                      }
+                                      if(edit){
+                                        print('here ${tileControllers[index].isExpanded}');
                                       }
                                       oldIndex = newIndex;
                                     });
