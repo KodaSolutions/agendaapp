@@ -78,6 +78,12 @@ class _AssistantAdminState extends State<AssistantAdmin> {
     });
   }
 
+  void onBlurrModal(bool blurrModal) {
+    setState(() {
+      _showBlurr = blurrModal;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -213,30 +219,6 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Column(
-                                children: [
-                                  AnimatedSwitcher(
-                                    duration: Duration(milliseconds: 1000), // Ajusta la duración de la animación
-                                    transitionBuilder: (child, animation) {
-                                      return FadeTransition(opacity: animation, child: child);
-                                    },
-                                    child: Switch(
-                                      key: ValueKey<bool>(isSwitched), // Cambia la clave para cada estado
-                                      value: isSwitched,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          isSwitched = value;
-                                        });
-                                      },
-                                      activeTrackColor: Colors.green.withOpacity(0.5),
-                                      activeColor: Colors.green,
-                                      inactiveTrackColor: Colors.red.withOpacity(0.5),
-                                      inactiveThumbColor: Colors.red,
-                                    ),
-                                  ),
-                                  Text( isSwitched ? 'Mis citas' : 'Todas las citas'),
-                                ],
-                              ),
                               IconButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () async {
@@ -447,7 +429,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
     switch (_selectedScreen) {
       case 1:
         return AgendaSchedule(
-            docLog: widget.docLog, showContentToModify: _onshowContentToModify);
+            docLog: widget.docLog, showContentToModify: _onshowContentToModify, onBlurrModal: onBlurrModal);
       case 3:
         return ClientDetails(onHideBtnsBottom: _onHideBtnsBottom, docLog: widget.docLog, onShowBlur: _onShowBlur, );
       case 4:

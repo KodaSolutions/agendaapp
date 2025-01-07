@@ -12,13 +12,14 @@ import '../services/angedaDatabase/databaseService.dart';
 
 class AgendaSchedule extends StatefulWidget {
   final bool docLog;
+  final Function(bool) onBlurrModal;
   final void Function(
     bool,
   ) showContentToModify;
 
 
   const AgendaSchedule(
-      {Key? key, required this.docLog, required this.showContentToModify})
+      {Key? key, required this.docLog, required this.showContentToModify, required this.onBlurrModal})
       : super(key: key);
 
   @override
@@ -63,12 +64,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
   int? currentMonth = 0;
   int? visibleYear = 0;
   DateTime now = DateTime.now();
-  bool _VarmodalReachTop = false;
-  bool _isTaped = false;
-  int? _expandedIndex;
-  bool _btnToReachTop = false;
   bool docLog = false;
-  bool _showModalCalledscndTime = false;
   String _timerOfTheFstIndexTouched = '';
   String _dateOfTheFstIndexTouched = '';
   String _dateLookandFill = '';
@@ -161,79 +157,30 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
   }
 
 
-  void _showModaltoDate(
-      BuildContext context,
-      CalendarTapDetails details,
-      bool varmodalReachTop,
-      _expandedIndex,
-      _timerOfTheFstIndexTouched,
-      _dateOfTheFstIndexTouched,
-      _btnToReachTop,
-      _dateLookandFill) {
+  void _showModaltoDate(BuildContext context, CalendarTapDetails details) {
+    widget.onBlurrModal(true);
     showModalBottomSheet(
-      backgroundColor: !varmodalReachTop
-          ? Colors.transparent
-          : Colors.black54.withOpacity(0.3),
-      isScrollControlled: varmodalReachTop,
-      showDragHandle: false,
-      barrierColor: Colors.black54,
+      backgroundColor: Colors.white,
+      isScrollControlled: true,
+      showDragHandle: true,
+      barrierColor: Colors.black54.withOpacity(0.3),
       context: context,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.95,
+      ),
+      transitionAnimationController: AnimationController(
+        duration: const Duration(milliseconds: 350),
+        vsync: Scaffold.of(context),
+      ),
       builder: (context) {
-        return BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Colors.transparent,
-              ),
-              child: AppointmentScreen(
-                  isDocLog: docLog,
-                  expandedIndex: _expandedIndex,
+        return AppointmentScreen(
                   selectedDate: details.date!,
                   firtsIndexTouchHour: _timerOfTheFstIndexTouched,
                   firtsIndexTouchDate: _dateOfTheFstIndexTouched,
-                  btnToReachTop: _btnToReachTop,
-                  dateLookandFill: _dateLookandFill,
-                  reachTop: (bool reachTop,
-                      int? expandedIndex,
-                      String timerOfTheFstIndexTouched,
-                      String dateOfTheFstIndexTouched,
-                      bool auxToReachTop,
-                      String dateLookandFill) {
-                    setState(() {
-                      if (!varmodalReachTop) {
-                        Navigator.pop(context);
-                        _timerOfTheFstIndexTouched = timerOfTheFstIndexTouched;
-                        _dateOfTheFstIndexTouched = dateOfTheFstIndexTouched;
-                        _btnToReachTop = auxToReachTop;
-                        varmodalReachTop = true;
-                        _expandedIndex = expandedIndex;
-                        _showModalCalledscndTime = true;
-                        _dateLookandFill = dateLookandFill;
-                        _showModaltoDate(
-                            context,
-                            details,
-                            varmodalReachTop,
-                            _expandedIndex,
-                            _timerOfTheFstIndexTouched,
-                            _dateOfTheFstIndexTouched,
-                            _btnToReachTop,
-                            _dateLookandFill);
-                      } else {
-                        varmodalReachTop = reachTop;
-                        if (auxToReachTop == false) {
-                          Navigator.pop(context);
-                        }
-                      }
-                    });
-                  }),
-            ));
+                  dateLookandFill: _dateLookandFill);
       },
-    ).then((_) {
-      if (_showModalCalledscndTime == true &&
-          _expandedIndex != null &&
-          varmodalReachTop == true) {
-        _expandedIndex = null;
-      }
+    ).then((_){
+      widget.onBlurrModal(false);
     });
   }
 
@@ -323,13 +270,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                   onTap: (CalendarTapDetails details) {
                     if (details.targetElement == CalendarElement.calendarCell ||
                         details.targetElement == CalendarElement.appointment) {
-                      _VarmodalReachTop = false;
-                      _showModaltoDate(context, details, _VarmodalReachTop,
-                          null,
-                          _timerOfTheFstIndexTouched,
-                          _dateOfTheFstIndexTouched,
-                          _btnToReachTop,
-                          _dateLookandFill);
+                      _showModaltoDate(context, details);
                     }
                   },
                   onViewChanged: (ViewChangedDetails details) {

@@ -65,180 +65,169 @@ class _TimerFlyState extends State<TimerFly> {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          color: Colors.transparent,
-          margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                margin: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.width * 0.04),
-                height: MediaQuery.of(context).size.width * 0.166,
-                decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
-                    )
-                ),
-              ),
-              Container(
-                height: MediaQuery.of(context).size.width * 0.166,
-                margin: EdgeInsets.symmetric(horizontal:  MediaQuery.of(context).size.width * 0.04),
-                decoration: BoxDecoration(
-                    border: Border(
-                      bottom: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2),
-                    )
-                ),
-              )
-            ],
-          ),
-        ),
-        Column(
+    return Column(
             children: [
               Expanded(
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.all(Radius.circular(10)),
-                        border: Border.all(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2)
-                    ),
-                    margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          ///hrs
-                          Flexible(
-                              child: ListWheelScrollView.useDelegate(
-                                  controller: hourController,
-                                  perspective: 0.001,
-                                  diameterRatio: 0.96,
-                                  physics: const FixedExtentScrollPhysics(),
-                                  itemExtent: MediaQuery.of(context).size.width * 0.18,
-                                  onSelectedItemChanged: (value) {
-                                    setState(() {
-                                      selectedIndexHours = value;
-                                    });
-                                  },
-                                  childDelegate: ListWheelChildLoopingListDelegate(
-                                      children: List.generate(12, (index) {
-                                        final Color colorforhours = index == selectedIndexHours
-                                            ? AppColors3.primaryColor
-                                            : Colors.grey;
-
-                                        return Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: index != selectedIndexHours
-                                                    ? MediaQuery.of(context).size.width * 0.04
-                                                    : MediaQuery.of(context).size.width * 0.0),
-                                            child: Center(
-                                                child: Text(index == 0 ? '12' : index.toString(),
-                                                    style: TextStyle(
-                                                      fontSize: index == selectedIndexHours
-                                                          ? MediaQuery.of(context).size.width * 0.11
-                                                          : MediaQuery.of(context).size.width * 0.12,
-                                                      color: colorforhours,
-                                                    ))));
-                                      })))),
-                          Flexible(
-                            child: Text(
-                            ':',
-                            style: TextStyle(
-                              fontSize: MediaQuery.of(context).size.width * 0.125,
-                              color: AppColors3.primaryColor,
-                            ))),
-                          Flexible(
-                            child: ListWheelScrollView.useDelegate(
-                              onSelectedItemChanged: (value) {
-                                setState(() {
-                                  int newMinsValue = value * 30;
-
-                                  if (value == 0 && previousMinsIndex == 1) {  //valores entre (0 y 30)
-                                    if (selectedIndexHours == 11) {
-                                      selectedIndexHours = 0;
-                                      hourController.animateToItem(
-                                        selectedIndexHours,
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    } else {
-                                      selectedIndexHours = (selectedIndexHours + 1) % 12;
-                                      hourController.animateToItem(
-                                        selectedIndexHours,
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.easeInOut,
-                                      );
-                                    }
-                                  }
-                                  previousMinsIndex = value;
-                                  selectedIndexMins = newMinsValue;
-                                });
-                              },
-                              controller: minsController,
-                              perspective: 0.0011,
-                              diameterRatio: 0.96,
-                              physics: const FixedExtentScrollPhysics(),
-                              itemExtent: MediaQuery.of(context).size.width * 0.18,
-                              childDelegate: ListWheelChildLoopingListDelegate(
-                                children: List.generate(2, (index) {
-                                  final int minute = index * 30;  // Cambiado de 20 a 30
-                                  final Color colorformins = minute == selectedIndexMins
-                                      ? AppColors3.primaryColor
-                                      : Colors.grey;
-
-                                  return Center(
-                                    child: Text(
-                                      minute < 10 ? '0$minute' : minute.toString(),
-                                      style: TextStyle(
-                                        fontSize: minute == selectedIndexMins
-                                            ? MediaQuery.of(context).size.width * 0.11
-                                            : MediaQuery.of(context).size.width * 0.12,
-                                        color: colorformins,
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.04),
+                        color: Colors.transparent,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Divider(
+                              color: Colors.grey,
                             ),
-                          ),
+                            Divider(
+                              color: Colors.grey,
+                            ),
+                          ],
+                        ),
+                      ),
 
-                          ///am/pm
-                          Flexible(
-                              child: ListWheelScrollView.useDelegate(
-                                  controller: amPmController,
+                      Container(
+                        decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.all(Radius.circular(10)),
+                            border: Border.all(color: AppColors3.primaryColorMoreStrong.withOpacity(0.1), width: 2)
+                        ),
+                        margin: EdgeInsets.all(
+                            MediaQuery.of(context).size.width * 0.02
+                        ),
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              ///hrs
+                              Flexible(
+                                  child: ListWheelScrollView.useDelegate(
+                                      controller: hourController,
+                                      perspective: 0.001,
+                                      diameterRatio: 0.96,
+                                      physics: const FixedExtentScrollPhysics(),
+                                      itemExtent: MediaQuery.of(context).size.width * 0.18,
+                                      onSelectedItemChanged: (value) {
+                                        setState(() {
+                                          selectedIndexHours = value;
+                                        });
+                                      },
+                                      childDelegate: ListWheelChildLoopingListDelegate(
+                                          children: List.generate(12, (index) {
+                                            final Color colorforhours = index == selectedIndexHours
+                                                ? AppColors3.primaryColor
+                                                : Colors.grey;
+
+                                            return Container(
+                                                margin: EdgeInsets.symmetric(
+                                                    horizontal: index != selectedIndexHours
+                                                        ? MediaQuery.of(context).size.width * 0.04
+                                                        : MediaQuery.of(context).size.width * 0.0),
+                                                child: Center(
+                                                    child: Text(index == 0 ? '12' : index.toString(),
+                                                        style: TextStyle(
+                                                          fontSize: index == selectedIndexHours
+                                                              ? MediaQuery.of(context).size.width * 0.11
+                                                              : MediaQuery.of(context).size.width * 0.12,
+                                                          color: colorforhours,
+                                                        ))));
+                                          })))),
+                              Flexible(
+                                  child: Text(
+                                      ':',
+                                      style: TextStyle(
+                                        fontSize: MediaQuery.of(context).size.width * 0.125,
+                                        color: AppColors3.primaryColor,
+                                      ))),
+                              Flexible(
+                                child: ListWheelScrollView.useDelegate(
                                   onSelectedItemChanged: (value) {
                                     setState(() {
-                                      selectedIndexAmPm = value;
+                                      int newMinsValue = value * 30;
+
+                                      if (value == 0 && previousMinsIndex == 1) {  //valores entre (0 y 30)
+                                        if (selectedIndexHours == 11) {
+                                          selectedIndexHours = 0;
+                                          hourController.animateToItem(
+                                            selectedIndexHours,
+                                            duration: const Duration(milliseconds: 500),
+                                            curve: Curves.easeInOut,
+                                          );
+                                        } else {
+                                          selectedIndexHours = (selectedIndexHours + 1) % 12;
+                                          hourController.animateToItem(
+                                            selectedIndexHours,
+                                            duration: const Duration(milliseconds: 500),
+                                            curve: Curves.easeInOut,
+                                          );
+                                        }
+                                      }
+                                      previousMinsIndex = value;
+                                      selectedIndexMins = newMinsValue;
                                     });
                                   },
-                                  perspective: 0.001,
+                                  controller: minsController,
+                                  perspective: 0.0011,
                                   diameterRatio: 0.96,
                                   physics: const FixedExtentScrollPhysics(),
                                   itemExtent: MediaQuery.of(context).size.width * 0.18,
-                                  childDelegate: ListWheelChildBuilderDelegate(
-                                      childCount: 2,
-                                      builder: (context, index) {
-                                        final Color colorforitems = index == selectedIndexAmPm
-                                            ? AppColors3.primaryColor
-                                            : Colors.grey;
-                                        final String text = index == 0 ? 'p.m.' : 'a.m.';
-                                        return Center(
-                                            child: Text(text,
-                                                style: TextStyle(
-                                                    fontSize: index == selectedIndexAmPm
-                                                        ? MediaQuery.of(context).size.width *
-                                                        0.11
-                                                        : MediaQuery.of(context).size.width *
-                                                        0.12,
-                                                    color: colorforitems)));
-                                      })))
-                        ]),
+                                  childDelegate: ListWheelChildLoopingListDelegate(
+                                    children: List.generate(2, (index) {
+                                      final int minute = index * 30;  // Cambiado de 20 a 30
+                                      final Color colorformins = minute == selectedIndexMins
+                                          ? AppColors3.primaryColor
+                                          : Colors.grey;
+
+                                      return Center(
+                                        child: Text(
+                                          minute < 10 ? '0$minute' : minute.toString(),
+                                          style: TextStyle(
+                                            fontSize: minute == selectedIndexMins
+                                                ? MediaQuery.of(context).size.width * 0.11
+                                                : MediaQuery.of(context).size.width * 0.12,
+                                            color: colorformins,
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  ),
+                                ),
+                              ),
+
+                              ///am/pm
+                              Flexible(
+                                  child: ListWheelScrollView.useDelegate(
+                                      controller: amPmController,
+                                      onSelectedItemChanged: (value) {
+                                        setState(() {
+                                          selectedIndexAmPm = value;
+                                        });
+                                      },
+                                      perspective: 0.001,
+                                      diameterRatio: 0.96,
+                                      physics: const FixedExtentScrollPhysics(),
+                                      itemExtent: MediaQuery.of(context).size.width * 0.18,
+                                      childDelegate: ListWheelChildBuilderDelegate(
+                                          childCount: 2,
+                                          builder: (context, index) {
+                                            final Color colorforitems = index == selectedIndexAmPm
+                                                ? AppColors3.primaryColor
+                                                : Colors.grey;
+                                            final String text = index == 0 ? 'p.m.' : 'a.m.';
+                                            return Center(
+                                                child: Text(text,
+                                                    style: TextStyle(
+                                                        fontSize: index == selectedIndexAmPm
+                                                            ? MediaQuery.of(context).size.width *
+                                                            0.11
+                                                            : MediaQuery.of(context).size.width *
+                                                            0.12,
+                                                        color: colorforitems)));
+                                          })))
+                            ]),
+                      )
+                    ],
                   )
               ),
-              Padding(
-                  padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.width * 0.04,
-                  ),
-                  child: ElevatedButton(
+            ElevatedButton(
                       onPressed: () {
                         DateTime now = DateTime.now();
                         selectedIndexAmPm == 1
@@ -268,9 +257,6 @@ class _TimerFlyState extends State<TimerFly> {
                         elevation: 2,
                         surfaceTintColor: Colors.white,
                         splashFactory: InkRipple.splashFactory,
-                        padding: EdgeInsets.symmetric(
-                            vertical: 0,
-                            horizontal: MediaQuery.of(context).size.width * 0.1),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10.0),
                           side: const BorderSide(color: AppColors3.primaryColor, width: 2),
@@ -279,10 +265,8 @@ class _TimerFlyState extends State<TimerFly> {
                       ),
                       child: const Text(
                         'Guardar',
-                        style: TextStyle(fontSize: 22, color: Colors.white),
-                      )))
-            ]),
-      ],
-    );
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ))
+            ]);
   }
 }
