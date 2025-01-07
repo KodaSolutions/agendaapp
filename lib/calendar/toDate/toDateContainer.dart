@@ -14,17 +14,15 @@ import '../../utils/listenerApptm.dart';
 import '../../utils/listenerSlidable.dart';
 
 class ToDateContainer extends StatefulWidget {
-  final bool isDocLog;
   final Function(bool) onShowBlurr;
+  final Function(bool) showIconAdd;
   final Listenerapptm? listenerapptm;
-  final void Function(bool, int?, String, String, bool, String) reachTop;
   final String? firtsIndexTouchHour;
   final String? firtsIndexTouchDate;
   final String dateLookandFill;
   final DateTime selectedDate;
-  final int? expandedIndexToCharge;
-  const ToDateContainer({super.key, required this.reachTop, this.firtsIndexTouchHour, this.firtsIndexTouchDate,
-    required this.dateLookandFill, required this.selectedDate, this.expandedIndexToCharge, this.listenerapptm, required this.onShowBlurr, required this.isDocLog});
+  const ToDateContainer({super.key, this.firtsIndexTouchHour, this.firtsIndexTouchDate,
+    required this.dateLookandFill, required this.selectedDate, this.listenerapptm, required this.onShowBlurr, required this.showIconAdd});
 
   @override
   State<ToDateContainer> createState() => _ToDateContainerState();
@@ -97,13 +95,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
 
   void reachTop (bool modalReachTop , int? _expandedIndex, String _timerController, String _dateController, bool positionBtnIcon, String _dateLookandFill){
       expandedIndex = _expandedIndex;
-      widget.reachTop(
-          modalReachTop,
-          expandedIndex,
-          _timerController,
-          _dateController,
-          positionBtnIcon,
-          _dateLookandFill);
   }
   void _initializateApptm (bool inititializate, DateTime date){
     if(inititializate = true){
@@ -244,15 +235,16 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   }
 
   Future<void> refreshAppointments() async {
-    setState(() {
-      appointments = fetchAppointments(dateTimeToinitModal);
-    });
+    if(mounted){
+      setState(() {
+        appointments = fetchAppointments(dateTimeToinitModal);
+      });
+    }
   }
 
   @override
   void initState() {
     // TODO: implement initState
-   expandedIndex = widget.expandedIndexToCharge;
    isTaped = expandedIndex != null;
    if (widget.firtsIndexTouchHour != null) {
      _timerController.text = widget.firtsIndexTouchHour!;
@@ -278,9 +270,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
      });
    });
    loadUserswithRole();
-   if(widget.expandedIndexToCharge != null){
-     oldIndex = widget.expandedIndexToCharge;
-   }
     super.initState();
   }
 
@@ -294,55 +283,67 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-          alignment: Alignment.center,
-        color: AppColors3.whiteColor,
-        child: FutureBuilder<List<Appointment>>(
-            future: appointments,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator(
-                  color: AppColors3.primaryColor
-                ));
-              } else if (snapshot.hasError) {
-                return Text(
-                  textAlign: TextAlign.center,
-                  "Verifica tu conexión a internet para consultar tus citas",
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width * 0.06
-                ),); //${snapshot.error}
-              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return Text(
-                  textAlign: TextAlign.center,
-                  "No tienes citas para este día",
-                  style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.06
-                  ),);
-              } else {
-                List<Appointment> filteredAppointments = snapshot.data!;
-                return ListView.builder(
-                physics: const BouncingScrollPhysics(),
-                    itemCount: filteredAppointments.length,
-                    itemBuilder: (context, index) {
-                  Appointment appointment = filteredAppointments[index];
-                  String time = (appointment.appointmentDate != null)
-                          ? DateFormat('hh:mm a')
-                          .format(appointment.appointmentDate!)
-                          : 'Hora desconocida';
-                      List<String> timeParts = time.split(' ');
-                      ///este gesture detector le pertenece a al container que muesta info y sirve para la animacion de borrar
-                      return Container(
-                        color: Colors.transparent,
-                          margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height * 0,
-                            left: MediaQuery.of(context).size.width * 0.02,
-                            right: MediaQuery.of(context).size.width * 0.02,
-                            bottom: MediaQuery.of(context).size.width * 0.02,
-                          ),
-                          child: Slidable(
-                            controller: slidableControllers[index],
-                            key: ValueKey(index),
-                            startActionPane: null,
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: Container(
+          alignment: Alignment.topCenter,
+          color: AppColors3.whiteColor,
+          child: FutureBuilder<List<Appointment>>(
+              future: appointments,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.22),
+                    child: Center(child: CircularProgressIndicator(
+                        color: AppColors3.primaryColor
+                    ))
+                  );
+                } else if (snapshot.hasError) {
+                  return Container(
+                      padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.22),
+                      child: Text(
+                      textAlign: TextAlign.center,
+                      "Verifica tu conexión a internet para consultar tus citas",
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.06
+                      ),)
+                  ); //${snapshot.error}
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Container(
+                    padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.22),
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "No tienes citas para este día",
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.06
+                      ),),
+                  );
+                } else {
+                  List<Appointment> filteredAppointments = snapshot.data!;
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: filteredAppointments.length,
+                      itemBuilder: (context, index) {
+                        Appointment appointment = filteredAppointments[index];
+                        String time = (appointment.appointmentDate != null)
+                            ? DateFormat('hh:mm a')
+                            .format(appointment.appointmentDate!)
+                            : 'Hora desconocida';
+                        List<String> timeParts = time.split(' ');
+                        ///este gesture detector le pertenece a al container que muesta info y sirve para la animacion de borrar
+                        return Container(
+                            color: Colors.transparent,
+                            margin: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height * 0,
+                              left: MediaQuery.of(context).size.width * 0.02,
+                              right: MediaQuery.of(context).size.width * 0.02,
+                              bottom: MediaQuery.of(context).size.width * 0.02,
+                            ),
+                            child: Slidable(
+                              controller: slidableControllers[index],
+                              key: ValueKey(index),
+                              startActionPane: null,
                               endActionPane: ActionPane(
                                 motion: const ScrollMotion(),
                                 dismissible: DismissiblePane(
@@ -374,17 +375,17 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                   SlidableAction(
                                     onPressed: (context) async {
                                       widget.onShowBlurr(true);
-                                        bool result = await showDeleteAppointmentDialog(
-                                          context, widget,
-                                          appointment.id,
-                                          refreshAppointments,
-                                        );
-                                        if (result) {
-                                          widget.onShowBlurr(false);
-                                          refreshAppointments();
-                                        }else{
-                                          widget.onShowBlurr(false);
-                                        }
+                                      bool result = await showDeleteAppointmentDialog(
+                                        context, widget,
+                                        appointment.id,
+                                        refreshAppointments,
+                                      );
+                                      if (result) {
+                                        widget.onShowBlurr(false);
+                                        refreshAppointments();
+                                      }else{
+                                        widget.onShowBlurr(false);
+                                      }
                                     },
                                     backgroundColor: AppColors3.redDelete,
                                     foregroundColor: AppColors3.whiteColor,
@@ -415,27 +416,33 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                                 doctorUsers: doctorUsers,
                                 tileController: tileControllers[index],
                                 index: index, dateLookandFill: _dateLookandFill,
-                                reachTop: reachTop, appointment: appointment, timeParts: timeParts, selectedDate: widget.selectedDate,
-                                firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate, 
-                                listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments, 
-                                expandedIndexToCharge: widget.expandedIndexToCharge, initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
-                                onShowBlurrModal: onShowBlurrModal, isDocLog: false,
-                                  oldIndex: oldIndex,
-                                  onExpansionChanged: (int newIndex, bool edit) {
-                                    setState(() {
-                                      if (oldIndex != null && oldIndex != newIndex && !edit) {
-                                        tileControllers[oldIndex!].collapse();
-                                      }
-                                      if(edit){
-                                        print('here ${tileControllers[index].isExpanded}');
-                                      }
-                                      oldIndex = newIndex;
-                                    });
-                                  },
+                                appointment: appointment, timeParts: timeParts, selectedDate: widget.selectedDate,
+                                firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate,
+                                listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments,
+                                initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
+                                onShowBlurrModal: onShowBlurrModal,
+                                oldIndex: oldIndex,
+                                onExpansionChanged: (int newIndex, bool edit) {
+                                  if (oldIndex == newIndex) {
+                                    widget.showIconAdd(true);
+                                  }
+                                  for (var controller in tileControllers){
+                                    if(controller.isExpanded){
+                                      widget.showIconAdd(false);
+                                    }
+                                  }
+                                  setState(() {
+                                    if (oldIndex != null && oldIndex != newIndex && !edit) {
+                                      tileControllers[oldIndex!].collapse();
+                                    }
+                                    oldIndex = newIndex;
+                                  });
+                                },
                               ),
-                              ));
-                    });
-              }
-            }));
+                            ));
+                      });
+                }
+              }))
+    );
   }
 }

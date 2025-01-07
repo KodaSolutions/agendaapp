@@ -18,7 +18,6 @@ class ApptmInfo extends StatefulWidget {
   final List<Map<String, dynamic>> doctorUsers;
   final ExpansionTileController tileController;
   final Function(int, bool) onExpansionChanged;
-  final bool isDocLog;
   final Function(bool) onShowBlurrModal;
   final Listenerapptm? listenerapptm;
   final Listenerslidable? listenerslidable;
@@ -32,12 +31,11 @@ class ApptmInfo extends StatefulWidget {
   final String? firtsIndexTouchDate;
   final int? expandedIndexToCharge;
   final int? oldIndex;
-  final void Function(bool, int?, String, String, bool, String) reachTop;
   final Function (bool, DateTime) initializateApptm;
-  const ApptmInfo({super.key, required this.index, required this.dateLookandFill, required this.reachTop,
+  const ApptmInfo({super.key, required this.index, required this.dateLookandFill,
     required this.appointment, required this.timeParts, this.firtsIndexTouchHour, this.firtsIndexTouchDate, this.expandedIndexToCharge,
     required this.selectedDate, this.listenerapptm, required this.filteredAppointments, required this.initializateApptm, this.listenerslidable,
-    required this.onShowBlurrModal, required this.isDocLog, required this.tileController, required this.onExpansionChanged, this.oldIndex, required this.doctorUsers});
+    required this.onShowBlurrModal, required this.tileController, required this.onExpansionChanged, this.oldIndex, required this.doctorUsers});
 
   @override
   State<ApptmInfo> createState() => _ApptmInfoState();
@@ -320,12 +318,10 @@ class _ApptmInfoState extends State<ApptmInfo> {
                     _timerController.text = formattedTime12hrs;
                     _dateController.text = DateFormat('yyyy-MM-dd').format(appointmetsToModify.appointmentDate!);
                     _dateLookandFill = dateOnly!;
-                    expandedIndex = index;
-                    isTaped = true;
-                    modalReachTop = true;
-                    widget.reachTop(modalReachTop, expandedIndex, _timerController.text, _dateController.text, positionBtnIcon, _dateLookandFill);
                   });
                 }else{
+                  widget.onExpansionChanged(widget.index, true);
+                  print('close');
                 }
               },
               children: [
