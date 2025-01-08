@@ -1,4 +1,4 @@
-package com.example.agenda_app
+package com.kodasolv.agenda_app
 
 import io.flutter.embedding.android.FlutterActivity
 
