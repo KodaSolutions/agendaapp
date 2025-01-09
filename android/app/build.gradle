@@ -26,10 +26,26 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
+def keystoreProperties = new Properties()
+def keystorePropertiesFile = rootProject.file('key.properties')
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+
 android {
-    namespace = "com.example.agenda_app"
+    namespace = "com.kodasolv.agenda_app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
+
+    signingConfigs {
+        release {
+            keyAlias 'flydev'
+            keyPassword 'flydev!117'
+            storeFile file('my-release-key.jks')
+            storePassword 'flydev!117'
+        }
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -46,7 +62,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.agenda_app"
+        applicationId = "com.kodasolv.agenda_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
         minSdk = flutter.minSdkVersion
@@ -55,11 +71,14 @@ android {
         versionName = flutterVersionName
     }
 
+
+
     buildTypes {
         release {
-            signingConfig signingConfigs.debug
-            minifyEnabled true
-            shrinkResources true
+            signingConfig = signingConfigs.release
+            //signingConfig signingConfigs.debug
+            minifyEnabled false
+            shrinkResources false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
