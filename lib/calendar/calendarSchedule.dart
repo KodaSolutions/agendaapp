@@ -297,7 +297,7 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
 
 
 
-                    final bool hasEvent = _appointments.any((Appointment2
+                    final bool hasEventGral = _appointments.any((Appointment2
                             appointment) =>
                         appointment.appointmentDate != null &&
                         details.date.day == appointment.appointmentDate!.day &&
@@ -305,35 +305,28 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                             appointment.appointmentDate!.month &&
                         details.date.year == appointment.appointmentDate!.year);
 
-                    int eventCount = _appointments.where((appointment) =>
+                    int eventCountGral = _appointments.where((appointment) =>
                     appointment.appointmentDate != null &&
                         appointment.appointmentDate!.day == details.date.day &&
                         appointment.appointmentDate!.month == details.date.month &&
                         appointment.appointmentDate!.year == details.date.year).length;
 
-                   /* final bool hasEventDoc1 = _appointments.any(
-                        (Appointment2 appointment) =>
-                            appointment.appointmentDate != null &&
-                            details.date.day ==
-                                appointment.appointmentDate!.day &&
-                            details.date.month ==
-                                appointment.appointmentDate!.month &&
-                            details.date.year ==
-                                appointment.appointmentDate!.year &&
-                            appointment.doctorId == 1);
+                    final bool hasEventEstetic = _appointments.any((Appointment2 ///esta variable arroja si hay citas
+                            appointment) =>
+                        appointment.appointmentDate != null &&
+                        details.date.day == appointment.appointmentDate!.day &&
+                        details.date.month ==
+                            appointment.appointmentDate!.month &&
+                        details.date.year == appointment.appointmentDate!.year);
 
-                    final bool hasEventDoc2 = _appointments.any(
-                        (Appointment2 appointment) =>
-                            appointment.appointmentDate != null &&
-                            details.date.day ==
-                                appointment.appointmentDate!.day &&
-                            details.date.month ==
-                                appointment.appointmentDate!.month &&
-                            details.date.year ==
-                                appointment.appointmentDate!.year &&
-                            appointment.doctorId == 2);*/
+                    int eventCountEstetic = _appointments.where((appointment) => ///esta variable arroja la cantidad de citas que hay
+                    appointment.appointmentDate != null &&
+                        appointment.appointmentDate!.day == details.date.day &&
+                        appointment.appointmentDate!.month == details.date.month &&
+                        appointment.appointmentDate!.year == details.date.year).length; ///el detalle es que todavia no recibie el nuevo campo
+                    ///y no se como contarlas entonces devuelve las mismas cantidad que sus variables "semejantes"
 
-                    if (isToday && hasEvent) {
+                    if (isToday && hasEventGral) {
                       return Container(
                         decoration: BoxDecoration(
                             border: Border.all(color: AppColors3.primaryColor),
@@ -382,71 +375,184 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                           ),
                         ),
                       );
-                    } else {
-                      return hasEvent// && isInCurrentMonth == true
-                          ? Container(
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
-                                ),
-                                color: isInCurrentMonth ? Colors.transparent : AppColors3.greyColor.withOpacity(0.2),
-                              ),
-                              child: Stack(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      details.date.day.toString(),
-                                      style: TextStyle(
-                                        color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.45),
-                                        fontSize: MediaQuery.of(context).size.width * 0.06,
-                                      ),
+                    } else if (hasEventEstetic && hasEventGral) {
+                      return Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                            ),
+                            color: isInCurrentMonth ? Colors.transparent : AppColors3.greyColor.withOpacity(0.2),
+                          ),
+                          child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    details.date.day.toString(),
+                                    style: TextStyle(
+                                      color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.secundaryColor.withOpacity(0.4),
+                                      fontSize: MediaQuery.of(context).size.width * 0.06,
                                     ),
                                   ),
-                                  Align(
-                                    alignment: Alignment.bottomRight,
-                                    child: Container(
-                                      margin: EdgeInsets.only(
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(///general
+                                        margin: EdgeInsets.only(
                                           bottom: MediaQuery.of(context).size.width * 0.005,
                                           right: MediaQuery.of(context).size.width * 0.005,
+                                        ),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: isInCurrentMonth ? AppColors3.primaryColor
+                                                : AppColors3.primaryColor.withOpacity(0.35)),
+                                            color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.2),
+                                            //Colors.purple.withOpacity(0.35),
+                                            shape: BoxShape.circle),
+                                        width: MediaQuery.of(context).size.width * 0.045,
+                                        height: MediaQuery.of(context).size.width * 0.045,
+                                        child: Center(child: Text('$eventCountGral',
+                                          style: TextStyle(
+                                            fontSize: MediaQuery.of(context).size.width * 0.03,
+                                            color: isInCurrentMonth ? AppColors3.whiteColor : AppColors3.greyColor.withOpacity(0.6),
+                                          ),),),
                                       ),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(color: isInCurrentMonth ? AppColors3.primaryColor
-                                              : AppColors3.primaryColor.withOpacity(0.35)),
-                                          color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.2),
-                                          //Colors.purple.withOpacity(0.35),
-                                          shape: BoxShape.circle),
-                                      width: MediaQuery.of(context).size.width * 0.05,
-                                      height: MediaQuery.of(context).size.width * 0.05,
-                                      child: Center(child: Text('$eventCount',
+                                      Container(///cita estetica
+                                        margin: EdgeInsets.only(
+                                          bottom: MediaQuery.of(context).size.width * 0.005,
+                                          right: MediaQuery.of(context).size.width * 0.005,
+                                        ),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(color: isInCurrentMonth ? AppColors3.primaryColor
+                                                : AppColors3.primaryColor.withOpacity(0.35)),
+                                            color: isInCurrentMonth ? AppColors3.secundaryColor : AppColors3.secundaryColor.withOpacity(0.2),
+                                            //Colors.purple.withOpacity(0.35),
+                                            shape: BoxShape.circle),
+                                        width: MediaQuery.of(context).size.width * 0.045,
+                                        height: MediaQuery.of(context).size.width * 0.045,
+                                        child: Center(child: Text('$eventCountEstetic',
+                                          style: TextStyle(
+                                            fontSize: MediaQuery.of(context).size.width * 0.03,
+                                            color: isInCurrentMonth ? AppColors3.whiteColor : AppColors3.greyColor.withOpacity(0.6),
+                                          ),),),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ]));
+                    } else if (hasEventGral) {
+                      return Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                            ),
+                            color: isInCurrentMonth ? Colors.transparent : AppColors3.greyColor.withOpacity(0.2),
+                          ),
+                          child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    details.date.day.toString(),
+                                    style: TextStyle(
+                                      color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.secundaryColor.withOpacity(0.4),
+                                      fontSize: MediaQuery.of(context).size.width * 0.06,
+                                    ),
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context).size.width * 0.005,
+                                      right: MediaQuery.of(context).size.width * 0.005,
+                                    ),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: isInCurrentMonth ? AppColors3.primaryColor
+                                            : AppColors3.primaryColor.withOpacity(0.35)),
+                                        color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.2),
+                                        //Colors.purple.withOpacity(0.35),
+                                        shape: BoxShape.circle),
+                                    width: MediaQuery.of(context).size.width * 0.045,
+                                    height: MediaQuery.of(context).size.width * 0.045,
+                                    child: Center(child: Text('$eventCountGral',
                                       style: TextStyle(
+                                        fontSize: MediaQuery.of(context).size.width * 0.03,
                                         color: isInCurrentMonth ? AppColors3.whiteColor : AppColors3.greyColor.withOpacity(0.6),
                                       ),),),
+                                  ),
+                                )
+                              ]));
+                    } else if (hasEventEstetic) {
+                      return Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                            ),
+                            color: isInCurrentMonth ? Colors.transparent : AppColors3.greyColor.withOpacity(0.2),
+                          ),
+                          child: Stack(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    details.date.day.toString(),
+                                    style: TextStyle(
+                                      color: isInCurrentMonth ? AppColors3.primaryColor : AppColors3.secundaryColor.withOpacity(0.4),
+                                      fontSize: MediaQuery.of(context).size.width * 0.06,
                                     ),
-                                  )
-                                ]
-                              ))
-                          : Container(
-                                      decoration: BoxDecoration(
-                                        color: AppColors3.whiteColor,
-                                        border: Border.all(
-                                          color: AppColors3.primaryColor,
-                                          width: 0.2,
-                                        ),
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          details.date.day.toString(),
-                                          style: TextStyle(
-                                            color: isInCurrentMonth
-                                                ? AppColors3.primaryColor
-                                                : AppColors3.secundaryColor.withOpacity(0.75),
-                                            fontSize: MediaQuery.of(context).size.width * 0.055,
-                                          ),
-                                        ),
-                                      ),
-                                    );}
+                                  ),
+                                ),
+                                Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                      bottom: MediaQuery.of(context).size.width * 0.005,
+                                      right: MediaQuery.of(context).size.width * 0.005,
+                                    ),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: isInCurrentMonth ? AppColors3.primaryColor
+                                            : AppColors3.primaryColor.withOpacity(0.35)),
+                                        color: isInCurrentMonth ? AppColors3.secundaryColor : AppColors3.secundaryColor.withOpacity(0.2),
+                                        //Colors.purple.withOpacity(0.35),
+                                        shape: BoxShape.circle),
+                                    width: MediaQuery.of(context).size.width * 0.045,
+                                    height: MediaQuery.of(context).size.width * 0.045,
+                                    child: Center(child: Text('$eventCountEstetic',
+                                      style: TextStyle(
+                                        fontSize: MediaQuery.of(context).size.width * 0.03,
+                                        color: isInCurrentMonth ? AppColors3.whiteColor : AppColors3.greyColor.withOpacity(0.6),
+                                      ),),),
+                                  ),
+                                )
+                              ]));
+                    }else {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: AppColors3.whiteColor,
+                          border: Border.all(
+                            color: AppColors3.primaryColor,
+                            width: 0.2,
+                          ),
+                        ),
+                        child: Center(
+                          child: Text(
+                            details.date.day.toString(),
+                            style: TextStyle(
+                              color: isInCurrentMonth
+                                  ? AppColors3.primaryColor
+                                  : AppColors3.secundaryColor.withOpacity(0.4),
+                              fontSize: MediaQuery.of(context).size.width * 0.055,
+                            ),
+                          ),
+                        ),
+                      );;
+                    }
                   },
                 ),
               ),
