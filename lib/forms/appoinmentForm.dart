@@ -410,7 +410,8 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
           'time': toTime,
           'treatment': treatmentController.text,
           'name': _clientTextController.text,
-          'contact_number': number.toString()
+          'contact_number': number.toString(),
+          'apptmType' : apptmType.toString()
         }),
       );
 
