@@ -20,11 +20,9 @@ class _AppConfigState extends State<AppConfig> {
   late KeyboardVisibilityManager keyboardVisibilityManager;
 
   FocusNode nameFocus = FocusNode();
-  FocusNode emailFocus = FocusNode();
   FocusNode pswFocus = FocusNode();
   FocusNode newPswFocus = FocusNode();
   TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
   TextEditingController pswController = TextEditingController();
   TextEditingController newPswController = TextEditingController();
 
@@ -56,7 +54,7 @@ class _AppConfigState extends State<AppConfig> {
       try {
         final response = await UserServices.registerUser(
           name: nameController.text,
-          email: emailController.text,
+          email: '',
           password: pswController.text,
           roleId: roleId!,
         );
@@ -92,20 +90,20 @@ class _AppConfigState extends State<AppConfig> {
         }
       } catch (e) {
         if (mounted) {
-          Navigator.of(context).pop();
-          ScaffoldMessenger.of(context).showSnackBar(
+          /*ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text('Error: ${e.toString()}'),
               backgroundColor: Colors.red,
             ),
-          );
+          );*/
+          Navigator.of(context).pop();
+
         }
       }
     }
   }
   void clearForm() {
     nameController.clear();
-    emailController.clear();
     pswController.clear();
     setState(() {
       roleId = null;
@@ -115,11 +113,16 @@ class _AppConfigState extends State<AppConfig> {
 
   @override
   void dispose() {
+    for (var removeListener in _focusListeners) {
+      removeListener();
+    }
     keyboardVisibilityManager.dispose();
     nameController.dispose();
-    emailController.dispose();
     pswController.dispose();
     newPswController.dispose();
+    nameFocus.dispose();
+    pswFocus.dispose();
+    newPswFocus.dispose();
     super.dispose();
   }
 
@@ -227,14 +230,15 @@ class _AppConfigState extends State<AppConfig> {
     }
   }
 
+  final List<VoidCallback> _focusListeners = [];
 
   void addFocusListeners(List<FocusNode> focusNodes) {
     for (var focusNode in focusNodes) {
-      focusNode.addListener(() {
-        setState(() {
-          print('Focus state for ${focusNode.toString()}: ${focusNode.hasFocus}');
-        });
-      });
+      final listener = () {
+        print('Focus state for ${focusNode.toString()}: ${focusNode.hasFocus}');
+      };
+      focusNode.addListener(listener);
+      _focusListeners.add(() => focusNode.removeListener(listener));
     }
   }
 
@@ -252,8 +256,8 @@ class _AppConfigState extends State<AppConfig> {
   void initState() {
     // TODO: implement initState
     keyboardVisibilityManager = KeyboardVisibilityManager();
-    addFocusListeners([nameFocus, emailFocus, pswFocus, newPswFocus]);
-    addTextListeners([nameController, emailController, pswController]);
+    addFocusListeners([nameFocus, pswFocus, newPswFocus]);
+    addTextListeners([nameController, pswController, newPswController]);
     super.initState();
   }
 
@@ -345,7 +349,7 @@ class _AppConfigState extends State<AppConfig> {
                                 return null;
                               },
                             ),
-                            TextFormField(
+                            /*TextFormField(
                               controller: emailController,
                               focusNode: emailFocus,
                               inputFormatters: [
@@ -368,7 +372,7 @@ class _AppConfigState extends State<AppConfig> {
                                 }
                                 return null;
                               },
-                            ),
+                            ),*/
                             SelBoxRol(
                               onSelRol: onSelRol
                             ),
@@ -386,9 +390,8 @@ class _AppConfigState extends State<AppConfig> {
                                       horizontal: MediaQuery.of(context).size.width * 0.02,
                                       vertical: MediaQuery.of(context).size.width * 0.035),
                                   filled: pswFocus.hasFocus ? true : false,
-                                  fillColor:
-                                  AppColors3.greyColor.withOpacity(0.2),
-                                  hintText: 'Contraseña'),
+                                  fillColor: AppColors3.greyColor.withOpacity(0.2),
+                                  hintText: 'Contaseña'),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'La contraseña es obligatoria';

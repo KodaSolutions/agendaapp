@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:agenda_app/forms/msgForm.dart';
@@ -63,35 +64,37 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
   }
 
   void initializeSlidableControllers(int number) {
-    slidableControllers.clear();
-    for (int i = 0; i < number; i++) {
-      final controller = SlidableController(this);
-      controller.animation.addListener(() {
-        double dragRatio = controller.ratio;
-        if(mounted){
-          if (dragRatio != 0) {
-            setState(() {
-              isDragX = true;
-              itemDragX = i;
-              hideBorderRadius();
-            });
-          } else {
-            setState(() {
-              itemDragX = i;
-              isDragX = false;
-              showBorderRadius();
-            });
+    if (slidableControllers.length < number) {
+      for (int i = slidableControllers.length; i < number; i++) {
+        final controller = SlidableController(this);
+        controller.animation.addListener(() {
+          double dragRatio = controller.ratio;
+          if (mounted) {
+            if (dragRatio != 0) {
+              setState(() {
+                isDragX = true;
+                itemDragX = i;
+                hideBorderRadius();
+              });
+            } else {
+              setState(() {
+                itemDragX = i;
+                isDragX = false;
+                showBorderRadius();
+              });
+            }
           }
-        }
-      });
-      slidableControllers.add(controller);
+        });
+        slidableControllers.add(controller);
+      }
+    } else if (slidableControllers.length > number) {
+      slidableControllers.removeRange(number, slidableControllers.length);
     }
   }
 
   @override
   void initState() {
     // TODO: implement initState
-
     super.initState();
     fetchMessages();
   }
@@ -103,6 +106,7 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
         filteredMsg = fetchedMessages;
         isLoading = false;
         initializeSlidableControllers(messages.length);
+        print('size ${slidableControllers.length}');
       });
     } catch (e) {
       print('Error al obtener mensajes: $e');
@@ -210,7 +214,7 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                                     onChanged: (text){
                                       filtrarMensajes(text);
                                     })),
-                            const SizedBox(width: 20,),
+                            const SizedBox(width: 5,),
                             IconButton(onPressed: () async {
                               final result = await Navigator.of(context).push(
                                 CupertinoPageRoute(
@@ -220,6 +224,10 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                               );
                               if (result != null && mounted) {
                                  //reloadMsgs();
+                                await fetchMessages().then((_){
+                                  setState(() {
+                                  });
+                                });
                               }
                             }, icon: Icon(Icons.message_outlined, size: MediaQuery.of(context).size.width * 0.082,))
                           ]))
@@ -312,8 +320,8 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                           index: index,
                           query: seekController.text,
                           listenerslidable: listenerslidable,
-                        ),
-                      ),);
+                        )
+                      ));/* : */
                   },
                     childCount: filteredMsg.length,
                   ))

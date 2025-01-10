@@ -140,7 +140,15 @@ class _MsgFormState extends State<MsgForm> {
                   decoration: InputDecoration(
                     hintText: 'Título, ejemplo: "Mensaje para estudios"',
                     border: OutlineInputBorder(
-                      borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong),
+                      borderSide: const BorderSide(color: AppColors3.primaryColor),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: AppColors3.primaryColor),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: AppColors3.primaryColor),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
@@ -161,6 +169,14 @@ class _MsgFormState extends State<MsgForm> {
                       borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong),
                       borderRadius: BorderRadius.circular(10.0),
                     ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: AppColors3.primaryColor),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(color: AppColors3.primaryColor),
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
                   ),
 
                 ),),
@@ -174,7 +190,9 @@ class _MsgFormState extends State<MsgForm> {
                       onPressed: isLoading ? null : saveMessage,
                       child: isLoading
                           ? const CircularProgressIndicator()
-                          : const Text('Guardar'),
+                          : const Text('Guardar', style: TextStyle(
+                        color: AppColors3.primaryColor,
+                      ),),
                     ),
                   ],
                 ),

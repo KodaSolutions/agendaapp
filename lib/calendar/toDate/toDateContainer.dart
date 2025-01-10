@@ -183,7 +183,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
     try {
       final usersList = await loadUsersWithRoles();
       setState(() {
-        doctorUsers = usersList.where((user) => user['role'] == 1)
+        doctorUsers = usersList.where((user) => user['role'] != 2)
             .map((user) => {'id': user['id'], 'name': user['name'], 'role': user['role']})
             .toList();
         isLoadingUsers = false;

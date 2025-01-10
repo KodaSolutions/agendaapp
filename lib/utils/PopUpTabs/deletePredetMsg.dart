@@ -13,7 +13,7 @@ class _DeletePredMsgState extends State<DeletePredMsg> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
+      margin: EdgeInsets.all(MediaQuery.of(context).size.width * 0.12),
       padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.03),
           decoration: BoxDecoration(
             color: AppColors3.whiteColor,
@@ -36,7 +36,6 @@ class _DeletePredMsgState extends State<DeletePredMsg> {
               Row(
                 children: [
                   Expanded(child: Text(
-                    textAlign: TextAlign.justify,
                     '¿Deseas eliminar este mensaje?', style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.06,
 

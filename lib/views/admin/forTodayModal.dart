@@ -151,9 +151,6 @@ class _FortodaymodalState extends State<Fortodaymodal> with SingleTickerProvider
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       userId = prefs.getInt('user_id');
-      if(userId ==4){
-        userId =1;
-      }
     });
     if (userId != null) {
       todayAppointments = fetchAppointmentsByDate(userId!, DateTime.now().toString());

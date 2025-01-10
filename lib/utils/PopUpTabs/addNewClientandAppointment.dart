@@ -38,6 +38,7 @@ class _AddClientAndAppointmentState extends State<AddClientAndAppointment> {
   @override
   void initState() {
     super.initState();
+    emailController.text = 'Cevepe@hospital.com';
     _clientNamefromAppointmetForm.text = widget.clientNamefromAppointmetForm;
   }
 

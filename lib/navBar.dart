@@ -93,11 +93,11 @@ class _navBarState extends State<navBar> {
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(SessionManager.instance.Nombre == 'Admin' ? 'Heber Vargas' : SessionManager.instance.Nombre,
+                                          Text(SessionManager.instance.Nombre,
                                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width*0.05, color: AppColors3.primaryColorMoreStrong)),
                                           Row(
                                             children: [
-                                              Text('admin CEVEPE', style: TextStyle(color: AppColors3.primaryColor),),
+                                              Text('CEVEPE', style: TextStyle(color: AppColors3.primaryColor),),
                                               SizedBox(width: 5,),
                                               Icon(Icons.pets, size: MediaQuery.of(context).size.width * 0.03,
                                               color: AppColors3.primaryColor,
@@ -215,10 +215,10 @@ class _navBarState extends State<navBar> {
                               ],
                             ),
                           ),
-                          Visibility(
-                            visible: userRole == 'asistente' ? true : false,
+                          /*Visibility(
+                            visible: true,//userRole == 'asistente' ? true : false,
                             child: Container(
-                              padding: const EdgeInsets.only(top:40),
+                              padding: const EdgeInsets.only(top:20),
                               child: ElevatedButton(
                                   onPressed: isLoadingUsers ? null :  (){
                                     setState(() {
@@ -230,21 +230,20 @@ class _navBarState extends State<navBar> {
                                     backgroundColor: AppColors3.whiteColor,
                                     side: const BorderSide(color: AppColors3.primaryColor, width: 1.0),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    minimumSize: Size(170, 55),
-                                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                     elevation: 5.0,
                                     shadowColor: Colors.black54,
                                   ),
                                   child: isLoadingUsers ? CircularProgressIndicator() : Text(
                                     'Mandar alerta',
                                     style: TextStyle(
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w500,
                                         fontSize: MediaQuery.of(context).size.width*0.05,
                                         color: AppColors3.primaryColor
                                     ),
                                   ),
                               ),
-                            ),),
+                            ),),*/
                           ///Icono escoger impresora
                           /*IconButton(onPressed: (){
                             Navigator.of(context).push(
