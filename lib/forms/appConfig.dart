@@ -73,14 +73,12 @@ class _AppConfigState extends State<AppConfig> {
                 backgroundColor: Colors.green,
               ),
             );
-
-            // Recargar la página completa
-            Navigator.pushReplacement(
+            Navigator.pop(context, true); /* Navigator.pushReplacement(
               context,
               MaterialPageRoute(
                 builder: (context) => const AppConfig(),
               ),
-            );
+            );*/
           }
         } else {
           if (mounted) {

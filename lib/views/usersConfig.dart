@@ -39,12 +39,12 @@ class _UsersConfigState extends State<UsersConfig> {
     try {
       final usersList = await loadUsersWithRoles();
       setState(() {
-        users = usersList.where((user) => user['id'] != 1.toString()).toList();//esto es para ocultar al admin
-        filteredUsers = users;
+        users = usersList.where((user) => user['id'] != 1.toString()).toList();
+        filteredUsers = List.from(users);
         isLoadingUsers = false;
       });
     } catch (e) {
-      if(mounted){
+      if (mounted) {
         setState(() {
           isLoadingUsers = false;
           error = e.toString();
@@ -52,6 +52,7 @@ class _UsersConfigState extends State<UsersConfig> {
       }
     }
   }
+
 
   void onShowBlurr (bool blurr){
     setState(() {
@@ -166,12 +167,16 @@ class _UsersConfigState extends State<UsersConfig> {
                       onChanged: (val){
                         filterByUsers();
                               })),
-                  IconButton(onPressed: (){
-                    Navigator.of(context).push(
-                      CupertinoPageRoute(
-                        builder: (context) => AppConfig(),
-                      ),
-                    );
+                  IconButton(
+                      onPressed: () async {
+                        final result = await Navigator.of(context).push(
+                          CupertinoPageRoute(
+                            builder: (context) => AppConfig(),
+                          ),
+                        );
+                        if (result == true) {
+                          await loadUserswhitRole();
+                        }
                   }, icon: Icon(Icons.person_add, size: MediaQuery.of(context).size.width * 0.082,))
                     ]))),
           SliverPadding(
