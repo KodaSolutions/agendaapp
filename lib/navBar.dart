@@ -93,11 +93,11 @@ class _navBarState extends State<navBar> {
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text(SessionManager.instance.Nombre == 'Dulce' ? 'Nombre Asistente' : SessionManager.instance.Nombre,
+                                          Text(SessionManager.instance.Nombre == 'Admin' ? 'Heber Vargas' : SessionManager.instance.Nombre,
                                               style: TextStyle(fontWeight: FontWeight.bold, fontSize: MediaQuery.of(context).size.width*0.05, color: AppColors3.primaryColorMoreStrong)),
                                           Row(
                                             children: [
-                                              Text('CEVEPE', style: TextStyle(color: AppColors3.primaryColor),),
+                                              Text('admin CEVEPE', style: TextStyle(color: AppColors3.primaryColor),),
                                               SizedBox(width: 5,),
                                               Icon(Icons.pets, size: MediaQuery.of(context).size.width * 0.03,
                                               color: AppColors3.primaryColor,

@@ -9,6 +9,7 @@ import '../../projectStyles/appColors.dart';
 import '../../services/angedaDatabase/databaseService.dart';
 
 Future<List<Appointment2>> fetchAppointmentsByDate(int userId, String date) async {
+  print('user ID $userId');
   List<Appointment2> appointments = [];
   final dbService = DatabaseService();
 
@@ -176,9 +177,10 @@ class _NotiCardsState extends State<NotiCards> {
                     left: MediaQuery.of(context).size.height * 0.01,
                     right: MediaQuery.of(context).size.height * 0.01),
                 decoration: BoxDecoration(
-                  color: !isRead
-                      ? AppColors3.primaryColor
-                      : AppColors3.primaryColor.withOpacity(0.3),
+                  color: widget.appointment.apptmType == 'Consulta general' && !isRead ? AppColors3.primaryColor :
+                  widget.appointment.apptmType == 'Consulta general' && isRead ?AppColors3.primaryColor.withOpacity(0.3) :
+                  widget.appointment.apptmType == 'Estética' && !isRead ? AppColors3.secundaryColor :
+                  widget.appointment.apptmType == 'Estética' && isRead ? AppColors3.secundaryColor.withOpacity(0.3) : null,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
@@ -205,7 +207,7 @@ class _NotiCardsState extends State<NotiCards> {
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                           color: AppColors3.whiteColor
                       ),
-                      child: Text( widget.nameDoc,
+                      child: Text( widget.nameDoc == 'Admin' ? 'Heber V.' : widget.nameDoc,
                         style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04,
                         color: isRead ? AppColors3.blackColor.withOpacity(0.3) : AppColors3.blackColor),),
                     ),),
@@ -247,9 +249,12 @@ class _NotiCardsState extends State<NotiCards> {
                 padding:
                     EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
                 decoration: BoxDecoration(
-                  color: !isRead
+                  color: widget.appointment.apptmType == 'Consulta general' && !isRead ? AppColors3.primaryColor.withOpacity(0.3) :
+                  widget.appointment.apptmType == 'Consulta general' && isRead ?AppColors3.primaryColor.withOpacity(0.1) :
+                  widget.appointment.apptmType == 'Estética' && !isRead ? AppColors3.secundaryColor.withOpacity(0.3) :
+                  widget.appointment.apptmType == 'Estética' && isRead ? AppColors3.secundaryColor.withOpacity(0.1) : null,/*!isRead
                       ? AppColors3.primaryColor.withOpacity(0.3)
-                      : AppColors3.primaryColor.withOpacity(0.1),
+                      : AppColors3.primaryColor.withOpacity(0.1),*/
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),

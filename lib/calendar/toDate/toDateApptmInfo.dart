@@ -226,14 +226,17 @@ class _ApptmInfoState extends State<ApptmInfo> {
               children: [
                 const Spacer(),
                 Container(
-                  padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
+                  padding: EdgeInsets.symmetric(
+                      horizontal:  MediaQuery.of(context).size.width * 0.01,
+                      vertical:  MediaQuery.of(context).size.width * 0.045,
+                  ),
                   margin: EdgeInsets.only(right:  MediaQuery.of(context).size.width * 0.02),
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
-                    color: AppColors3.primaryColor, //const Color(0xFFC5B6CD),
+                    color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor, //const Color(0xFFC5B6CD),
                     borderRadius: BorderRadius.circular(10),
                     border: Border.all(
-                      color: !isTaped ? AppColors3.primaryColor : AppColors3.primaryColor.withOpacity(0.3),
+                      color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
                       width: 1.5,
                     ),
                   ),
@@ -241,6 +244,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
                     textAlign: TextAlign.center,
                     text: TextSpan(
                       style: TextStyle(
+                        height: 1.4,
                         fontSize: MediaQuery.of(context).size.width * 0.055,
                         color: AppColors3.whiteColor,
                       ),
@@ -262,13 +266,13 @@ class _ApptmInfoState extends State<ApptmInfo> {
               initiallyExpanded: widget.firtsIndexTouchDate != '' && expandedIndex == widget.index ? true : false,
               key: Key('${widget.index}'),
               controller: widget.tileController,
-              iconColor: AppColors3.primaryColor,
+              iconColor: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
               collapsedIconColor: Colors.transparent,
               backgroundColor: AppColors3.whiteColor,
               collapsedBackgroundColor: Colors.transparent,
               textColor: AppColors3.bgColor,
               collapsedShape: RoundedRectangleBorder(
-                side: const BorderSide(color: AppColors3.primaryColor),
+                side: BorderSide(color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor) ,
                 borderRadius: BorderRadius.only(
                   bottomRight: draggedItems.contains(widget.index) ? const Radius.circular(0) : const Radius.circular(15),
                   topRight: draggedItems.contains(widget.index) ? const Radius.circular(0) : const Radius.circular(15),
@@ -291,9 +295,14 @@ class _ApptmInfoState extends State<ApptmInfo> {
                           Text(getDoctorName(widget.appointment.doctorId, widget.doctorUsers), style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: MediaQuery.of(context).size.width * 0.05,
-                            color: AppColors3.primaryColor,
+                            color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
                           ),),
-                          Text(' ${widget.appointment.clientName}', style: TextStyle(
+
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text('${widget.appointment.clientName}', style: TextStyle(
                             fontSize: MediaQuery.of(context).size.width * 0.05,
                             color:AppColors3.blackColor,
                           )),
@@ -301,7 +310,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
                       ),
                       Text(widget.appointment.treatmentType.toString(), style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.05,
-                        color:AppColors3.primaryColor,
+                        color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
                       ),),
                     ],
                   ),
@@ -321,7 +330,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
                   });
                 }else{
                   widget.onExpansionChanged(widget.index, true);
-                  print('close');
                 }
               },
               children: [
@@ -333,8 +341,8 @@ class _ApptmInfoState extends State<ApptmInfo> {
                   ),
                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.015, horizontal: MediaQuery.of(context).size.width * 0.026),
                   alignment: Alignment.centerLeft,
-                  decoration: const BoxDecoration(
-                    color: AppColors3.primaryColor,
+                  decoration: BoxDecoration(
+                    color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor, //const Color(0xFFC5B6CD),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(10),
                       topLeft: Radius.circular(10),
@@ -366,7 +374,8 @@ class _ApptmInfoState extends State<ApptmInfo> {
                           ),
                         ),
                         labelText: 'DD/M/AAAA',
-                        suffixIcon: const Icon(Icons.calendar_today, color: AppColors3.primaryColor,)),
+                        suffixIcon: Icon(Icons.calendar_today, color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor, //const Color(0xFFC5B6CD),
+                        )),
                     readOnly: true,
                     onTap: () {
                       setState(() {
@@ -393,8 +402,8 @@ class _ApptmInfoState extends State<ApptmInfo> {
                       top: MediaQuery.of(context).size.width * 0.025,
                   ),
                   alignment: Alignment.centerLeft,
-                  decoration: const BoxDecoration(
-                    color: AppColors3.primaryColor,
+                  decoration: BoxDecoration(
+                    color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor, //const Color(0xFFC5B6CD),
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(10),
                       topLeft: Radius.circular(10),
@@ -429,8 +438,9 @@ class _ApptmInfoState extends State<ApptmInfo> {
                         ),
                       ),
                       labelText: 'HH:MM',
-                      suffixIcon: const Icon(
-                        Icons.access_time, color: AppColors3.primaryColor,),
+                      suffixIcon: Icon(
+                        Icons.access_time, color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor, //const Color(0xFFC5B6CD),
+                      ),
                     ),
                     readOnly: true,
                     onTap: () {
@@ -500,12 +510,12 @@ class _ApptmInfoState extends State<ApptmInfo> {
                                   elevation: 4,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    side: const BorderSide(
-                                        color: AppColors3.primaryColor,
+                                    side: BorderSide(
+                                        color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor, //const Color(0xFFC5B6CD),
                                         width: 1),
                                   ),
-                                  backgroundColor: AppColors3.primaryColor,
-                                  surfaceTintColor: AppColors3.primaryColor,
+                                  backgroundColor: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
+                                  surfaceTintColor: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
                                   padding: EdgeInsets.symmetric(
                                     horizontal: MediaQuery.of(context).size.width * 0.05,
                                   ),
@@ -523,23 +533,11 @@ class _ApptmInfoState extends State<ApptmInfo> {
                                     }).then((result) {
                                       if (result == true) {
                                         widget.onShowBlurrModal(false);
-                                        /*modalReachTop = true;
-                                        expandedIndex = null;
-                                        isTaped = false;
-                                        positionBtnIcon = true;
-                                        _dateLookandFill = dateOnly!;*/
                                         fetchAppointments(dateTimeToinitModal);
                                         late DateTime dateSelected = dateTimeToinitModal;
                                         DateTime date = dateTimeToinitModal;
                                         dateSelected = date;
                                         dateOnly = DateFormat('yyyy-MM-dd').format(dateSelected);
-                                        /*widget.reachTop(
-                                            modalReachTop,
-                                            expandedIndex,
-                                            _timerController.text,
-                                            _dateController.text,
-                                            positionBtnIcon,
-                                            _dateLookandFillAfterSave);*/
                                         widget.initializateApptm(true, dateSelected);//3zu
                                         widget.onExpansionChanged(widget.index, true);
                                       } else {
@@ -560,13 +558,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
 
               ],
               //controller: controllers[widget.index],
-            ),
-            Container(
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                color: AppColors3.primaryColor, //const Color(0xFFC5B6CD),
-                borderRadius: BorderRadius.circular(10),
-              ),
             ),
           ],
         )

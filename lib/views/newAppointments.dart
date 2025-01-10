@@ -45,7 +45,6 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
           _appointments.length, (index) => ExpansionTileController(),
         );
       });
-      print('bye $_appointments');
     } catch (e) {
       print('Error loading appointments: $e');
     }
@@ -67,16 +66,12 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
         );
 
         if (response.statusCode == 200) {
-          print('adios');
           var jsonResponse = jsonDecode(response.body);
           if (jsonResponse is Map<String, dynamic> && jsonResponse['appointments'] is List) {
             appointments = List<Appointment2>.from(
               jsonResponse['appointments']
                   .map((appointmentJson) => Appointment2.fromJson(appointmentJson as Map<String, dynamic>)),
             );
-
-            print('hola alan');
-
             print('Datos de appointments sincronizados correctamente');
           } else {
             print('La respuesta no contiene una lista de citas.');
@@ -122,7 +117,6 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
     });
     keyboardVisibilityManager = KeyboardVisibilityManager();
     _loadAppointments();
-    print('hola jeje $_appointments');
     super.initState();
   }
 

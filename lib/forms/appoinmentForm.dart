@@ -360,8 +360,9 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
       final usersList = await loadUsersWithRoles();
       setState(() {
         users = usersList;
+        print('fomr $users');
         doctorUsers = usersList
-            .where((user) => user['role'] == 1)
+            .where((user) => user['role'] == 1 || user['role'] == null)
             .map((user) => {'id': user['id'], 'name': user['name'], 'role': user['role']})
             .toList();
         isLoadingUsers = false;
