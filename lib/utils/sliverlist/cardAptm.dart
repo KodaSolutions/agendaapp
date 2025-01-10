@@ -1,5 +1,6 @@
 import 'package:agenda_app/calendar/calendarSchedule.dart';
 import 'package:agenda_app/services/approveApptService.dart';
+import 'package:agenda_app/usersConfig/functions.dart';
 import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -79,7 +80,7 @@ class _CardAptmState extends State<CardAptm> {
     }
   }
 
-  Future<void> _rejectAppointment() async {
+  Future<void> _rejectAppointment(String phone, String nameClient) async {
     setState(() {
       _isLoading = true;
     });
@@ -99,6 +100,7 @@ class _CardAptmState extends State<CardAptm> {
         );
         widget.onAppointmentUpdated?.call();
         widget.tileController.collapse();
+        sendWhatsMsg(phone: '+52${phone}', bodymsg: 'Hola ${nameClient}, ');
       }
     } catch (e) {
       if (mounted) {
@@ -117,9 +119,9 @@ class _CardAptmState extends State<CardAptm> {
       }
     }
   }
+
   @override
   void initState() {
-    print('${widget.newAptm[widget.index].appointmentDate}');
     super.initState();
   }
 
@@ -221,6 +223,22 @@ class _CardAptmState extends State<CardAptm> {
                 Row(
                   children: [
                     Text(
+                      'Para: ',
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                    ),
+                    Text(
+                      '${widget.newAptm[widget.index].apptmType}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.04),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
                       'Cliente: ',
                       style: TextStyle(
                           fontSize: MediaQuery.of(context).size.width * 0.04,
@@ -228,6 +246,22 @@ class _CardAptmState extends State<CardAptm> {
                     ),
                     Text(
                       '${widget.newAptm[widget.index].clientName}',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.04),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text(
+                      'Cel: ',
+                      style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                      ),
+                    ),
+                    SelectableText(
+                      '${widget.newAptm[widget.index].contactNumber}',
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: MediaQuery.of(context).size.width * 0.04),
@@ -313,7 +347,7 @@ class _CardAptmState extends State<CardAptm> {
                                     style: ElevatedButton.styleFrom(
                                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                     ),
-                                    onPressed: _isLoading ? null : _rejectAppointment,
+                                    onPressed: _isLoading ? null : () => _rejectAppointment(widget.newAptm[widget.index].contactNumber!, widget.newAptm[widget.index].clientName!, ),
                                     child: const Icon(CupertinoIcons.xmark)),
                               ],
                             ),

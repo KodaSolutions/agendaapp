@@ -295,21 +295,20 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                         details.date.month == currentMonth &&
                             details.date.year == visibleYear;
 
-
-
                     final bool hasEventGral = _appointments.any((Appointment2
                             appointment) =>
                         appointment.appointmentDate != null &&
                         details.date.day == appointment.appointmentDate!.day &&
-                        details.date.month ==
-                            appointment.appointmentDate!.month &&
-                        details.date.year == appointment.appointmentDate!.year);
+                        details.date.month == appointment.appointmentDate!.month &&
+                        details.date.year == appointment.appointmentDate!.year &&
+                    appointment.apptmType == 'Consulta general');
 
                     int eventCountGral = _appointments.where((appointment) =>
                     appointment.appointmentDate != null &&
                         appointment.appointmentDate!.day == details.date.day &&
                         appointment.appointmentDate!.month == details.date.month &&
-                        appointment.appointmentDate!.year == details.date.year).length;
+                        appointment.appointmentDate!.year == details.date.year &&
+                        appointment.apptmType == 'Consulta general').length;
 
                     final bool hasEventEstetic = _appointments.any((Appointment2 ///esta variable arroja si hay citas
                             appointment) =>
@@ -317,13 +316,15 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                         details.date.day == appointment.appointmentDate!.day &&
                         details.date.month ==
                             appointment.appointmentDate!.month &&
-                        details.date.year == appointment.appointmentDate!.year);
+                        details.date.year == appointment.appointmentDate!.year &&
+                            appointment.apptmType == 'Estética');
 
                     int eventCountEstetic = _appointments.where((appointment) => ///esta variable arroja la cantidad de citas que hay
                     appointment.appointmentDate != null &&
                         appointment.appointmentDate!.day == details.date.day &&
                         appointment.appointmentDate!.month == details.date.month &&
-                        appointment.appointmentDate!.year == details.date.year).length; ///el detalle es que todavia no recibie el nuevo campo
+                        appointment.appointmentDate!.year == details.date.year &&
+                        appointment.apptmType == 'Estética').length; ///el detalle es que todavia no recibie el nuevo campo
                     ///y no se como contarlas entonces devuelve las mismas cantidad que sus variables "semejantes"
 
                     if (isToday && hasEventGral) {
@@ -582,6 +583,8 @@ class Appointment2 {
   final String? status;
   final String? clientName;
   bool? notificationRead;
+  final String? apptmType;
+  String? contactNumber;
 
   Appointment2({
     this.id,
@@ -596,6 +599,8 @@ class Appointment2 {
     this.status,
     this.clientName,
     this.notificationRead,
+    this.apptmType,
+    this.contactNumber,
   });
 
   factory Appointment2.fromJson(Map<String, dynamic> json) {
@@ -615,6 +620,8 @@ class Appointment2 {
       notificationRead: json['notification_read'] == 1,
       is_web: json['is_web'] == 0,
       is_approved: json['is_approved'] == null,
+      apptmType: json['apptmType'],
+      contactNumber: json['contact_number'],
     );
   }
 }

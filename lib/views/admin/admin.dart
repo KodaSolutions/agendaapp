@@ -98,7 +98,6 @@ class _AssistantAdminState extends State<AssistantAdmin> {
     keyboardVisibilityController = KeyboardVisibilityController();
     Platform.isIOS ? platform = false : platform = true;
     checkKeyboardVisibility();
-    print('role ${SessionManager.instance.userRole}');
     super.initState();
   }
 
@@ -205,7 +204,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                                     ? 'Clientes'
                                     : _selectedScreen == 4
                                     ? 'Para hoy'
-                                    : '',
+                                    : 'Calendario',//esto es por el refresh
                                 style: TextStyle(
                                   color: AppColors3.primaryColor,
                                   fontSize: screenWidth! < 370.00
@@ -219,6 +218,24 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedScreen = 5;
+                                  });
+                                  Timer(Duration(milliseconds: 500), () {
+                                    setState(() {
+                                      _selectedScreen = 1;
+                                    });
+                                  });
+                                },
+                                icon: Icon(
+                                  CupertinoIcons.refresh,
+                                  size: MediaQuery.of(context).size.width * 0.065,
+                                  color: AppColors3.primaryColorMoreStrong,
+                                ),
+                              ),
                               IconButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () async {
@@ -440,6 +457,10 @@ class _AssistantAdminState extends State<AssistantAdmin> {
             });
           },
         );
+      case 5:
+        return Center(child: CircularProgressIndicator(
+          color: AppColors3.primaryColor,
+        ));
       default:
         return Container();
     }

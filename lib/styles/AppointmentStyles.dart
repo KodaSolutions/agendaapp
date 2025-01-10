@@ -149,6 +149,7 @@ class _DoctorsMenuState extends State<DoctorsMenu> {
   void initState() {
     super.initState();
     optSelected = widget.optSelectedToRecieve;
+    print('stuels : ${widget.doctors}');
   }
 
   @override

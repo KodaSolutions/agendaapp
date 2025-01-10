@@ -202,7 +202,7 @@ class _UsersConfigState extends State<UsersConfig> {
                       Center(
                           child: isLoadingUsers
                               ? const CircularProgressIndicator(
-                            color: Colors.black,
+                            color: AppColors3.primaryColor,
                           )
                               : Text(
                             "No se han encontrado usuarios",

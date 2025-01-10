@@ -11,6 +11,7 @@ class Appointment {
   String? clientName;
   bool? notificationRead;
   String? contactNumber;
+  String? apptmType;
 
   Appointment({
     this.id,
@@ -23,7 +24,8 @@ class Appointment {
     this.status,
     this.clientName,
     this.notificationRead,
-    this.contactNumber
+    this.contactNumber,
+    this.apptmType
   });
 
   factory Appointment.fromJson(Map<String, dynamic> json) {
@@ -39,6 +41,7 @@ class Appointment {
       clientName: json['client_name'] as String?,
       notificationRead: json['notification_read'] == 1,
       contactNumber: json['contact_number'],
+      apptmType: json['apptmType'],
     );
   }
 }

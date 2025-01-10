@@ -1,4 +1,6 @@
 import 'package:agenda_app/projectStyles/appColors.dart';
+import 'package:agenda_app/utils/showToast.dart';
+import 'package:agenda_app/utils/toastWidget.dart';
 import 'package:flutter/material.dart';
 
 import '../../services/userService.dart';
@@ -38,17 +40,22 @@ class _CardUsersState extends State<CardUsers> {
   }
   void deleteUser() async {
     widget.onBlurr(true);
+
     if (selectedUserId == null) return;
+
+    // Mostrar diálogo de confirmación
     bool? confirm = await showDialog<bool>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Confirmar eliminación', style: TextStyle(
-            color: AppColors3.redDelete,
-          ),),
-          content: Text('¿Estás seguro que deseas eliminar al usuario: $user?', style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.045
-          ),),
+          title: const Text(
+            'Confirmar eliminación',
+            style: TextStyle(color: AppColors3.redDelete),
+          ),
+          content: Text(
+            '¿Estás seguro que deseas eliminar al usuario: $user?',
+            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
@@ -67,39 +74,56 @@ class _CardUsersState extends State<CardUsers> {
       widget.onBlurr(false);
       return;
     }
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return const Center(child: CircularProgressIndicator());
-      },
-    );
-    final result = await UserServices.deleteUser(selectedUserId!);
+
+    // Mostrar indicador de carga
     if (mounted) {
-      Navigator.of(context).pop();
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const Center(child: CircularProgressIndicator());
+        },
+      );
+    }
+
+    // Llamar al servicio para eliminar usuario
+    final result = await UserServices.deleteUser(selectedUserId!);
+
+    // Asegurarse de que el widget está montado antes de usar `context`
+    if (mounted) {
+      Navigator.of(context).pop(); // Cierra el indicador de carga
       widget.onBlurr(false);
-      ScaffoldMessenger.of(context).showSnackBar(
+
+      // Mostrar mensaje con `ScaffoldMessenger`
+     /* ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           padding: EdgeInsets.only(
             top: MediaQuery.of(context).size.width * 0.08,
             bottom: MediaQuery.of(context).size.width * 0.08,
             left: MediaQuery.of(context).size.width * 0.02,
           ),
-          content: Text(result['message'], style: TextStyle(
-            fontSize: MediaQuery.of(context).size.width * 0.045
-          ),),
+          content: Text(
+            result['message'],
+            style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045),
+          ),
           backgroundColor: result['success'] ? Colors.green : Colors.red,
         ),
-      );
+      );*/
 
+      // Navegar a la configuración de usuarios si la operación fue exitosa
       if (result['success']) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const UsersConfig()),
-        );
+        Future.microtask(() {
+          if (mounted) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const UsersConfig()),
+            );
+          }
+        });
       }
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -150,7 +174,8 @@ class _CardUsersState extends State<CardUsers> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 IconButton(
-                    onPressed: () {
+                    onPressed: widget.users[widget.index]['role'] == 3 ? ()=> showOverlay(context, CustomToast(message: 'No es posible esta acción para este usuario')) : () {
+                      print('${widget.users[widget.index]['role']}');
                       widget.onModifyUser(
                         widget.users[widget.index]['name'],
                         widget.index,
@@ -165,7 +190,7 @@ class _CardUsersState extends State<CardUsers> {
                     )
                 ),
                 IconButton(
-                    onPressed: deleteUser, icon: Icon(Icons.delete,
+                    onPressed: widget.users[widget.index]['role'] == 3 ? ()=> showOverlay(context, CustomToast(message: 'No es posible borrar este usuario')) : deleteUser, icon: Icon(Icons.delete,
                   color: AppColors3.redDelete,
                   size: MediaQuery.of(context).size.width * 0.065,)),
               ],

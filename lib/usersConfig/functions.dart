@@ -8,7 +8,7 @@ Future<List<Map<String, dynamic>>> loadUsersWithRoles() async {
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      final usersList = (data['user'] as List).where((user) => user['role_id'] != 3).map((user) {
+      final usersList = (data['user'] as List).where((user) => user['role_id'] != 2 && user['id'] != 1 && user['id'] != 4).map((user) {
         return {
           'id': user['id'].toString(),
           'name': user['name'],
@@ -16,6 +16,7 @@ Future<List<Map<String, dynamic>>> loadUsersWithRoles() async {
           'role': user['role_id'],
           //1 es doctor 2 asistente 3 admin
         };
+
       })
           .toList();
       return usersList;

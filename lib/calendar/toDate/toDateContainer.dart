@@ -68,6 +68,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
   late List<ExpansionTileController> tileControllers;
   var appointmentsList = [];
   String nameDoctor = '';
+  int? newIndexHelper;
 
   void hideBorderRadius(){
     listenerslidable.setChange(
@@ -182,7 +183,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
     try {
       final usersList = await loadUsersWithRoles();
       setState(() {
-        doctorUsers = usersList.where((user) => user['role'] == 1)
+        doctorUsers = usersList.where((user) => user['role'] != 2)
             .map((user) => {'id': user['id'], 'name': user['name'], 'role': user['role']})
             .toList();
         isLoadingUsers = false;
@@ -333,112 +334,146 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
                         List<String> timeParts = time.split(' ');
                         ///este gesture detector le pertenece a al container que muesta info y sirve para la animacion de borrar
                         return Container(
-                            color: Colors.transparent,
+                            //color: newIndexHelper == null ? Colors.transparent : newIndexHelper == index ? Colors.transparent : Colors.white.withOpacity(0.3),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
                             margin: EdgeInsets.only(
                               top: MediaQuery.of(context).size.height * 0,
                               left: MediaQuery.of(context).size.width * 0.02,
                               right: MediaQuery.of(context).size.width * 0.02,
                               bottom: MediaQuery.of(context).size.width * 0.02,
                             ),
-                            child: Slidable(
-                              controller: slidableControllers[index],
-                              key: ValueKey(index),
-                              startActionPane: null,
-                              endActionPane: ActionPane(
-                                motion: const ScrollMotion(),
-                                dismissible: DismissiblePane(
-                                  confirmDismiss: () async {
-                                    if (helperModalDeleteClient == 1) {
-                                      widget.onShowBlurr(true);
-                                      bool result = await showDeleteAppointmentDialog(
-                                        context,
-                                        widget,
-                                        appointment.id,
-                                        refreshAppointments,
-                                      );
-                                      if (result) {
-                                        refreshAppointments;
-                                        return true;
-                                      } else {
-                                        widget.onShowBlurr(false);
-                                        slidableControllers[index].close();
-                                        return false;
-                                      }
-                                    } else {
-                                      return false;
-                                    }
-                                  },
-                                  onDismissed: () {
-                                  },
-                                ),
-                                children: [
-                                  SlidableAction(
-                                    onPressed: (context) async {
-                                      widget.onShowBlurr(true);
-                                      bool result = await showDeleteAppointmentDialog(
-                                        context, widget,
-                                        appointment.id,
-                                        refreshAppointments,
-                                      );
-                                      if (result) {
-                                        widget.onShowBlurr(false);
-                                        refreshAppointments();
-                                      }else{
-                                        widget.onShowBlurr(false);
-                                      }
-                                    },
-                                    backgroundColor: AppColors3.redDelete,
-                                    foregroundColor: AppColors3.whiteColor,
-                                    icon: Icons.delete,
-                                    label: 'Eliminar',
+                            child: Stack(
+                              children: [
+                                Slidable(
+                                  controller: slidableControllers[index],
+                                  key: ValueKey(index),
+                                  startActionPane: null,
+                                  endActionPane: ActionPane(
+                                    motion: const ScrollMotion(),
+                                    dismissible: DismissiblePane(
+                                      confirmDismiss: () async {
+                                        if (helperModalDeleteClient == 1) {
+                                          widget.onShowBlurr(true);
+                                          bool result = await showDeleteAppointmentDialog(
+                                            context,
+                                            widget,
+                                            appointment.id,
+                                            refreshAppointments,
+                                          );
+                                          if (result) {
+                                            refreshAppointments;
+                                            return true;
+                                          } else {
+                                            widget.onShowBlurr(false);
+                                            slidableControllers[index].close();
+                                            return false;
+                                          }
+                                        } else {
+                                          return false;
+                                        }
+                                      },
+                                      onDismissed: () {
+                                      },
+                                    ),
+                                    children: [
+                                      SlidableAction(
+                                        onPressed: (context) async {
+                                          widget.onShowBlurr(true);
+                                          bool result = await showDeleteAppointmentDialog(
+                                            context, widget,
+                                            appointment.id,
+                                            refreshAppointments,
+                                          );
+                                          if (result) {
+                                            widget.onShowBlurr(false);
+                                            refreshAppointments();
+                                          }else{
+                                            widget.onShowBlurr(false);
+                                          }
+                                        },
+                                        backgroundColor: AppColors3.redDelete,
+                                        foregroundColor: AppColors3.whiteColor,
+                                        icon: Icons.delete,
+                                        label: 'Eliminar',
+                                      ),
+                                      SlidableAction(
+                                        onPressed: (context) async {
+                                          widget.onShowBlurr(true);
+                                          await showSendMsgDialog(
+                                            context,
+                                            filteredAppointments[index].clientName,
+                                            filteredAppointments[index].id!,
+                                            filteredAppointments[index].contactNumber,
+                                          ).then((_){
+                                            widget.onShowBlurr(false);
+                                          });
+                                          ///aquif
+                                        },
+                                        backgroundColor: AppColors3.primaryColor,
+                                        foregroundColor: AppColors3.whiteColor,
+                                        icon: Icons.send,
+                                        label: 'Mensajes',
+                                      ),
+                                    ],
                                   ),
-                                  SlidableAction(
-                                    onPressed: (context) async {
-                                      widget.onShowBlurr(true);
-                                      await showSendMsgDialog(
-                                        context,
-                                        filteredAppointments[index].clientName,
-                                        filteredAppointments[index].id!,
-                                        filteredAppointments[index].contactNumber,
-                                      ).then((_){
-                                        widget.onShowBlurr(false);
+                                  child: ApptmInfo(
+                                    doctorUsers: doctorUsers,
+                                    tileController: tileControllers[index],
+                                    index: index, dateLookandFill: _dateLookandFill,
+                                    appointment: appointment, timeParts: timeParts, selectedDate: widget.selectedDate,
+                                    firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate,
+                                    listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments,
+                                    initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
+                                    onShowBlurrModal: onShowBlurrModal,
+                                    oldIndex: oldIndex,
+                                    onExpansionChanged: (int newIndex, bool edit) {
+                                      setState(() {
+                                        newIndexHelper = newIndex;
                                       });
-                                      ///aquif
+                                      if(edit){
+                                        setState(() {
+                                          newIndexHelper = null;
+                                        });
+                                      }
+                                      if (oldIndex == newIndex) {
+                                        widget.showIconAdd(true);
+                                      }
+                                      for (var controller in tileControllers){
+                                        if(controller.isExpanded){
+                                          widget.showIconAdd(false);
+                                        }
+                                      }
+                                      setState(() {
+                                        if (oldIndex != null && oldIndex != newIndex && !edit) {
+                                          tileControllers[oldIndex!].collapse();
+                                          newIndexHelper = null;
+                                          newIndexHelper = newIndex;
+                                        }
+                                        oldIndex = newIndex;
+                                      });
                                     },
-                                    backgroundColor: AppColors3.primaryColor,
-                                    foregroundColor: AppColors3.whiteColor,
-                                    icon: Icons.send,
-                                    label: 'Mensajes',
                                   ),
-                                ],
-                              ),
-                              child: ApptmInfo(
-                                doctorUsers: doctorUsers,
-                                tileController: tileControllers[index],
-                                index: index, dateLookandFill: _dateLookandFill,
-                                appointment: appointment, timeParts: timeParts, selectedDate: widget.selectedDate,
-                                firtsIndexTouchHour: widget.firtsIndexTouchHour, firtsIndexTouchDate: widget.firtsIndexTouchDate,
-                                listenerapptm: widget.listenerapptm, filteredAppointments: filteredAppointments,
-                                initializateApptm: _initializateApptm, listenerslidable: listenerslidable,
-                                onShowBlurrModal: onShowBlurrModal,
-                                oldIndex: oldIndex,
-                                onExpansionChanged: (int newIndex, bool edit) {
-                                  if (oldIndex == newIndex) {
-                                    widget.showIconAdd(true);
-                                  }
-                                  for (var controller in tileControllers){
-                                    if(controller.isExpanded){
-                                      widget.showIconAdd(false);
-                                    }
-                                  }
-                                  setState(() {
-                                    if (oldIndex != null && oldIndex != newIndex && !edit) {
-                                      tileControllers[oldIndex!].collapse();
-                                    }
-                                    oldIndex = newIndex;
-                                  });
-                                },
-                              ),
+                                ),
+                                Visibility(
+                                  visible: newIndexHelper == null ? false : newIndexHelper == index ? false : true,
+                                  child: Row(
+                                  children: [
+                                    Expanded(child:
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        color: newIndexHelper == null ? Colors.transparent : AppColors3.whiteColor.withOpacity(0.6),
+                                      ),
+                                      child: Text('\n\n\n\n', style: TextStyle(
+                                        color: AppColors3.whiteColor.withOpacity(0.6),
+                                      ),),
+                                    ),
+
+                                    ),
+                                  ],),),
+                              ],
                             ));
                       });
                 }

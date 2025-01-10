@@ -177,6 +177,7 @@ class ClientFormState extends State<ClientForm> {
     focusNodeClient = FocusNode();
     focusNodeCel = FocusNode();
     focusNodeEmail = FocusNode();
+    _emailController.text = 'Cevepe@hospital.com';
     super.initState();
   }
 
