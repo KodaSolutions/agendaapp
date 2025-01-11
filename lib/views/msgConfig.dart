@@ -298,7 +298,7 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                             ),
                             SlidableAction(
                               onPressed: (context) async {
-                                Navigator.of(context).push(
+                                final result = await Navigator.of(context).push(
                                   CupertinoPageRoute(
                                     builder: (context) => MsgForm(
                                       id: filteredMsg[index]['id'],
@@ -307,6 +307,13 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                                     ),
                                   ),
                                 );
+                                if (result != null && mounted) {
+                                  //reloadMsgs();
+                                  await fetchMessages().then((_){
+                                    setState(() {
+                                    });
+                                  });
+                                }
                               },
                               backgroundColor: AppColors3.primaryColor,
                               foregroundColor: AppColors3.whiteColor,
@@ -320,9 +327,7 @@ class _MsgConfigState extends State<MsgConfig> with TickerProviderStateMixin {
                           index: index,
                           query: seekController.text,
                           listenerslidable: listenerslidable,
-                        )
-                      ));/* : */
-                  },
+                        )));},
                     childCount: filteredMsg.length,
                   ))
             ],
