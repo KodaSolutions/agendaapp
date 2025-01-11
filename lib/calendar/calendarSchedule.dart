@@ -433,15 +433,14 @@ class _AgendaScheduleState extends State<AgendaSchedule> {
                         child: Container(
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
-                              border: Border.all( color: AppColors3.primaryColorMoreStrong, width: 2),
-                              shape: BoxShape.circle,
-                              color: AppColors3.whiteColor
+                              border: Border.all( color: AppColors3.primaryColorMoreStrong, width: 1),
+                              color: AppColors3.primaryColor
                           ),
                           child: Text(
                             details.date.day.toString(),
                             style: TextStyle(
-                              color: AppColors3.primaryColor,
-                              fontSize: MediaQuery.of(context).size.width * 0.07,
+                              color: AppColors3.whiteColor,
+                              fontSize: MediaQuery.of(context).size.width * 0.06,
                             ),
                           ),
                         ),
