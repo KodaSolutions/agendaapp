@@ -218,7 +218,9 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                           Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              IconButton(
+                              Visibility(
+                                visible: _selectedScreen == 1 ? true : false,
+                                child: IconButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () {
                                   setState(() {
@@ -235,7 +237,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                                   size: MediaQuery.of(context).size.width * 0.065,
                                   color: AppColors3.primaryColorMoreStrong,
                                 ),
-                              ),
+                              ),),
                               IconButton(
                                 padding: EdgeInsets.zero,
                                 onPressed: () async {
