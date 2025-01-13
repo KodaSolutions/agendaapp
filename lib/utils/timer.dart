@@ -41,7 +41,7 @@ class _TimerFlyState extends State<TimerFly> {
   @override
   void initState() {
     super.initState();
-    if (widget.hour != null) {
+    if (widget.hour != null && widget.hour != 'Seleccione hora válida') {
       final timeParts = widget.hour!.split(' ');
       final time = timeParts[0].split(':');
       final period = timeParts[1];
