@@ -280,9 +280,14 @@ class _ApptmInfoState extends State<ApptmInfo> {
                   bottomLeft: const Radius.circular(10),
                 ),
               ),
-              shape: const RoundedRectangleBorder(
-                side: BorderSide(color: AppColors3.blackColor),
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+              shape: RoundedRectangleBorder(
+                side: BorderSide(color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor) ,
+                borderRadius: BorderRadius.only(
+                  bottomRight: draggedItems.contains(widget.index) ? const Radius.circular(0) : const Radius.circular(15),
+                  topRight: draggedItems.contains(widget.index) ? const Radius.circular(0) : const Radius.circular(15),
+                  topLeft: const Radius.circular(10),
+                  bottomLeft: const Radius.circular(10),
+                ),
               ),
               collapsedTextColor: AppColors3.primaryColor,
               title: Row(
