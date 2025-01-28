@@ -110,13 +110,28 @@ class _SelBoxUserState extends State<SelBoxUser> {
     }
     return DropdownButtonFormField<String>(
       isExpanded: true,
-      alignment: Alignment.topCenter,
+      alignment: Alignment.centerLeft,
       decoration: InputDecoration(
         isDense: true,
         labelText: widget.requiredRole == 1 ? 'Doctor...' : 'Seleccione usuario',
         floatingLabelBehavior: FloatingLabelBehavior.never,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
+        // Añade estas propiedades para quitar el borde negro
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        // Si también quieres quitar el borde cuando hay error
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.transparent),
+          borderRadius: BorderRadius.circular(8),
         ),
       ),
       value: selectedUser,
@@ -173,12 +188,13 @@ class _SelBoxUserState extends State<SelBoxUser> {
         return users.map((user) {
           String displayText = "${user['name']} (${user['identification']})";
           return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Text(
                 displayText,
                 style: const TextStyle(
                   fontWeight: FontWeight.w400,
+                  fontSize: 15
                 ),
               ),
             ],
