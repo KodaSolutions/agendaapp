@@ -27,7 +27,6 @@ class _DeleteNewApmtDialogState extends State<DeleteNewApmtDialog> {
   bool _isLoading = false;
 
   Future<void> _rejectAppointment(String phone, String nameClient) async {
-    print('hola');
     setState(() {
       _isLoading = true;
     });

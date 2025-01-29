@@ -425,7 +425,7 @@ class _CardAptmState extends State<CardAptm> {
                             showDialog(
                                 context: context,
                                 builder: (builder) {
-                                  return RescheduleDialog(onShowBlur: widget.onShowBlur);
+                                  return RescheduleDialog(onShowBlur: widget.onShowBlur, appointmentId: widget.newAptm[widget.index].id, onAppointmentUpdated: widget.onAppointmentUpdated,);
                                 }
                             ).then((_) {
                               widget.onShowBlur(false);

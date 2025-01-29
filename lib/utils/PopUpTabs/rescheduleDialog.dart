@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:agenda_app/services/approveApptService.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -19,8 +20,10 @@ class RescheduleDialog extends StatefulWidget {
   final void Function(
       bool
       ) onShowBlur;
+  final int? appointmentId;
+  final VoidCallback? onAppointmentUpdated;
 
-  const RescheduleDialog({super.key, this.dateFromCalendarSchedule, required this.onShowBlur});
+  const RescheduleDialog({super.key, this.dateFromCalendarSchedule, required this.onShowBlur, required this.appointmentId, required this.onAppointmentUpdated});
 
   @override
   State<RescheduleDialog> createState() => _RescheduleDialogState();
@@ -424,7 +427,14 @@ class _RescheduleDialogState extends State<RescheduleDialog> with SingleTickerPr
                               padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.005, top: MediaQuery.of(context).size.height * 0.015),
                               child: ElevatedButton(
                                 onPressed: () {
-                                  _timeController.text.isNotEmpty ? Navigator.of(context).pop(false) : null;
+                                  _timeController.text.isNotEmpty ?
+                                  approveApptService().rescheduleAppointment(
+                                      widget.appointmentId, int.parse(selectedUserId!), _dateController, _timeController, context
+                                  ).then((_) {
+                                      widget.onAppointmentUpdated?.call();
+                                      Navigator.of(context).pop(false);
+                                    }
+                                  ) : null;
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: _timeController.text.isNotEmpty ? AppColors3.primaryColor : null,
