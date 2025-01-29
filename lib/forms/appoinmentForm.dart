@@ -412,7 +412,7 @@ class _AppointmentFormState extends State<AppointmentForm> with SingleTickerProv
       ).timeout(
         const Duration(seconds: 15),
         onTimeout: () {
-          throw TimeoutException('La conexión tardó demasiado. Por favor, intenta de nuevo');
+          throw TimeoutException('La conexión no se logró. Por favor, intenta de nuevo');
         },
       );
       if (!mounted) return;
