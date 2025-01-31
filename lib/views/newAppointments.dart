@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:ui';
 import 'package:agenda_app/utils/sliverlist/cardAptm.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,6 +38,9 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
 
   ///MANDAR A SERVICIO
   Future<void> _loadAppointments() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       final appointments = await fetchAppointments();
       setState(() {
@@ -44,6 +48,9 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
         tileControllers = List.generate(
           _appointments.length, (index) => ExpansionTileController(),
         );
+      });
+      setState(() {
+        isLoading = false;
       });
     } catch (e) {
       print('Error loading appointments: $e');
@@ -94,6 +101,12 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
   Future<String?> getToken() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('jwt_token');
+  }
+
+  void _onShowBlur(bool showBlur){
+    setState(() {
+      showBlurr = showBlur;
+    });
   }
 
   late List<ExpansionTileController> tileControllers;
@@ -157,14 +170,27 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                     ),
                     Expanded(
                         child: Text(
-                              'Citas recibidas',
-                              style: TextStyle(
-                                fontSize: MediaQuery.of(context).size.width * 0.065,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors3.primaryColor,
-                              ),
-                            )
+                          'Citas recibidas',
+                          style: TextStyle(
+                            fontSize: MediaQuery.of(context).size.width * 0.065,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors3.primaryColor,
                           ),
+                        )
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.01,),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: isLoading ? null : () => _loadAppointments(),
+                            icon: Icon(
+                                CupertinoIcons.refresh
+                            ),
+                          )
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -185,8 +211,9 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
                               oldIndex = newIndex;
                             });
                           }, onAppointmentUpdated: () {
-                        _loadAppointments();
-                      },
+                            _loadAppointments();
+                          },
+                          onShowBlur: _onShowBlur
                           );
                       },
                     childCount: _appointments.length,
@@ -217,6 +244,30 @@ class _NewAppointmentsState extends State<NewAppointments> with SingleTickerProv
               ]
             ],
           ),
+          Visibility(
+            visible: isLoading,
+            child: Material(
+              child: Center(
+                  child: CircularProgressIndicator(
+                    color: AppColors3.primaryColor,
+                  )
+              ),
+            )
+          ),
+          Visibility(
+            visible: showBlurr,
+            child: GestureDetector(
+              onTap: () {
+                showBlurr = false;
+              },
+              child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                  child: Container(
+                    color: Colors.transparent,
+                  )
+              ),
+            )
+          )
         ],
       ),
     );

@@ -4,8 +4,12 @@ import 'package:agenda_app/usersConfig/functions.dart';
 import 'package:agenda_app/usersConfig/selBoxUser.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import '../../projectStyles/appColors.dart';
+import '../PopUpTabs/deleteNewApmtDialog.dart';
+import '../PopUpTabs/rescheduleDialog.dart';
 
 class CardAptm extends StatefulWidget {
   final int index;
@@ -14,7 +18,10 @@ class CardAptm extends StatefulWidget {
   final List<Appointment2> newAptm;
   final ExpansionTileController tileController;
   final VoidCallback? onAppointmentUpdated;
-  const CardAptm({super.key, required this.index, this.oldIndex, required this.onExpansionChanged, required this.tileController, required this.newAptm, this.onAppointmentUpdated});
+  late void Function(
+      bool
+      ) onShowBlur;
+  CardAptm({super.key, required this.index, this.oldIndex, required this.onExpansionChanged, required this.tileController, required this.newAptm, this.onAppointmentUpdated, required this.onShowBlur});
 
   @override
   State<CardAptm> createState() => _CardAptmState();
@@ -31,7 +38,6 @@ class _CardAptmState extends State<CardAptm> {
   final approveApptService _approveApptService = approveApptService();
   bool _isLoading = false;
 
-
   void onSelUser(String? displayText, String? userId) {
     setState(() {
       user = displayText;
@@ -39,6 +45,7 @@ class _CardAptmState extends State<CardAptm> {
       isUserSel = displayText != null && userId != null;
     });
   }
+
   Future<void> _approveAppointment() async {
     if (!isUserSel || selectedUserId == null) return;
 
@@ -123,6 +130,7 @@ class _CardAptmState extends State<CardAptm> {
   @override
   void initState() {
     super.initState();
+    print(widget.newAptm[widget.index].appointmentDate);
   }
 
   @override
@@ -223,7 +231,7 @@ class _CardAptmState extends State<CardAptm> {
                 Row(
                   children: [
                     Text(
-                      'Para: ',
+                      'Tipo de cita: ',
                       style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.04,
                       ),
@@ -241,7 +249,7 @@ class _CardAptmState extends State<CardAptm> {
                     Text(
                       'Cliente: ',
                       style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
                       ),
                     ),
                     Text(
@@ -255,9 +263,9 @@ class _CardAptmState extends State<CardAptm> {
                 Row(
                   children: [
                     Text(
-                      'Cel: ',
+                      'Cel.: ',
                       style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.04,
+                        fontSize: MediaQuery.of(context).size.width * 0.04,
                       ),
                     ),
                     SelectableText(
@@ -271,91 +279,185 @@ class _CardAptmState extends State<CardAptm> {
               ],
             ),
             children: [
-              Container(
-                padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).size.width * 0.04,
-                    top: MediaQuery.of(context).size.width * 0.04,
-                    left: MediaQuery.of(context).size.width * 0.04,
-                    right: MediaQuery.of(context).size.width * 0.04
-                ),
-                decoration: const BoxDecoration(
-                    color: AppColors3.bgColor,
-                    borderRadius: BorderRadius.only(bottomRight: Radius.circular(10), bottomLeft: Radius.circular(10)),
-                    border: Border(
-                        top: BorderSide(color: AppColors3.primaryColor, width: 2)
-                    )
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          "Tratamiento: ",
-                          style: TextStyle(
-                              color: AppColors3.primaryColorMoreStrong,
-                              fontSize: MediaQuery.of(context).size.width * 0.04),
-                        ),
-                        Text(
-                          '${widget.newAptm[widget.index].treatmentType}',
-                          style: TextStyle(
-                            color: AppColors3.primaryColorMoreStrong,
-                            fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery.of(context).size.width * 0.04,
-                          ),
-                        ),
-                      ],
+              Stack(
+                children: [
+                  Container(
+                    padding: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).size.width * 0.04,
+                        top: MediaQuery.of(context).size.width * 0.04,
+                        left: MediaQuery.of(context).size.width * 0.04,
+                        right: MediaQuery.of(context).size.width * 0.04
                     ),
-                    Row(
-                      children: [
-                        Text(
-                          "Método de pago: ",
-                          style: TextStyle(
-                              color: AppColors3.primaryColorMoreStrong,
-                              fontSize: MediaQuery.of(context).size.width * 0.04),
-                        ),
-                        Text(
-                          '${widget.newAptm[widget.index].paymentMethod}',
-                          style: TextStyle(
-                              color: AppColors3.primaryColorMoreStrong,
-                              fontWeight: FontWeight.bold,
-                              fontSize: MediaQuery.of(context).size.width * 0.04),
-                        ),
-                      ],
-                    ),
-                    Padding(padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).size.width * 0.04,
-                    ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Flexible(
-                              child: SelBoxUser(onSelUser: onSelUser, requiredRole: 1,),
-                            ),
-                            SizedBox(width: MediaQuery.of(context).size.width * 0.02),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    ),
-                                    onPressed: isUserSel ? (_isLoading ? null : _approveAppointment) : null,
-                                    child: const Icon(Icons.check)),
-                                SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
-                                ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    ),
-                                    onPressed: _isLoading ? null : () => _rejectAppointment(widget.newAptm[widget.index].contactNumber!, widget.newAptm[widget.index].clientName!, ),
-                                    child: const Icon(CupertinoIcons.xmark)),
-                              ],
-                            ),
-                          ],
+                    decoration: const BoxDecoration(
+                        color: AppColors3.bgColor,
+                        borderRadius: BorderRadius.only(bottomRight: Radius.circular(10), bottomLeft: Radius.circular(10)),
+                        border: Border(
+                            top: BorderSide(color: AppColors3.primaryColor, width: 2)
                         )
                     ),
-                  ],
-                ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Tratamiento: ",
+                              style: TextStyle(
+                                  color: AppColors3.primaryColorMoreStrong,
+                                  fontSize: MediaQuery.of(context).size.width * 0.04),
+                            ),
+                            Text(
+                              '${widget.newAptm[widget.index].treatmentType}',
+                              style: TextStyle(
+                                color: AppColors3.primaryColorMoreStrong,
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.width * 0.04,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Método de pago: ",
+                              style: TextStyle(
+                                  color: AppColors3.primaryColorMoreStrong,
+                                  fontSize: MediaQuery.of(context).size.width * 0.04),
+                            ),
+                            Text(
+                              '${widget.newAptm[widget.index].paymentMethod}',
+                              style: TextStyle(
+                                  color: AppColors3.primaryColorMoreStrong,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: MediaQuery.of(context).size.width * 0.04),
+                            ),
+                          ],
+                        ),
+                        Padding(padding: EdgeInsets.only(
+                          top: MediaQuery.of(context).size.width * 0.04,
+                        ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * 0.65,
+                                  height: MediaQuery.of(context).size.height * 0.055,
+                                  decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(10)),
+                                        border: Border(
+                                            left: BorderSide(
+                                              color: AppColors3.blackColor,
+                                              width: 1,
+                                            ),
+                                            right: BorderSide(
+                                              color: AppColors3.blackColor,
+                                              width: 1,
+                                            ),
+                                            bottom: BorderSide(
+                                              color: AppColors3.blackColor,
+                                              width: 1,
+                                            ),
+                                            top: BorderSide(
+                                              color: AppColors3.blackColor,
+                                              width: 1,
+                                            )
+                                        )
+                                    ),
+                                  child: Row(
+                                    children: [
+                                      Flexible(
+                                        child: SelBoxUser(onSelUser: onSelUser, requiredRole: 1,),
+                                      ),
+                                    ],
+                                  )
+                                ),
+                                SizedBox(width: MediaQuery.of(context).size.width * 0.02),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    ElevatedButton(
+                                        style: ElevatedButton.styleFrom(
+                                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                                        ),
+                                        onPressed: isUserSel ? (_isLoading ? null : _approveAppointment) : null,
+                                        child: const Icon(Icons.check)),
+                                  ],
+                                ),
+                              ],
+                            )
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.topRight,
+                    padding: EdgeInsets.only(
+                        top: MediaQuery.of(context).size.width * 0.02,
+                    ),
+                    child: PopupMenuButton(
+                      icon: const Icon(CupertinoIcons.ellipsis_vertical),
+                      color: AppColors3.bgColor,
+                      itemBuilder: (BuildContext context) => [
+                        PopupMenuItem(
+                          child: Row(
+                            children: [
+                              Icon(FontAwesomeIcons.whatsapp,
+                                  color: AppColors3.primaryColor),
+                              SizedBox(width: 10),
+                              Text('WhatsApp'),
+                            ],
+                          ),
+                          onTap: () {
+                            sendWhatsMsg(phone: '+52${widget.newAptm[widget.index].contactNumber}', bodymsg: 'Hola ${widget.newAptm[widget.index].clientName}, ');
+                          },
+                        ),
+                        PopupMenuItem(
+                          child: Row(
+                            children: [
+                              Icon(CupertinoIcons.pencil,
+                                  color: AppColors3.primaryColor),
+                              SizedBox(width: 10),
+                              Text('Reagendar'),
+                            ],
+                          ),
+                          onTap: () {
+                            widget.onShowBlur(true);
+                            showDialog(
+                                context: context,
+                                builder: (builder) {
+                                  return RescheduleDialog(onShowBlur: widget.onShowBlur, appointmentId: widget.newAptm[widget.index].id, onAppointmentUpdated: widget.onAppointmentUpdated,);
+                                }
+                            ).then((_) {
+                              widget.onShowBlur(false);
+                            });
+                          },
+                        ),
+                        PopupMenuItem(
+                          child: Row(
+                            children: [
+                              Icon(CupertinoIcons.delete,
+                                  color: Colors.red),
+                              SizedBox(width: 10),
+                              Text('Eliminar',
+                                  style: TextStyle(color: Colors.red)),
+                            ],
+                          ),
+                          onTap: () {
+                            widget.onShowBlur(true);
+                            showDialog(
+                                context: context,
+                                builder: (builder) {
+                                  return DeleteNewApmtDialog(onShowBlur: widget.onShowBlur, newAptm: widget.newAptm, index: widget.index, tileController: widget.tileController, onAppointmentUpdated: widget.onAppointmentUpdated);
+                                }
+                            ).then((_) {
+                              widget.onShowBlur(false);
+                            });
+                          }
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               )
             ]
         ),

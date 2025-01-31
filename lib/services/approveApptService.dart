@@ -1,5 +1,8 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
@@ -119,6 +122,70 @@ class approveApptService {
     } catch (e) {
       print('Error en rejectAppointment: $e');
       throw Exception('Error al rechazar la cita: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> rescheduleAppointment(int? appointmentId, int doctorId, TextEditingController dateController, TextEditingController timeController, context) async {
+    print('hola jeje');
+
+    try {
+      bool isConnected = await checkConnectivity();
+
+      if (!isConnected) {
+        throw Exception('No hay conexión a internet');
+      }
+
+      final token = await getToken();
+      DateTime selectedDate =
+      DateFormat('yyyy-MM-dd').parse(dateController.text);
+      DateTime selectedTime = DateFormat.jm().parse(timeController.text);
+
+      try {
+        print('adios');
+        await http.put(
+          Uri.parse(
+              'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/editAppoinment/${appointmentId}'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'date': DateFormat('yyyy-MM-dd').format(selectedDate),
+            'time': DateFormat('HH:mm:ss').format(selectedTime),
+          }),
+        );
+      } catch (e) {
+        print('Error en rescheduleAppointment: $e');
+        throw Exception('Error al reagendar la cita: $e');
+      }
+
+      final response = await http.post(
+        Uri.parse('$baseUrl/appointments/$appointmentId/approve'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: jsonEncode({
+          'doctor_id': doctorId,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Cita reagendada exitosamente'),
+            backgroundColor: Colors.orange,
+          ),
+        );
+        return jsonDecode(response.body);
+      } else if (response.statusCode == 404) {
+        throw Exception('Cita no encontrada');
+      } else {
+        throw Exception('Error al aprobar la cita: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error en rescheduleAppointment: $e');
+      throw Exception('Error al reagendar la cita: $e');
     }
   }
 }
