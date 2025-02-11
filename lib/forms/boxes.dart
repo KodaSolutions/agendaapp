@@ -108,6 +108,7 @@ class _ApptmTypeState extends State<ApptmType> {
   List<String> listApptmType = [
     'Consulta general',
     'Estética',
+    'Cirugía'
   ];
 
   @override
@@ -185,3 +186,5 @@ class _ApptmTypeState extends State<ApptmType> {
     );
   }
 }
+
+
