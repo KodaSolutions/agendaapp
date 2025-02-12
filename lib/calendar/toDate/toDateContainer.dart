@@ -245,6 +245,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
 
   @override
   void initState() {
+    super.initState();
     // TODO: implement initState
    isTaped = expandedIndex != null;
    if (widget.firtsIndexTouchHour != null) {
@@ -262,6 +263,7 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
      dateOnly = DateFormat('yyyy-MM-dd').format(widget.selectedDate);
      dateTimeToinitModal = DateTime.parse(dateOnly!);
    }
+   appointments = fetchAppointments(dateTimeToinitModal);
    initializeAppointments(dateTimeToinitModal);
    widget.listenerapptm!.registrarObservador((newValue, newDate, newId){
      setState(() {
@@ -271,7 +273,6 @@ class _ToDateContainerState extends State<ToDateContainer> with TickerProviderSt
      });
    });
    loadUserswithRole();
-    super.initState();
   }
 
   @override
