@@ -67,7 +67,8 @@ class _ApptmInfoState extends State<ApptmInfo> {
   bool positionBtnIcon = false;
   bool _isTimerShow = false;
   bool isCalendarShow = false;
-  String nameDoctor = '';
+  bool isExpanded = false;
+  String? nameDoctor = '';
   //
   TextEditingController _timerController = TextEditingController();
   TextEditingController timerControllertoShow = TextEditingController();
@@ -157,6 +158,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
 
   @override
   void initState() {
+    super.initState();
     // TODO: implement initState
     index = widget.index;
     expandedIndex = widget.expandedIndexToCharge;
@@ -196,7 +198,6 @@ class _ApptmInfoState extends State<ApptmInfo> {
           });
         }
     });
-    super.initState();
   }
 
   String getDoctorName(int? doctorId, List<Map<String, dynamic>> doctorUsers) {
@@ -290,38 +291,42 @@ class _ApptmInfoState extends State<ApptmInfo> {
                 ),
               ),
               collapsedTextColor: AppColors3.primaryColor,
-              title: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(getDoctorName(widget.appointment.doctorId, widget.doctorUsers), style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: MediaQuery.of(context).size.width * 0.05,
-                            color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
-                          ),),
+              title: Container(
+                padding: EdgeInsets.only(right: isExpanded ? 0 : MediaQuery.of(context).size.width * 0.08),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Text(getDoctorName(widget.appointment.doctorId, widget.doctorUsers), style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: MediaQuery.of(context).size.width * 0.05,
+                          color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
+                        ),),
 
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text('${widget.appointment.clientName}', style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.05,
-                            color:AppColors3.blackColor,
-                          )),
-                        ],
-                      ),
-                      Text(widget.appointment.treatmentType.toString(), style: TextStyle(
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text('${widget.appointment.petName}', style: TextStyle(
+                          fontSize: MediaQuery.of(context).size.width * 0.05,
+                          color:AppColors3.blackColor,
+                        )),
+                      ],
+                    ),
+                    Text(
+                      widget.appointment.treatmentType.toString(),
+                      style: TextStyle(
                         fontSize: MediaQuery.of(context).size.width * 0.05,
                         color: widget.appointment.apptmType == 'Consulta general' ? AppColors3.primaryColor : AppColors3.secundaryColor,
-                      ),),
-                    ],
-                  ),
-                ],
+                      ),
+                      overflow: isExpanded ? null : TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
               onExpansionChanged: (tap){
+                isExpanded = false;
                 if(tap){
                   setState(() {
                     widget.onExpansionChanged(widget.index, false);
@@ -332,6 +337,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
                     _timerController.text = formattedTime12hrs;
                     _dateController.text = DateFormat('yyyy-MM-dd').format(appointmetsToModify.appointmentDate!);
                     _dateLookandFill = dateOnly!;
+                    isExpanded = true;
                   });
                 }else{
                   widget.onExpansionChanged(widget.index, true);
