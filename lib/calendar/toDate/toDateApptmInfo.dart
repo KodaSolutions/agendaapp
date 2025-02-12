@@ -68,6 +68,7 @@ class _ApptmInfoState extends State<ApptmInfo> {
   bool _isTimerShow = false;
   bool isCalendarShow = false;
   bool isExpanded = false;
+  String? nameDoctor = '';
   //
   TextEditingController _timerController = TextEditingController();
   TextEditingController timerControllertoShow = TextEditingController();
