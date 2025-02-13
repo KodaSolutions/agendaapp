@@ -7,6 +7,7 @@ import 'package:agenda_app/usersConfig/functions.dart';
 import 'package:agenda_app/views/msgConfig.dart';
 import 'package:agenda_app/views/newAppointments.dart';
 import 'package:agenda_app/views/usersConfig.dart';
+import 'package:agenda_app/views/apmntType.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -110,26 +111,16 @@ class _navBarState extends State<navBar> {
                                 ]
                             ),
                           ),
-                          Divider(),
-                          SizedBox(height: MediaQuery.of(context).size.width * 0.045,),
                           Visibility(
                             visible: userRole == 'admin',
-                            child: InkWell(
-                              splashColor: AppColors3.primaryColor.withOpacity(0.2),
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  CupertinoPageRoute(
-                                    builder: (context) => UsersConfig(),
-                                  ),
-                                );
-                              },
-                              child: Row(
+                            child: ExpansionTile(
+                              childrenPadding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.08, bottom: MediaQuery.of(context).size.width * 0.05),
+                              title: Row(
                                 children: [
                                   Padding(
                                     padding: EdgeInsets.only(
                                       top: MediaQuery.of(context).size.width * 0.03,
                                       bottom: MediaQuery.of(context).size.width * 0.03,
-                                      left: MediaQuery.of(context).size.width * 0.03,
                                       right: MediaQuery.of(context).size.width * 0.03,
                                     ),
                                     child: Icon(
@@ -139,7 +130,7 @@ class _navBarState extends State<navBar> {
                                     ),
                                   ),
                                   Text(
-                                    'Configurar usuarios',
+                                    'Configuración',
                                     style: TextStyle(
                                         color: AppColors3.primaryColorMoreStrong,
                                         fontSize: MediaQuery.of(context).size.width * 0.045
@@ -147,7 +138,106 @@ class _navBarState extends State<navBar> {
                                   ),
                                 ],
                               ),
-                            ),
+                              children: [
+                                InkWell(
+                                  splashColor: AppColors3.primaryColor.withOpacity(0.2),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      CupertinoPageRoute(
+                                        builder: (context) => UsersConfig(),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: MediaQuery.of(context).size.width * 0.03,
+                                          bottom: MediaQuery.of(context).size.width * 0.03,
+                                          left: MediaQuery.of(context).size.width * 0.03,
+                                          right: MediaQuery.of(context).size.width * 0.03,
+                                        ),
+                                        child: Icon(
+                                          CupertinoIcons.person_2_fill,
+                                          size: MediaQuery.of(context).size.width * 0.075,
+                                          color: AppColors3.primaryColorMoreStrong,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Usuarios',
+                                        style: TextStyle(
+                                            color: AppColors3.primaryColorMoreStrong,
+                                            fontSize: MediaQuery.of(context).size.width * 0.045
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                InkWell(
+                                  splashColor: AppColors3.primaryColor.withOpacity(0.2),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      CupertinoPageRoute(
+                                        builder: (context) => ApmntType(),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: MediaQuery.of(context).size.width * 0.03,
+                                          bottom: MediaQuery.of(context).size.width * 0.03,
+                                          left: MediaQuery.of(context).size.width * 0.03,
+                                          right: MediaQuery.of(context).size.width * 0.03,
+                                        ),
+                                        child: Icon(
+                                          Icons.menu_book,
+                                          size: MediaQuery.of(context).size.width * 0.075,
+                                          color: AppColors3.primaryColorMoreStrong,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Tipos de cita',
+                                        style: TextStyle(
+                                            color: AppColors3.primaryColorMoreStrong,
+                                            fontSize: MediaQuery.of(context).size.width * 0.045
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                InkWell(
+                                  splashColor: AppColors3.primaryColor.withOpacity(0.2),
+                                  onTap: (){
+                                    Navigator.of(context).push(
+                                      CupertinoPageRoute(
+                                        builder: (context) => MsgConfig(),
+                                      ),
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(
+                                          top: MediaQuery.of(context).size.width * 0.03,
+                                          bottom: MediaQuery.of(context).size.width * 0.03,
+                                          left: MediaQuery.of(context).size.width * 0.03,
+                                          right: MediaQuery.of(context).size.width * 0.03,
+                                        ),
+                                        child: Icon(Icons.send_and_archive,
+                                          size: MediaQuery.of(context).size.width * 0.075,
+                                          color: AppColors3.primaryColorMoreStrong,
+                                        ),
+                                      ),
+                                      Text('Msjs predeterminados', style: TextStyle(
+                                          color: AppColors3.primaryColorMoreStrong,
+                                          fontSize: MediaQuery.of(context).size.width * 0.045)),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            )
                           ),
                           Visibility(
                             visible: true,//userRole == 'asistente' || userRole == 'admin',
@@ -166,7 +256,7 @@ class _navBarState extends State<navBar> {
                                     padding: EdgeInsets.only(
                                       top: MediaQuery.of(context).size.width * 0.03,
                                       bottom: MediaQuery.of(context).size.width * 0.03,
-                                      left: MediaQuery.of(context).size.width * 0.03,
+                                      left: MediaQuery.of(context).size.width * 0.041,
                                       right: MediaQuery.of(context).size.width * 0.03,
                                     ),
                                     child: Icon(
@@ -184,35 +274,6 @@ class _navBarState extends State<navBar> {
                                   ),
                                 ],
                               ),
-                            ),
-                          ),
-                          InkWell(
-                            splashColor: AppColors3.primaryColor.withOpacity(0.2),
-                            onTap: (){
-                              Navigator.of(context).push(
-                                CupertinoPageRoute(
-                                  builder: (context) => MsgConfig(),
-                                ),
-                              );
-                            },
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    top: MediaQuery.of(context).size.width * 0.03,
-                                    bottom: MediaQuery.of(context).size.width * 0.03,
-                                    left: MediaQuery.of(context).size.width * 0.03,
-                                    right: MediaQuery.of(context).size.width * 0.03,
-                                  ),
-                                  child: Icon(Icons.send_and_archive,
-                                    size: MediaQuery.of(context).size.width * 0.075,
-                                    color: AppColors3.primaryColorMoreStrong,
-                                  ),
-                                ),
-                                Text('Msjs predeterminados', style: TextStyle(
-                                    color: AppColors3.primaryColorMoreStrong,
-                                    fontSize: MediaQuery.of(context).size.width * 0.045)),
-                              ],
                             ),
                           ),
                           /*Visibility(
