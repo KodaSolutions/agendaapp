@@ -114,7 +114,7 @@ class ClientFormState extends State<ClientForm> {
     });
     try {
       var response = await http.post(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/createClient'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/createClient'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
@@ -177,6 +177,7 @@ class ClientFormState extends State<ClientForm> {
     focusNodeClient = FocusNode();
     focusNodeCel = FocusNode();
     focusNodeEmail = FocusNode();
+    _emailController.text = 'Cevepe@hospital.com';
     super.initState();
   }
 
@@ -194,12 +195,14 @@ class ClientFormState extends State<ClientForm> {
     return Material(
       color: Colors.transparent,
       child: Stack(
+        alignment: AlignmentDirectional.center,
         children: [
           Container(
             margin: EdgeInsets.only(
                 left: MediaQuery.of(context).size.width * 0.03,
                 right: MediaQuery.of(context).size.width * 0.03,
-                top: visibleKeyboard ? screenWidth! < 391.0 ? MediaQuery.of(context).size.width * 0.04 : MediaQuery.of(context).size.width * 0.05 : screenWidth! < 391.0 ? MediaQuery.of(context).size.width * 0.3 : MediaQuery.of(context).size.width * 0.45),
+                bottom: visibleKeyboard ? MediaQuery.of(context).size.width * 0.6 : 0,
+            ),
             padding: EdgeInsets.only(left: MediaQuery.of(context).size.width * 0.03),
             decoration: BoxDecoration(
               color: AppColors3.whiteColor,
@@ -211,13 +214,16 @@ class ClientFormState extends State<ClientForm> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Agregar cliente',
-                      style: TextStyle(
-                        fontSize:
-                        MediaQuery.of(context).size.width * 0.08,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors3.primaryColor,
+                    Container(
+                      padding: EdgeInsets.only(top: MediaQuery.of(context).size.width * 0.03, bottom: MediaQuery.of(context).size.width * 0.03),
+                      child: Text(
+                        'Agregar cliente',
+                        style: TextStyle(
+                          fontSize:
+                          MediaQuery.of(context).size.width * 0.065,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors3.primaryColor,
+                        ),
                       ),
                     ),
                     IconButton(
@@ -232,11 +238,6 @@ class ClientFormState extends State<ClientForm> {
                 ),
                 Container(
                   padding: EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.03),
-                    height: visibleKeyboard
-                        ? (screenWidth! < 391 ? MediaQuery.of(context).size.height * 0.46
-                            : MediaQuery.of(context).size.height * 0.5)
-                        : screenWidth! < 391.0 ? MediaQuery.of(context).size.height * 0.535
-                  : MediaQuery.of(context).size.height * 0.6,
                     child: SingleChildScrollView(
                       physics:  const BouncingScrollPhysics(),
                       padding: EdgeInsets.zero,
@@ -249,32 +250,31 @@ class ClientFormState extends State<ClientForm> {
                                         ? MediaQuery.of(context).size.width * 0.01
                                         : MediaQuery.of(context).size.width * 0.02,
                                     horizontal: MediaQuery.of(context).size.width * 0.02),
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: MediaQuery.of(context).size.width * 0.0,
-                                    vertical: MediaQuery.of(context).size.width * 0.025),
+                                margin: EdgeInsets.only(
+                                    left: MediaQuery.of(context).size.width * 0.0,
+                                    right: MediaQuery.of(context).size.width * 0.0,
+                                    top: MediaQuery.of(context).size.width * 0.025),
                                 alignment: Alignment.centerLeft,
-                                decoration: BoxDecoration(
-                                  color: AppColors3.primaryColor,
-                                  borderRadius: BorderRadius.circular(10),
+                                decoration: const BoxDecoration(
+                                    color: AppColors3.primaryColor,
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10)
+                                    )
                                 ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Nombre del cliente',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                )
+                                child: const Text(
+                                  'Nombre del cliente',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                             ),
                             Padding(
                               padding: EdgeInsets.only(
-                                  bottom: MediaQuery.of(context).size.width * 0.045,
-                                  top: 0),
+                                  bottom: MediaQuery.of(context).size.width * 0.03,
+                              ),
                               child: TextFormField(
                                 inputFormatters: [
                                   RegEx(type: InputFormatterType.name),
@@ -293,16 +293,35 @@ class ClientFormState extends State<ClientForm> {
                                       horizontal:
                                       MediaQuery.of(context).size.width * 0.02),
                                   hintText: 'Nombre completo',
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(color: AppColors3.primaryColor)
+                                  border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
                                   ),
-                                  enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(color: AppColors3.primaryColor)),
-                                    focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),
+                                  enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
                                   ),
                                 ),
                                 onTap: () {
@@ -320,12 +339,13 @@ class ClientFormState extends State<ClientForm> {
                                       ? MediaQuery.of(context).size.width * 0.01
                                       : MediaQuery.of(context).size.width * 0.02,
                                   horizontal: MediaQuery.of(context).size.width * 0.02),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: MediaQuery.of(context).size.width * 0.0),
                               alignment: Alignment.centerLeft,
-                              decoration: BoxDecoration(
-                                color: AppColors3.primaryColor,
-                                borderRadius: BorderRadius.circular(10),
+                              decoration: const BoxDecoration(
+                                  color: AppColors3.primaryColor,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)
+                                  )
                               ),
                               child: const Text(
                                 'No. Celular',
@@ -338,8 +358,8 @@ class ClientFormState extends State<ClientForm> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(
-                                  bottom: MediaQuery.of(context).size.width * 0.045,
-                                  top: MediaQuery.of(context).size.width * 0.0225),
+                                  bottom: MediaQuery.of(context).size.width * 0.03,
+                              ),
                               child: TextFormField(
                                 textInputAction: TextInputAction.done,
                                 focusNode: focusNodeCel,
@@ -362,16 +382,35 @@ class ClientFormState extends State<ClientForm> {
                                           : MediaQuery.of(context).size.width * 0.0325,
                                       horizontal:
                                       MediaQuery.of(context).size.width * 0.02),
-                                  border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        borderSide: const BorderSide(
-                                            color: AppColors3.primaryColor)),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(color: AppColors3.primaryColor)),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),
+                                  border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
                                   ),
                                 ),
                                 onTap: () {
@@ -398,12 +437,13 @@ class ClientFormState extends State<ClientForm> {
                                       ? MediaQuery.of(context).size.width * 0.01
                                       : MediaQuery.of(context).size.width * 0.02,
                                   horizontal: MediaQuery.of(context).size.width * 0.02),
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: MediaQuery.of(context).size.width * 0.0),
                               alignment: Alignment.centerLeft,
-                              decoration: BoxDecoration(
-                                color: AppColors3.primaryColor,
-                                borderRadius: BorderRadius.circular(10),
+                              decoration: const BoxDecoration(
+                                  color: AppColors3.primaryColor,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(10),
+                                      topRight: Radius.circular(10)
+                                  )
                               ),
                               child: const Text(
                                 'Correo electrónico',
@@ -416,8 +456,8 @@ class ClientFormState extends State<ClientForm> {
                             ),
                             Padding(
                               padding: EdgeInsets.only(
-                                  bottom: MediaQuery.of(context).size.width * 0.045,
-                                  top: MediaQuery.of(context).size.width * 0.0225),
+                                  bottom: MediaQuery.of(context).size.width * 0.05,
+                              ),
                               child: TextFormField(
                                 inputFormatters: [
                                   RegEx(type: InputFormatterType.email),
@@ -431,16 +471,35 @@ class ClientFormState extends State<ClientForm> {
                                           ? MediaQuery.of(context).size.width * 0.02
                                           : MediaQuery.of(context).size.width * 0.0325,
                                       horizontal: MediaQuery.of(context).size.width * 0.02),
-                                  border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(
-                                          color: AppColors3.primaryColor)),
-                                  enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      borderSide: const BorderSide(color: AppColors3.primaryColor)),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),
+                                  border: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
+                                  ),
+                                  enabledBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
+                                  ),
+                                  focusedBorder: const OutlineInputBorder(
+                                      borderRadius: BorderRadius.only(
+                                          bottomRight: Radius.circular(10),
+                                          bottomLeft: Radius.circular(10)
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors3.primaryColor,
+                                        width: 1,
+                                      )
                                   ),
                                   hintText: 'Correo electrónico',
                                 ),
@@ -453,38 +512,36 @@ class ClientFormState extends State<ClientForm> {
                               ),
                             ),
                             Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context).size.width * 0.03),
-                                child: ElevatedButton(
-                                    onPressed: errorInit
-                                        ? null
-                                        : () {
-                                      createClient();
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      splashFactory: InkRipple.splashFactory,
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: MediaQuery.of(context).size.width * 0.01,
-                                          vertical: MediaQuery.of(context).size.width * 0.0112),
-                                      surfaceTintColor: AppColors3.primaryColorMoreStrong,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10.0),
-                                        side: const BorderSide(
-                                            color: AppColors3.primaryColor, width: 2),
-                                      ),
-                                      fixedSize: Size(
-                                        MediaQuery.of(context).size.width * 0.6,
-                                        MediaQuery.of(context).size.height * 0.075,
-                                      ),
-                                      backgroundColor: Colors.white,
+                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.width * 0.05),
+                              child: ElevatedButton(
+                                  onPressed: errorInit
+                                      ? null
+                                      : () {
+                                    createClient();
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    splashFactory: InkRipple.splashFactory,
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: MediaQuery.of(context).size.width * 0.01,
+                                        vertical: MediaQuery.of(context).size.width * 0.01),
+                                    surfaceTintColor: AppColors3.primaryColorMoreStrong,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      side: const BorderSide(
+                                          color: AppColors3.primaryColor, width: 2),
                                     ),
-                                    child: Text('Agregar Cliente',
-                                        style: TextStyle(
-                                          fontSize:
-                                          MediaQuery.of(context).size.width *
-                                              0.055,
-                                          color: AppColors3.primaryColor,
-                                        ))))
+                                    fixedSize: Size(
+                                      MediaQuery.of(context).size.width * 0.6,
+                                      MediaQuery.of(context).size.height * 0.055,
+                                    ),
+                                    backgroundColor: Colors.white,
+                                  ),
+                                  child: Text('Agregar Cliente',
+                                      style: TextStyle(
+                                        fontSize: MediaQuery.of(context).size.width * 0.055,
+                                        color: AppColors3.primaryColor,
+                                      ))),
+                            )
                           ])),
                 ),
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
+import 'package:agenda_app/globalVar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -39,12 +40,13 @@ class _AssistantAdminState extends State<AssistantAdmin> {
   late bool platform; //0 IOS 1 Androide
   bool _showBlurr = false;
   String currentScreen = "agenda";
+  bool isSwitched = false;
+
 
   void checkKeyboardVisibility() {
     keyboardVisibilitySubscription =
         keyboardVisibilityController.onChange.listen((visible) {
       setState(() {
-        print('holadamin');
         visibleKeyboard = visible;
         if(_selectedScreen == 3){
         }
@@ -64,7 +66,6 @@ class _AssistantAdminState extends State<AssistantAdmin> {
       setState(() {
         _showBlurr = false;
       });
-      print('El modal fue cerrado');
     }
   }
 
@@ -77,11 +78,18 @@ class _AssistantAdminState extends State<AssistantAdmin> {
     });
   }
 
+  void onBlurrModal(bool blurrModal) {
+    setState(() {
+      _showBlurr = blurrModal;
+    });
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     screenWidth = MediaQuery.of(context).size.width;
     screenHeight = MediaQuery.of(context).size.height;
+    print(screenHeight);
   }
 
   @override
@@ -146,92 +154,119 @@ class _AssistantAdminState extends State<AssistantAdmin> {
         onBackPressed(didPop);
       },
       child: Scaffold(
-        endDrawer: navBar(onItemSelected: _onItemSelected, onShowBlur: _onShowBlur, isDoctorLog: widget.docLog, currentScreen: currentScreen, onLockScreen: (doNothing ) {  },),
+        backgroundColor: AppColors3.bgColor,
+        endDrawer: navBar(
+          onItemSelected: _onItemSelected, onShowBlur: _onShowBlur, isDoctorLog: widget.docLog, currentScreen: currentScreen,
+          onLockScreen: (doNothing ) {  }),
         body: Stack(
           children: [
             Container(
-              padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.04),
-              color: AppColors3.bgColor,
+              margin: EdgeInsets.only(top: screenHeight! < 880.5 ? MediaQuery.of(context).size.height * 0.07 : MediaQuery.of(context).size.height * 0.045),///here
+              decoration: const BoxDecoration(
+                color: AppColors3.bgColor,
+              ),
               child: Column(
                 children: [
-                  Padding(
-                    padding: EdgeInsets.only(
+                  Container(
+                    color: AppColors3.bgColor,
+                    child: Padding(
+                      padding: EdgeInsets.only(
                         left: _selectedScreen == 3
                             ? MediaQuery.of(context).size.width * 0.045
                             : MediaQuery.of(context).size.width * 0.045,
-                        right: MediaQuery.of(context).size.width * 0.025,
-                        bottom: MediaQuery.of(context).size.width * 0.005),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Visibility(
-                              visible: false,//_selectedScreen != 1,
-                              child: IconButton(
-                                  onPressed: () {
+                        right: MediaQuery.of(context).size.width * 0.025,),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Visibility(
+                                visible: false,//_selectedScreen != 1,
+                                child: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _selectedScreen = 1;
+                                        _hideBtnsBottom = false;
+                                      });
+                                    },
+                                    padding: EdgeInsets.zero,
+                                    icon: Icon(
+                                      CupertinoIcons.back,
+                                      size: MediaQuery.of(context).size.width * 0.08,
+                                      color: AppColors3.primaryColor,
+                                    )),
+                              ),
+                              Text(
+                                _selectedScreen == 1
+                                    ? 'Calendario'
+                                    : _selectedScreen == 3
+                                    ? 'Clientes'
+                                    : _selectedScreen == 4
+                                    ? 'Para hoy'
+                                    : 'Calendario',//esto es por el refresh
+                                style: TextStyle(
+                                  color: AppColors3.primaryColor,
+                                  fontSize: screenWidth! < 370.00
+                                      ? MediaQuery.of(context).size.width * 0.078
+                                      : MediaQuery.of(context).size.width * 0.082,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Visibility(
+                                visible: _selectedScreen == 1 ? true : false,
+                                child: IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () {
+                                  setState(() {
+                                    _selectedScreen = 5;
+                                  });
+                                  Timer(Duration(milliseconds: 500), () {
                                     setState(() {
                                       _selectedScreen = 1;
-                                      _hideBtnsBottom = false;
                                     });
-                                  },
-                                  padding: EdgeInsets.zero,
-                                  icon: Icon(
-                                    CupertinoIcons.back,
-                                    size: MediaQuery.of(context).size.width * 0.08,
-                                    color: AppColors3.primaryColor,
-                                  )),
-                            ),
-                            Text(
-                              _selectedScreen == 1
-                                  ? 'Calendario'
-                                  : _selectedScreen == 3
-                                  ? 'Clientes'
-                                  : _selectedScreen == 4
-                                  ? 'Para hoy'
-                                  : '',
-                              style: TextStyle(
-                                color: AppColors3.primaryColor,
-                                fontSize: screenWidth! < 370.00
-                                    ? MediaQuery.of(context).size.width * 0.078
-                                    : MediaQuery.of(context).size.width * 0.082,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            IconButton(
-                              padding: EdgeInsets.zero,
-                              onPressed: () async {
-                                setState(() {
-                                  _showBlurr = true;
-                                });
-                                await onOpenModal();
-                              },
-                              icon: Icon(
-                                CupertinoIcons.calendar_today,
-                                size: MediaQuery.of(context).size.width * 0.095,
-                                color: AppColors3.primaryColor,
-                              ),
-                            ),
-                            Builder(builder: (BuildContext context){
-                              return IconButton(
-                                onPressed: (){
-                                  Scaffold.of(context).openEndDrawer();
+                                  });
                                 },
-                                icon: SvgPicture.asset(
-                                  'assets/icons/navBar.svg',
-                                  colorFilter: const ColorFilter.mode(AppColors3.primaryColor, BlendMode.srcIn),
-                                  width: MediaQuery.of(context).size.width * 0.105,
-                                ),);
-                            }),
-                          ],
-                        ),
-                      ],
+                                icon: Icon(
+                                  CupertinoIcons.refresh,
+                                  size: MediaQuery.of(context).size.width * 0.065,
+                                  color: AppColors3.primaryColorMoreStrong,
+                                ),
+                              ),),
+                              IconButton(
+                                padding: EdgeInsets.zero,
+                                onPressed: () async {
+                                  setState(() {
+                                    _showBlurr = true;
+                                  });
+                                  await onOpenModal();
+                                },
+                                icon: Icon(
+                                  CupertinoIcons.calendar_today,
+                                  size: MediaQuery.of(context).size.width * 0.095,
+                                  color: AppColors3.primaryColorMoreStrong,
+                                ),
+                              ),
+                              Builder(builder: (BuildContext context){
+                                return IconButton(
+                                  onPressed: (){
+                                    Scaffold.of(context).openEndDrawer();
+                                  },
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/navBar.svg',
+                                    colorFilter: const ColorFilter.mode(AppColors3.primaryColorMoreStrong, BlendMode.srcIn),
+                                    width: MediaQuery.of(context).size.width * 0.105,
+                                  ),);
+                              }),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                   Expanded(
@@ -242,7 +277,14 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                             : MediaQuery.of(context).size.width * 0.0,
                       ),
                       decoration: BoxDecoration(
-                          color: Colors.transparent,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors3.blackColor.withOpacity(0.5),
+                            blurRadius: 3,
+                            offset: Offset(0, 8),
+                          )
+                        ],
+                          color: AppColors3.bgColor,
                           borderRadius: BorderRadius.only(
                               topLeft: _selectedScreen == 4
                                   ? const Radius.circular(15)
@@ -255,25 +297,11 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                           border: _selectedScreen != 4
                               ? const Border(
                               bottom: BorderSide(
-                                color: AppColors3.primaryColor,
+                                color: AppColors3.bgColor,
                                 width: 2.5,
                               ))
                               : null,
-                          /*boxShadow: [
-                            BoxShadow(
-                              color: _selectedScreen != 4
-                                  ? Colors.black54
-                                  : Colors.white,
-                              blurRadius: _selectedScreen != 4 ? 10.0 : 0,
-                              offset: Offset(
-                                  0, MediaQuery.of(context).size.width * 0.012),
-                            ),
-                            BoxShadow(
-                              color: Colors.white,
-                              offset: Offset(
-                                  MediaQuery.of(context).size.height, MediaQuery.of(context).size.width * -0.025),
-                            ),
-                          ]*/),
+                      ),
                       child: Container(
                         margin: EdgeInsets.only(
                           top: _selectedScreen == 1
@@ -301,7 +329,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                       margin: EdgeInsets.only(
                           bottom: screenWidth! < 391
                               ? MediaQuery.of(context).size.width * 0.055
-                              : MediaQuery.of(context).size.width * 0.02),
+                              : MediaQuery.of(context).size.width * 0.05),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -317,6 +345,7 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                                   });
                                 },
                                 child: Container(
+                                  margin: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.055),
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
                                     color: Colors.transparent,
@@ -327,8 +356,8 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                                         ? CupertinoIcons.calendar
                                         : CupertinoIcons.calendar,
                                     color: _selectedScreen == 1
-                                        ? AppColors3.primaryColor
-                                        : AppColors3.primaryColor.withOpacity(0.3),
+                                        ? AppColors3.primaryColorMoreStrong
+                                        : AppColors3.primaryColorMoreStrong.withOpacity(0.3),
                                     size: MediaQuery.of(context).size.width * 0.12,
                                   ),
                                 ),
@@ -387,8 +416,8 @@ class _AssistantAdminState extends State<AssistantAdmin> {
                                     _selectedScreen == 3 ?
                                     CupertinoIcons.person_fill :CupertinoIcons.person,
                                     color: _selectedScreen == 3
-                                        ? AppColors3.primaryColor
-                                        : AppColors3.primaryColor.withOpacity(0.3),
+                                        ? AppColors3.primaryColorMoreStrong
+                                        : AppColors3.primaryColorMoreStrong.withOpacity(0.3),
                                     size: MediaQuery.of(context).size.width * 0.11,
                                   ),
                                 ),
@@ -404,17 +433,22 @@ class _AssistantAdminState extends State<AssistantAdmin> {
             ),
             Visibility(
               visible: _showBlurr,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
-                  child: Container(
-                    color: Colors.black54.withOpacity(0.3),
-                  )))])));}
+                child: GestureDetector(
+                  onTap: () {
+                    _showBlurr = false;
+                  },
+                  child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 4.0, sigmaY: 4.0),
+                      child: Container(
+                        color: Colors.black54.withOpacity(0.3),
+                      )),
+                ))])));}
 
   Widget _buildBody() {
     switch (_selectedScreen) {
       case 1:
         return AgendaSchedule(
-            docLog: widget.docLog, showContentToModify: _onshowContentToModify);
+            docLog: widget.docLog, showContentToModify: _onshowContentToModify, onBlurrModal: onBlurrModal);
       case 3:
         return ClientDetails(onHideBtnsBottom: _onHideBtnsBottom, docLog: widget.docLog, onShowBlur: _onShowBlur, );
       case 4:
@@ -425,6 +459,10 @@ class _AssistantAdminState extends State<AssistantAdmin> {
             });
           },
         );
+      case 5:
+        return Center(child: CircularProgressIndicator(
+          color: AppColors3.primaryColor,
+        ));
       default:
         return Container();
     }

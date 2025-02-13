@@ -9,7 +9,7 @@ class DropdownDataManager {
   Future<void> fetchUser() async {
     try {
       var response = await http.get(
-          Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/clientsAll'));
+          Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/clientsAll'));
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         if (jsonResponse is Map<String, dynamic> && jsonResponse['clients'] is List) {
@@ -63,7 +63,6 @@ class _ClientsAutocompleteState extends State<ClientsAutocomplete> {
       },
       displayStringForOption: (Client option) => option.name,
       onSelected: (Client selection) {
-        print('Seleccionado ${selection.name}');
       },
     );
   }

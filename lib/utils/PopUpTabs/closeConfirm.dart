@@ -70,7 +70,7 @@ class _AlertCloseDialogState extends State<AlertCloseDialog> {
                       ),
                       child: CircleAvatar(
                         radius: MediaQuery.of(context).size.width * 0.052,
-                        backgroundImage: AssetImage("assets/icons/logoBeauteWhite.png"),
+                        backgroundImage: AssetImage("assets/icons/logoCVP.png"),
                       ),
                     ),
 
@@ -98,13 +98,7 @@ class _AlertCloseDialogState extends State<AlertCloseDialog> {
                             ),
                           ),
                         ],
-                      ),/*Text(
-                        '¿Deseas cerrar la aaaaaapp?',
-                        style: TextStyle(
-                          fontSize: MediaQuery.of(context).size.width * 0.065,
-                          color: AppColors2.primaryColor,
-                        ),
-                      ),*/
+                      ),
                     ),
                   ],
                 ),
@@ -143,6 +137,7 @@ class _AlertCloseDialogState extends State<AlertCloseDialog> {
                         ),
                       ),
                     ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.02,),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         side: const BorderSide(
@@ -163,6 +158,7 @@ class _AlertCloseDialogState extends State<AlertCloseDialog> {
                         style: TextStyle(color: Colors.black, fontSize: 16),
                       ),
                     ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.05),
                   ],
                 ),
               ],

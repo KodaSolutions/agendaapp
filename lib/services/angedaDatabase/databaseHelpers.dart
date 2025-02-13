@@ -37,7 +37,7 @@ class DatabaseHelpers {
 
     if (token != null) {
       var response = await http.get(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/user'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/user'),
         headers: {'Authorization': 'Bearer $token'},
       );
 
@@ -69,6 +69,11 @@ class DatabaseHelpers {
         }
         SessionManager.instance.isDoctor = (data['user']['id'] == 1 || data['user']['id'] == 2);
         SessionManager.instance.Nombre = data['user']['name'];
+        //configuracion para los roels
+        SessionManager.instance.userRole = data['user']['role_id'] == 1 ? 'doctor'
+            : data['user']['role_id'] == 2 ? 'asistente'
+            : data['user']['role_id'] == 3 ? 'admin'
+            : data['user']['role_id'];
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (context) => AssistantAdmin(docLog: SessionManager.instance.isDoctor)),
         );
@@ -90,7 +95,7 @@ class DatabaseHelpers {
   Future<void> syncClientsFromAPI() async {
     final dbService = DatabaseService();
     try {
-      var response = await http.get(Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/clientsAll'));
+      var response = await http.get(Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/clientsAll'));
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
@@ -111,7 +116,7 @@ class DatabaseHelpers {
   }
   Future<void> syncAppointmentsFromAPI(int userId) async {
     final dbService = DatabaseService();
-    const baseUrl = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/getAppoinments/';
+    const baseUrl = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.comapi/getAppoinments/';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
@@ -131,7 +136,6 @@ class DatabaseHelpers {
         List<Map<String, dynamic>> appointments = data.map((json) => json as Map<String, dynamic>).toList();
         await dbService.insertAppointments(appointments);
         print('Datos de appointments sincronizados correctamente');
-        print('appt: $appointments');
       }else{
         print('Error al sincronizar appointments: ${response.statusCode}');
       }

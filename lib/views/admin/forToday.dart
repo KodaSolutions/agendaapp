@@ -163,7 +163,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             } else {
               return Column(
                 children: snapshot.data!.map((appointment) {
-                  return NotiCards(appointment: appointment, onCalculateHeightCard: (wd ) {  },);
+                  return NotiCards(
+                    nameDoc: '',
+                    appointment: appointment, onCalculateHeightCard: (wd ) {  },);
                 }).toList(),
               );
             }

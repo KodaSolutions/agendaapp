@@ -9,6 +9,7 @@ import '../../projectStyles/appColors.dart';
 import '../../services/angedaDatabase/databaseService.dart';
 
 Future<List<Appointment2>> fetchAppointmentsByDate(int userId, String date) async {
+  print('user ID $userId');
   List<Appointment2> appointments = [];
   final dbService = DatabaseService();
 
@@ -19,7 +20,7 @@ Future<List<Appointment2>> fetchAppointmentsByDate(int userId, String date) asyn
     if(isConnected){
       print('Cargando appointments para ID: $userId en la fecha: $date desde la API');
       final response = await http.get(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/getAppointmentsByDate/$userId/$date'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/getAppointmentsByDate/$userId/$date'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ${await getToken()}',
@@ -48,7 +49,6 @@ Future<List<Appointment2>> fetchAppointmentsByDate(int userId, String date) asyn
       print('Sin conexión a internet, cargando datos locales de appointments para la fecha: $formattedDate...');
       List<Map<String, dynamic>> localAppointments = await dbService.getAppointmentsByDate(formattedDate);
       appointments = localAppointments.map((appointmentMap) => Appointment2.fromJson(appointmentMap)).toList();
-      print('test $appointments');
     }
   }catch(e) {
     print('Error al realizar la solicitud o cargar datos locales: $e');
@@ -65,10 +65,11 @@ String formatDate(DateTime date) {
 }
 
 class NotiCards extends StatefulWidget {
+  final String nameDoc;
   final Appointment2 appointment;
   final Function(double) onCalculateHeightCard;
 
-  const NotiCards({super.key, required this.appointment, required this.onCalculateHeightCard});
+  const NotiCards({super.key, required this.appointment, required this.onCalculateHeightCard, required this.nameDoc});
 
   @override
   _NotiCardsState createState() => _NotiCardsState();
@@ -81,7 +82,7 @@ class _NotiCardsState extends State<NotiCards> {
 
   Future<void> readNotification(int appointmentId) async {
     const baseUrl =
-        'https://beauteapp-dd0175830cc2.herokuapp.com/api/appointments';
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/appointments';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
@@ -110,7 +111,7 @@ class _NotiCardsState extends State<NotiCards> {
 
   Future<void> unReadNotification(int appointmentId) async {
     const baseUrl =
-        'https://beauteapp-dd0175830cc2.herokuapp.com/api/appointments';
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/appointments';
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? token = prefs.getString('jwt_token');
@@ -176,9 +177,10 @@ class _NotiCardsState extends State<NotiCards> {
                     left: MediaQuery.of(context).size.height * 0.01,
                     right: MediaQuery.of(context).size.height * 0.01),
                 decoration: BoxDecoration(
-                  color: !isRead
-                      ? AppColors3.primaryColor
-                      : AppColors3.primaryColor.withOpacity(0.3),
+                  color: widget.appointment.apptmType == 'Consulta general' && !isRead ? AppColors3.primaryColor :
+                  widget.appointment.apptmType == 'Consulta general' && isRead ?AppColors3.primaryColor.withOpacity(0.3) :
+                  widget.appointment.apptmType == 'Estética' && !isRead ? AppColors3.secundaryColor :
+                  widget.appointment.apptmType == 'Estética' && isRead ? AppColors3.secundaryColor.withOpacity(0.3) : null,
                   borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
@@ -205,7 +207,7 @@ class _NotiCardsState extends State<NotiCards> {
                           borderRadius: BorderRadius.all(Radius.circular(10)),
                           color: AppColors3.whiteColor
                       ),
-                      child: Text( widget.appointment.doctorId == 1 ? 'Doctor 1' : 'Doctor 2',
+                      child: Text( widget.nameDoc == 'Admin' ? 'Heber V.' : widget.nameDoc,
                         style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.04,
                         color: isRead ? AppColors3.blackColor.withOpacity(0.3) : AppColors3.blackColor),),
                     ),),
@@ -247,9 +249,12 @@ class _NotiCardsState extends State<NotiCards> {
                 padding:
                     EdgeInsets.all(MediaQuery.of(context).size.height * 0.01),
                 decoration: BoxDecoration(
-                  color: !isRead
+                  color: widget.appointment.apptmType == 'Consulta general' && !isRead ? AppColors3.primaryColor.withOpacity(0.3) :
+                  widget.appointment.apptmType == 'Consulta general' && isRead ?AppColors3.primaryColor.withOpacity(0.1) :
+                  widget.appointment.apptmType == 'Estética' && !isRead ? AppColors3.secundaryColor.withOpacity(0.3) :
+                  widget.appointment.apptmType == 'Estética' && isRead ? AppColors3.secundaryColor.withOpacity(0.1) : null,/*!isRead
                       ? AppColors3.primaryColor.withOpacity(0.3)
-                      : AppColors3.primaryColor.withOpacity(0.1),
+                      : AppColors3.primaryColor.withOpacity(0.1),*/
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),

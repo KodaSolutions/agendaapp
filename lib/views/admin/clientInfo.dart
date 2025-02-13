@@ -67,7 +67,7 @@ class _ClientInfoState extends State<ClientInfo> {
     });
   }
   void updateUserInfo() async {
-    final url = Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/editUserInfo/${widget.id}');
+    final url = Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/editUserInfo/${widget.id}');
     final token = await storage.read(key: 'jwt_token');
     try {
       final response = await http.post(
@@ -131,7 +131,7 @@ class _ClientInfoState extends State<ClientInfo> {
     }
   }
   Future<void> deleteClient(int id) async{
-    const baseUrl = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/deleteClient/';
+    const baseUrl = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/deleteClient/';
     try {
       final response = await http.post(
         Uri.parse(baseUrl + '$id'),
@@ -194,7 +194,8 @@ class _ClientInfoState extends State<ClientInfo> {
     return Scaffold(
       backgroundColor: AppColors3.whiteColor,
       body: Stack(
-        children: [Column(
+        children: [
+          Column(
           children: [
             AppBar(
               leadingWidth: !editInfo ? null : 100,
@@ -299,7 +300,7 @@ class _ClientInfoState extends State<ClientInfo> {
                                 decoration: BoxDecoration(
                                   border: !editInfo
                                       ? null
-                                      : Border.all(color: Colors.white),
+                                      : Border.all(color: AppColors3.primaryColorMoreStrong),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: ClipRRect(
@@ -311,7 +312,7 @@ class _ClientInfoState extends State<ClientInfo> {
                                         decoration: InputDecoration(
                                           contentPadding: EdgeInsets.zero,
                                           filled: editInfo,
-                                          fillColor:  AppColors3.primaryColorMoreStrong,
+                                          fillColor:  AppColors3.primaryColorMoreStrong.withOpacity(0.2),
                                           border: InputBorder.none,
                                           enabledBorder: InputBorder.none,
                                           focusedBorder: InputBorder.none,
@@ -346,7 +347,7 @@ class _ClientInfoState extends State<ClientInfo> {
                                   setState(() {
                                     setState(() {
                                       String phoneCode = '+52${phoneController.text.trim()}';
-                                      sendWhatsMsg(phone: phoneCode, bodymsg: 'Hola, $name. Te mando mensaje para reasignar tu cita en Beaute Clinique.\n');
+                                      sendWhatsMsg(phone: phoneCode, bodymsg: 'Hola, $name.\n');
                                     });
                                   });
                                 } : null,
@@ -355,10 +356,10 @@ class _ClientInfoState extends State<ClientInfo> {
                                   children: [
                                     Icon(FontAwesomeIcons.whatsapp,
                                       size: MediaQuery.of(context).size.width * 0.12,
-                                      color: editInfo ? AppColors3.primaryColor.withOpacity(0.3) : AppColors3.primaryColor,),
+                                      color: editInfo ? AppColors3.primaryColorMoreStrong.withOpacity(0.3) : AppColors3.primaryColorMoreStrong,),
                                     Text('Mensaje',
                                       style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.055,
-                                        color: editInfo ? AppColors3.primaryColor.withOpacity(0.3) : AppColors3.primaryColor,),),
+                                        color: editInfo ? AppColors3.primaryColorMoreStrong.withOpacity(0.3) : AppColors3.primaryColorMoreStrong,),),
                                   ],
                                 ),
                               ),
@@ -390,10 +391,10 @@ class _ClientInfoState extends State<ClientInfo> {
                                   children: [
                                     Icon(Icons.call,
                                       size: MediaQuery.of(context).size.width * 0.12,
-                                      color: editInfo ? AppColors3.primaryColor.withOpacity(0.3) : AppColors3.primaryColor,),
+                                      color: editInfo ? AppColors3.primaryColorMoreStrong.withOpacity(0.3) : AppColors3.primaryColorMoreStrong,),
                                     Text('Llamar',
                                       style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.055,
-                                        color: editInfo ? AppColors3.primaryColor.withOpacity(0.3) : AppColors3.primaryColor,),),
+                                        color: editInfo ? AppColors3.primaryColorMoreStrong.withOpacity(0.3) : AppColors3.primaryColorMoreStrong,),),
                                   ],
                                 ),
                               ),
@@ -429,10 +430,10 @@ class _ClientInfoState extends State<ClientInfo> {
                                   children: [
                                     Icon(Icons.add_card,
                                         size: MediaQuery.of(context).size.width * 0.12,
-                                        color: editInfo ? AppColors3.primaryColor.withOpacity(0.3) : AppColors3.primaryColor),
+                                        color: editInfo ? AppColors3.primaryColorMoreStrong.withOpacity(0.3) : AppColors3.primaryColorMoreStrong),
                                     Text('Crear cita',
                                       style: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.055,
-                                          color: editInfo ? AppColors3.primaryColor.withOpacity(0.3) : AppColors3.primaryColor),),
+                                          color: editInfo ? AppColors3.primaryColorMoreStrong.withOpacity(0.3) : AppColors3.primaryColorMoreStrong),),
                                   ],
                                 ),
                               ),
@@ -459,19 +460,19 @@ class _ClientInfoState extends State<ClientInfo> {
                                 bottom: editInfo ? 0 : MediaQuery.of(context).size.width * 0.03,),
                               decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                  border: editInfo ? null : Border.all(color: AppColors3.primaryColor,)
+                                  border: editInfo ? null : Border.all(color: AppColors3.primaryColorMoreStrong,)
                               ),
                               child: !editInfo ? RichText(
                                 text: TextSpan(
                                   children: [
                                     const TextSpan(
                                       text: 'No. Celular',
-                                      style: TextStyle(color: AppColors3.primaryColor,
+                                      style: TextStyle(color: AppColors3.primaryColorMoreStrong,
                                           fontSize: 22), // Color para "No. Celular"
                                     ),
                                     TextSpan(
                                       text: phoneController.text,
-                                      style: TextStyle(color: AppColors3.primaryColor.withOpacity(0.35),
+                                      style: TextStyle(color: AppColors3.primaryColorMoreStrong.withOpacity(0.35),
                                           fontSize: 20), // Color para el texto del controlador
                                     ),
                                   ],
@@ -487,26 +488,26 @@ class _ClientInfoState extends State<ClientInfo> {
                                   floatingLabelBehavior: FloatingLabelBehavior.always,
                                   disabledBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor, width: 2.0),
+                                        color: AppColors3.primaryColorMoreStrong, width: 2.0),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   //unfocus
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor, width: 1.0),
+                                        color: AppColors3.primaryColorMoreStrong, width: 1.0),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   border: OutlineInputBorder(
                                     borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor, width: 1),
+                                        color: AppColors3.primaryColorMoreStrong, width: 1),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   labelText: 'No. Celuar',
                                   labelStyle: const TextStyle(
-                                    color: AppColors3.primaryColor,
+                                    color: AppColors3.primaryColorMoreStrong,
                                   )
                                 ),
-                                style: const TextStyle(fontSize: 20, color: AppColors3.primaryColor),
+                                style: const TextStyle(fontSize: 20, color: AppColors3.primaryColorMoreStrong),
                               ),
                             ),
                           ),
@@ -522,19 +523,19 @@ class _ClientInfoState extends State<ClientInfo> {
                                 bottom: editInfo ? 0 : MediaQuery.of(context).size.width * 0.03,),
                               decoration: BoxDecoration(
                                   borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                  border: editInfo ? null : Border.all(color: AppColors3.primaryColor,)
+                                  border: editInfo ? null : Border.all(color: AppColors3.primaryColorMoreStrong,)
                               ),
                               child: !editInfo ? RichText(
                                 text: TextSpan(
                                   children: [
                                     const TextSpan(
                                       text: 'Correo electronico',
-                                      style: TextStyle(color: AppColors3.primaryColor,
+                                      style: TextStyle(color: AppColors3.primaryColorMoreStrong,
                                           fontSize: 22), // Color para "No. Celular"
                                     ),
                                     TextSpan(
                                       text: emailController.text,
-                                      style: TextStyle(color: AppColors3.primaryColor.withOpacity(0.3),
+                                      style: TextStyle(color: AppColors3.primaryColorMoreStrong.withOpacity(0.3),
                                           fontSize: 20), // Color para el texto del controlador
                                     ),
                                   ],
@@ -546,24 +547,24 @@ class _ClientInfoState extends State<ClientInfo> {
                                   floatingLabelBehavior: FloatingLabelBehavior.always,
                                   disabledBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor, width: 2.0),
+                                        color: AppColors3.primaryColorMoreStrong, width: 2.0),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   //unfocus
                                   enabledBorder: OutlineInputBorder(
                                     borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor, width: 1.0),
+                                        color: AppColors3.primaryColorMoreStrong, width: 1.0),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   border: OutlineInputBorder(
                                     borderSide: const BorderSide(
-                                        color: AppColors3.primaryColor, width: 1),
+                                        color: AppColors3.primaryColorMoreStrong, width: 1),
                                     borderRadius: BorderRadius.circular(10.0),
                                   ),
                                   labelText: 'Correo electrónico',
-                                  labelStyle: const TextStyle(color: AppColors3.primaryColor),
+                                  labelStyle: const TextStyle(color: AppColors3.primaryColorMoreStrong),
                                 ),
-                                style: const TextStyle(fontSize: 20, color: AppColors3.primaryColor,),
+                                style: const TextStyle(fontSize: 20, color: AppColors3.primaryColorMoreStrong,),
                               ),
                             ),
                           ),
@@ -578,17 +579,17 @@ class _ClientInfoState extends State<ClientInfo> {
                               left: MediaQuery.of(context).size.width * 0.03,
                               top:MediaQuery.of(context).size.width * 0.03,
                               right:MediaQuery.of(context).size.width * 0.03,
-                              bottom: editInfo ? 0 : MediaQuery.of(context).size.width * 0.03,),
+                              bottom: MediaQuery.of(context).size.width * 0.03,),
                             decoration: BoxDecoration(
                                 borderRadius: const BorderRadius.all(Radius.circular(10)),
-                                border: Border.all(color: AppColors3.primaryColor,)
+                                border: Border.all(color: AppColors3.primaryColorMoreStrong,)
                             ),
                             child:Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
                                   'Citas',
-                                  style: TextStyle(color: AppColors3.primaryColor, fontSize: 22),
+                                  style: TextStyle(color: AppColors3.primaryColorMoreStrong, fontSize: 22),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -596,14 +597,14 @@ class _ClientInfoState extends State<ClientInfo> {
                                     Text(
                                       'Próxima: ',
                                       style: TextStyle(
-                                        color: AppColors3.primaryColor.withOpacity(0.3),
+                                        color: AppColors3.primaryColorMoreStrong.withOpacity(0.3),
                                         fontSize: 20,
                                       ),
                                     ),
                                     Text(
                                       appointmentData?['appointment_date'] ?? 'No hay cita próxima',
                                       style: const TextStyle(
-                                        color: AppColors3.primaryColor,
+                                        color: AppColors3.primaryColorMoreStrong,
                                         fontSize: 20,
                                       ),
                                     ),
@@ -615,14 +616,14 @@ class _ClientInfoState extends State<ClientInfo> {
                                     Text(
                                       'Cant. de citas:',
                                       style: TextStyle(
-                                        color: AppColors3.primaryColor.withOpacity(0.3),
+                                        color: AppColors3.primaryColorMoreStrong.withOpacity(0.3),
                                         fontSize: 20,
                                       ),
                                     ),
                                     Text(
                                       appointmentData?['visit_count']?.toString() ?? '0',
                                       style: const TextStyle(
-                                        color: AppColors3.primaryColor,
+                                        color: AppColors3.primaryColorMoreStrong,
                                         fontSize: 20,
                                       ),
                                     ),
@@ -640,7 +641,7 @@ class _ClientInfoState extends State<ClientInfo> {
                           width: MediaQuery.of(context).size.width,
                           child:  ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              side: const BorderSide(color: AppColors3.primaryColor,),
+                              side: const BorderSide(color: AppColors3.primaryColorMoreStrong,),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),

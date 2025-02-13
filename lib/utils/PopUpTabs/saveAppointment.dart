@@ -44,7 +44,7 @@ class _ConfirmationDialogState extends State<ConfirmationDialog> {
       );
       final response = await http.put(
         Uri.parse(
-            'https://beauteapp-dd0175830cc2.herokuapp.com/api/editAppoinment/${widget.appointment.id}'),
+            'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/editAppoinment/${widget.appointment.id}'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

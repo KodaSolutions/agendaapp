@@ -6,11 +6,11 @@ import 'package:http/http.dart' as http;
 import '../../projectStyles/appColors.dart';
 import '../../views/admin/admin.dart';
 
-Future<bool> showDeleteAppointmentDialog(BuildContext context, Widget widget, int? id, bool docLog, Function refreshAppointments) async {
+Future<bool> showDeleteAppointmentDialog(BuildContext context, Widget widget, int? id, Function refreshAppointments) async {
 
   Future<void> deleteAppt(int id) async {
     const baseUrl =
-        'https://beauteapp-dd0175830cc2.herokuapp.com/api/deleteAppoinment/';
+        'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/deleteAppoinment/';
 
     try {
       final response = await http.post(
@@ -40,7 +40,6 @@ Future<bool> showDeleteAppointmentDialog(BuildContext context, Widget widget, in
     context: context,
     barrierColor: Colors.transparent,
     builder: (BuildContext context) {
-      print('doc delcitaBUILD ${docLog}');
       return Stack(
         children: [
           Center(
@@ -132,7 +131,7 @@ Future<bool> showDeleteAppointmentDialog(BuildContext context, Widget widget, in
                             deleteAppt(id!);
                             Navigator.of(context).pushAndRemoveUntil(
                               CupertinoPageRoute(
-                                builder: (context) => AssistantAdmin(docLog: docLog),
+                                builder: (context) => const AssistantAdmin(docLog: true,),
                               ),
                                   (Route<dynamic> route) => false,
                             );

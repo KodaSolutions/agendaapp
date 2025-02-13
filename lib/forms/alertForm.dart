@@ -8,6 +8,7 @@ import 'package:http/http.dart' as http;
 import '../projectStyles/appColors.dart';
 import '../services/getClientsService.dart';
 import '../styles/AppointmentStyles.dart';
+import '../usersConfig/functions.dart';
 
 class AlertForm extends StatefulWidget {
   final bool isDoctorLog;
@@ -37,6 +38,10 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
   int _optSelected = 0;
   bool isDocLog = false;
   bool drFieldDone = false;
+  double? ajuste;
+  String? error;
+  List<Map<String, dynamic>> doctors = [];
+  bool isLoadingUsers = false;
   final DropdownDataManager dropdownDataManager = DropdownDataManager();
 
   void hideKeyBoard() {
@@ -54,27 +59,36 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
         });
   }
 
-  void _onAssignedDoctor(
-      bool dr1sel,
-      bool dr2sel,
-      TextEditingController drSelected,
-      int optSelected,
-      bool showdrChooseWidget) {
+  void onAssignedDoctor(bool isSelected, TextEditingController drSelected,
+      int optSelected, int idDoc) {
     setState(() {
+      _showdrChooseWidget = !isSelected;
       _drSelected = drSelected;
-      if (_drSelected!.text == 'Doctor1') {
-        doctor_id_body = 1;
-      } else {
-        doctor_id_body = 2;
-      }
       _optSelected = optSelected;
-      _showdrChooseWidget = showdrChooseWidget;
-      print('_optSelected $_optSelected');
+      ///recuperar el ID y asignarlo
       animationController.reverse().then((_) {
         animationController.reset();
       });
-      //
     });
+  }
+
+  Future<void> loadUserswithRole() async {
+    setState(() {
+      isLoadingUsers = true;
+      error = null;
+    });
+    try {
+      final usersList = await loadUsersWithRoles();
+      setState(() {
+        doctors = usersList.where((user) => user['role'] != 2 && user['id'] != 1).toList();
+        isLoadingUsers = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoadingUsers = false;
+        error = e.toString();
+      });
+    }
   }
 
   @override
@@ -85,7 +99,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
   }
   Future<void> sendNotification(int id) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      const baseUrl = 'https://beauteapp-dd0175830cc2.herokuapp.com/api/sendNotification/';
+      const baseUrl = 'https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/sendNotification/';
       try {
         String? token = prefs.getString('jwt_token');
         final response = await http.post(
@@ -113,6 +127,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
 
   @override
   void initState() {
+    loadUserswithRole();
     animationController = AnimationController(vsync: this, duration: const Duration(milliseconds: 300));
     rotate = Tween(begin: 0.0, end: pi).animate(CurvedAnimation(parent: animationController, curve: const Interval(0.0, 1, curve: Curves.easeInOut )));
     hideKeyBoard();
@@ -124,6 +139,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
     super.initState();
     dropdownDataManager.fetchUser();
     isDocLog = widget.isDoctorLog;
+    ajuste = 50.0 * (doctors.length);
   }
 
   @override
@@ -163,7 +179,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                       children: [
                         Expanded(child: Text('Mandar alerta',
                           style: TextStyle(
-                            fontSize: MediaQuery.of(context).size.width * 0.08,
+                            fontSize: MediaQuery.of(context).size.width * 0.065,
                             fontWeight: FontWeight.bold,
                             color: AppColors3.primaryColor,
                           ),
@@ -196,11 +212,15 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                     child: Column(
                                       children: [
                                         Container(
-                                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                             width: MediaQuery.of(context).size.width,
                                             decoration: const BoxDecoration(
                                               color: AppColors3.primaryColor,
-                                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                                              borderRadius: BorderRadius.only(
+                                                topRight: Radius.circular(10),
+                                                topLeft: Radius.circular(10)
+
+                                              ),
                                             ),
                                             child: Text('Doctor:', style: TextStyle(
                                               color: Colors.white,
@@ -209,70 +229,99 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                             ),)
                                         ),
                                         Padding(
-                                          padding: EdgeInsets.symmetric(
-                                            vertical: MediaQuery.of(context).size.width * 0.02,
+                                          padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context).size.width * 0.02,
                                           ),
-                                          child: TextFormField(
-                                            controller: _drSelected,
-                                            decoration: InputDecoration(
-                                                hintText: 'Seleccione una opción...',
-                                                contentPadding: EdgeInsets.symmetric(
-                                                  horizontal: MediaQuery.of(context).size.width * 0.03,
-                                                  vertical: MediaQuery.of(context).size.width * 0.03,
+                                          child: Stack(
+                                            children: [
+                                              TextFormField(
+                                                controller: _drSelected,
+                                                decoration: InputDecoration(
+                                                    hintText: 'Seleccione una opción...',
+                                                    contentPadding: EdgeInsets.symmetric(
+                                                      horizontal: MediaQuery.of(context).size.width * 0.03,
+                                                      vertical: MediaQuery.of(context).size.width * 0.03,
+                                                    ),
+                                                    border: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.only(
+                                                            bottomRight: Radius.circular(10),
+                                                            bottomLeft: Radius.circular(10)),
+                                                        borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                                    enabledBorder: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.only(
+                                                            bottomRight: Radius.circular(10),
+                                                            bottomLeft: Radius.circular(10)),
+                                                        borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                                    focusedBorder: OutlineInputBorder(
+                                                        borderRadius: BorderRadius.only(
+                                                            bottomRight: Radius.circular(10),
+                                                            bottomLeft: Radius.circular(10)),
+                                                        borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                                    suffixIcon: AnimatedBuilder(
+                                                      animation: animationController,
+                                                      child: Icon(
+                                                        Icons.arrow_drop_down_circle_outlined,
+                                                        size: MediaQuery.of(context).size.width * 0.085,
+                                                        color: AppColors3.primaryColor,
+                                                      ),
+                                                      builder: (context, iconToRotate){
+                                                        return Transform.rotate(angle: rotate.value, child:  iconToRotate,);
+                                                      },
+                                                    )
                                                 ),
-                                              border: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  borderSide: const BorderSide(
-                                                      color: AppColors3.primaryColor)),
-                                              enabledBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  borderSide: const BorderSide(color: AppColors3.primaryColor)),
-                                              focusedBorder: OutlineInputBorder(
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                  borderSide: const BorderSide(color: AppColors3.primaryColor, width: 1.5),),
-                                                suffixIcon: AnimatedBuilder(
-                                                  animation: animationController,
-                                                  child: Icon(
-                                                    Icons.arrow_drop_down_circle_outlined,
-                                                    size: MediaQuery.of(context).size.width * 0.085,
-                                                    color: AppColors3.primaryColor,
+                                                readOnly: true,
+                                                onTap: () {
+                                                  setState(() {
+                                                    _showdrChooseWidget = _showdrChooseWidget
+                                                        ? false
+                                                        : true;
+                                                    _showdrChooseWidget == true ? animationController.forward() : animationController.reverse().then((_){
+                                                      animationController.reset();
+                                                    });
+                                                  });
+                                                },
+                                                onEditingComplete: () {
+                                                  setState(() {
+                                                    drFieldDone = true;
+                                                  });
+                                                },
+                                              ),
+                                              if (isLoadingUsers)
+                                                Positioned.fill(
+                                                  child: Container(
+                                                    color: Colors.white.withOpacity(0.7), // Fondo semitransparente
+                                                    child: const Center(
+                                                      child: CircularProgressIndicator(),
+                                                    ),
                                                   ),
-                                                  builder: (context, iconToRotate){
-                                                    return Transform.rotate(angle: rotate.value, child:  iconToRotate,);
-                                                  },
-                                                )
-                                            ),
-                                            readOnly: true,
-                                            onTap: () {
-                                              setState(() {
-                                                _showdrChooseWidget = _showdrChooseWidget
-                                                    ? false
-                                                    : true;
-                                                _showdrChooseWidget == true ? animationController.forward() : animationController.reverse().then((_){
-                                                  animationController.reset();
-                                                });
-                                              });
-                                            },
-                                            onEditingComplete: () {
-                                              setState(() {
-                                                drFieldDone = true;
-                                              });
-                                            },
-                                          ),
+                                                ),
+                                            ],
+                                          )
                                         ),
-                                        AnimatedContainer(duration: const Duration(milliseconds: 85),
+                                        AnimatedContainer(duration: const Duration(milliseconds: 250),
                                           margin: EdgeInsets.only(bottom: _showdrChooseWidget ? MediaQuery.of(context).size.width * 0.02 : 0),
-                                          height: _showdrChooseWidget ? 94 : 0,
+                                          height: _showdrChooseWidget ? ajuste : 0,
                                           decoration: const BoxDecoration(),
-                                          clipBehavior: Clip.hardEdge, // Recort
-                                          child: DoctorsMenu(onAssignedDoctor: _onAssignedDoctor, optSelectedToRecieve: _optSelected),
+                                          clipBehavior: Clip.hardEdge,
+                                          child: Visibility(
+                                            visible: _showdrChooseWidget,
+                                            child: DoctorsMenu(
+                                              onAjustSize: (ajuste) {setState(() {
+                                                this.ajuste = (ajuste! * (doctors.length)) + 2;
+                                              });},
+                                              onAssignedDoctor: onAssignedDoctor,
+                                              optSelectedToRecieve: _optSelected,
+                                              doctors: doctors),),
                                         ),
                                         Container(
                                             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                                             width: MediaQuery.of(context).size.width,
                                             decoration: const BoxDecoration(
                                               color: AppColors3.primaryColor,
-                                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                                              borderRadius: BorderRadius.only(
+                                                 topLeft:  Radius.circular(10),
+                                                topRight:  Radius.circular(10),
+                                              ),
                                             ),
                                             child: Text('Mensaje:', style: TextStyle(
                                               color: Colors.white,
@@ -282,8 +331,7 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                         ),
                                         Padding(
                                           padding: EdgeInsets.only(
-                                            top: MediaQuery.of(context).size.width * 0.02,
-                                            bottom: MediaQuery.of(context).size.width * 0.06,
+                                            bottom: MediaQuery.of(context).size.width * 0.035,
                                           ),
                                           child: TextFormField(
                                             maxLines: 3,
@@ -295,9 +343,22 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                                 vertical: MediaQuery.of(context).size.width * 0.03,
                                               ),
                                               border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.circular(10.0),
-                                              ),
+                                                  borderRadius: BorderRadius.only(
+                                                      bottomRight: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10)),
+                                                  borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                              focusedBorder: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.only(
+                                                      bottomRight: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10)),
+                                                  borderSide: const BorderSide(color: AppColors3.primaryColor)),
+                                              enabledBorder: OutlineInputBorder(
+                                                  borderRadius: BorderRadius.only(
+                                                      bottomRight: Radius.circular(10),
+                                                      bottomLeft: Radius.circular(10)),
+                                                  borderSide: const BorderSide(color: AppColors3.primaryColor)),
                                             ),
+
                                             onTap: () {
                                               setState(() {
                                               });
@@ -308,32 +369,32 @@ class _AlertFormState extends State<AlertForm> with SingleTickerProviderStateMix
                                             },
                                           ),
                                         ),
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width * 0.07),
-                                          child: Row(
+                                        Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              Expanded( // Mueve Expanded dentro de Row
-                                                child: ElevatedButton(
+                                             ElevatedButton(
                                                   onPressed: () {
                                                     sendNotification(_optSelected);
                                                   },
                                                   style: ElevatedButton.styleFrom(
-                                                    padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width * 0.04),
+                                                    padding: EdgeInsets.symmetric(
+                                                        vertical: MediaQuery.of(context).size.width * 0.02,
+                                                        horizontal: MediaQuery.of(context).size.width * 0.045,
+                                                    ),
                                                     backgroundColor: Colors.white,
-                                                    side: const BorderSide(color: Color(0XFF4F2263), width: 1.5),
+                                                    side: const BorderSide(color: AppColors3.primaryColor, width: 1.5),
                                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                                                     elevation: 5.0,
                                                     shadowColor: Colors.black54,
                                                   ),
-                                                  child: const Text('Mandar Alerta',
+                                                  child: const Text('Enviar',
                                                     style: TextStyle(
+                                                      color: AppColors3.primaryColor,
                                                         fontSize: 20
                                                     ),),
                                                 ),
-                                              ),
                                             ],
                                           ),
-                                        )
 
 
                                       ],

@@ -12,17 +12,16 @@ import '../views/admin/admin.dart';
 import 'angedaDatabase/databaseService.dart';
 
 class PinEntryScreen extends StatefulWidget {
-  final int userId;
+  final String userId; // Changed from int to String
   final bool docLog;
-  final void Function(
-    bool,
-  ) onCloseScreeen;
+  final void Function(bool) onCloseScreeen;
 
-  const PinEntryScreen(
-      {super.key,
-      required this.userId,
-      required this.docLog,
-      required this.onCloseScreeen});
+  const PinEntryScreen({
+    super.key,
+    required this.userId,
+    required this.docLog,
+    required this.onCloseScreeen,
+  });
 
   @override
   PinEntryScreenState createState() => PinEntryScreenState();
@@ -31,12 +30,14 @@ class PinEntryScreen extends StatefulWidget {
 class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProviderStateMixin {
   late AnimationController aniController;
   late Animation<double> shakeX;
-  bool isDocLog = false;
   final textfield = TextEditingController();
+  final storage = const FlutterSecureStorage();
+
+  String enteredPin = '';
+  bool pinVisible = false;
+  int count = 0;
   double? screenWidth;
   double? screenHeight;
-  int count = 0;
-  final storage = const FlutterSecureStorage();
 
   bool isTokenExpired(String token) {
     final decodedToken = JwtClaim.fromMap(json.decode(B64urlEncRfc7515.decodeUtf8(token.split(".")[1])));
@@ -55,9 +56,7 @@ class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProvide
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    isDocLog = widget.docLog;
     aniController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 20),
@@ -74,55 +73,48 @@ class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProvide
 
   void authenticate() async {
     try {
-      String jsonBody;
-      if (widget.userId == 3) {
-        jsonBody = json.encode({
-          'email': 'dulce@test.com',
-          'password': enteredPin,
-          'fcm_token': await FirebaseMessaging.instance.getToken(),
-        });
-      } else {
-        jsonBody = json.encode({
-          'email': 'doctor${widget.userId}@test.com',
-          'password': enteredPin,
-          'fcm_token': await FirebaseMessaging.instance.getToken(),
-        });
-      }
+      String jsonBody = json.encode({
+        'identification': widget.userId,
+        'password': enteredPin,
+        'fcm_token': await FirebaseMessaging.instance.getToken(),
+      });
 
       var response = await http.post(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/login'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/login'),
         headers: {'Content-Type': 'application/json'},
         body: jsonBody,
       );
 
       if (response.statusCode == 200) {
-        var data = json.decode(response.body);;
+        var data = json.decode(response.body);
         final dbService = DatabaseService();
-        await dbService.saveSession(data['token'], data['user']['id'], data['user']['id'] == 1 || data['user']['id'] == 2);
+        await dbService.saveSession(
+            data['token'],
+            data['user']['id'],
+            data['user']['role'] == 'doctor'
+        );
+
         await dbService.saveUser({
           'id': data['user']['id'],
           'name': data['user']['name'],
           'email': data['user']['email'],
-          'email_verified_at': data['user']['email_verified_at'],
+          'identification': data['user']['identification'],
+          'role': data['user']['role'],
           'fcm_token': data['user']['fcm_token'],
-          'created_at': data['user']['created_at'],
-          'updated_at': data['user']['updated_at'],
         });
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt_token', data['token']);
         await prefs.setInt('user_id', data['user']['id']);
-        if(data['user']['id'] == 1 || data['user']['id'] == 2){
-          SessionManager.instance.isDoctor = true;
+        SessionManager.instance.isDoctor = data['user']['role'] == 'doctor';
+        SessionManager.instance.Nombre = data['user']['name'];
+        SessionManager.instance.userRole = data['user']['role'];
 
-        } else {
-          SessionManager.instance.isDoctor = false;
-        }
-        SessionManager.instance.Nombre = data['user']['nombre'];
-
-        if(mounted){
+        if (mounted) {
           Navigator.of(context).pushAndRemoveUntil(
             CupertinoPageRoute(
-              builder: (context) => AssistantAdmin(docLog: SessionManager.instance.isDoctor,),
+              builder: (context) => AssistantAdmin(
+                docLog: SessionManager.instance.isDoctor,
+              ),
             ),
                 (Route<dynamic> route) => false,
           );
@@ -132,15 +124,15 @@ class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProvide
           aniController.forward();
           aniController.addListener(() {
             if (aniController.status == AnimationStatus.completed) {
-              aniController.reverse().then((_){
+              aniController.reverse().then((_) {
                 count = count + 1;
-                if(count < 7){
+                if (count < 7) {
                   aniController.forward();
                 } else {
                   setState(() {
                     aniController.stop();
                     aniController.reset();
-                    count =0;
+                    count = 0;
                   });
                 }
               });
@@ -148,10 +140,9 @@ class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProvide
           });
           enteredPin = '';
         });
-
       }
     } catch (e) {
-      print("Error $e");
+      print("Authentication Error: $e");
     }
   }
   Future<void> logout(BuildContext context) async {
@@ -159,7 +150,7 @@ class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProvide
     String? token = await storage.read(key: 'jwt_token');
     if (token != null) {
       var response = await http.post(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/logout'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/logout'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -181,7 +172,7 @@ class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProvide
     String? token = prefs.getString('jwt_token');
     if(token != null){
       var response = await http.post(
-        Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/refresh'),
+        Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/refresh'),
         headers: {
           'Authorization': 'Bearer $token',
         },
@@ -213,8 +204,6 @@ class PinEntryScreenState extends State<PinEntryScreen> with SingleTickerProvide
     return false;
   }
 
-  String enteredPin = '';
-  bool pinVisible = false;
 
   onNumberTapped(number) {
     setState(() {

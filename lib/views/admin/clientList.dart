@@ -34,7 +34,7 @@ class DropdownDataManager {
       bool isConnected = connectivityResult != ConnectivityResult.none;
       if (isConnected) {
         var response = await http.get(
-          Uri.parse('https://beauteapp-dd0175830cc2.herokuapp.com/api/clientsAll'),
+          Uri.parse('https://agendapp-cvp-75a51cfa88cd.herokuapp.com/api/clientsAll'),
         );
         if (response.statusCode == 200) {
           var jsonResponse = jsonDecode(response.body);
@@ -104,12 +104,24 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
   double sumAvance = 0;
   double scaleValue = 0;
   int letterCherlper = 0;
+  List<Client> helperClients = [];
 
   @override
   void didPopNext() {
     super.didPopNext();
     getNombres();
   }
+
+  bool shouldHideHeader(List<Client> clients) {
+    // Filtrar los clientes cuya inicial es 'J'
+    List<Client> clientsWithJ = clients
+        .where((client) => client.name[0].toUpperCase() == 'J')
+        .toList();
+
+    // Verificar si hay solo uno con ID 1
+    return clientsWithJ.length == 1 && clientsWithJ[0].id == 1;
+  }
+
   void checkKeyboardVisibility() {
     keyboardVisibilitySubscription =
         keyboardVisibilityController.onChange.listen((visible) {
@@ -265,15 +277,16 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
         style: baseStyle,
       ));
     }
-
     return TextSpan(children: matches);
   }
 
   List<AlphabetListViewItemGroup> _createAlphabetizedData(List<Client> clients){
     final Map<String, List<Client>> data = {};
     String query = searchController.text;
-
+    List<Client> clientsWithT = clients.where((c) => c.name[0].toUpperCase() == 'T').toList();
+    helperClients = clientsWithT;
     for(Client client in clients){
+      print(client.id);
       final String tag = client.name[0].toUpperCase();
       if (!data.containsKey(tag)) {
         data[tag] = [];
@@ -281,11 +294,13 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
       data[tag]!.add(client);
     }
 
+
+
     data.forEach((key, value) {
       value.sort((a, b) => a.name.compareTo(b.name));
     });
 
-    letterCherlper = data['C']?.length ?? 0;
+    letterCherlper = data['T']?.length ?? 0;
     final sortedKeys = data.keys.toList()..sort();
     final clientService = ClientService();
     final List<AlphabetListViewItemGroup> groups = sortedKeys.map((key) {
@@ -369,7 +384,7 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                   text: highlightOccurrences(client.name, query,
                     TextStyle(
                       overflow: TextOverflow.ellipsis,
-                      color: AppColors3.primaryColor,
+                      color: AppColors3.primaryColorMoreStrong,
                       fontSize: MediaQuery.of(context).size.width * 0.055,
                     ),
                   ),
@@ -386,7 +401,7 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                             query,
                             TextStyle(
                               overflow: TextOverflow.ellipsis,
-                              color: AppColors3.primaryColor.withOpacity(0.5),
+                              color: AppColors3.primaryColorMoreStrong.withOpacity(0.5),
                               fontSize: MediaQuery.of(context).size.width * 0.045,
                             ),
                           ),
@@ -399,19 +414,15 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: AppColors3.primaryColor.withOpacity(0.5),
+                            color: AppColors3.primaryColorMoreStrong.withOpacity(0.5),
                             fontSize: MediaQuery.of(context).size.width * 0.045,
                           ),
                         ),
                       ),
                     ],
                   ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 8),
-                    height: 2,
-                    decoration: const BoxDecoration(
-                      color: AppColors3.primaryColor,
-                    ),
+                  const Divider(
+                    thickness: 2,
                   ),
                 ],
               ),
@@ -429,7 +440,7 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
       listOptions: ListOptions(
         listHeaderBuilder: (context, symbol) {
           return  Visibility(
-            visible: symbol == 'C' && letterCherlper == 1 ? false : true,
+            visible: symbol == 'T' && helperClients.length == 1  ? false : true,
             child: Container(
             margin: const EdgeInsets.only(right: 8),
             padding: const EdgeInsets.only(left: 6.0, top: 6, bottom: 6),
@@ -460,7 +471,7 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                 left: Radius.circular(100),
               ),
               color: state == AlphabetScrollbarItemState.active
-                  ? AppColors3.primaryColor.withOpacity(0.3)
+                  ? AppColors3.primaryColor.withOpacity(0.5)
                   : null,
             ),
             child: Center(
@@ -513,23 +524,23 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                           contentPadding: EdgeInsets.zero,
                           hintText: 'Buscar...',
                           hintStyle: TextStyle(
-                            color: AppColors3.primaryColor.withOpacity(0.3)
+                            color: AppColors3.primaryColorMoreStrong.withOpacity(0.3)
                           ),
-                          prefixIcon: Icon(Icons.search, color: AppColors3.primaryColor.withOpacity(0.3)),
+                          prefixIcon: Icon(Icons.search, color: AppColors3.primaryColorMoreStrong.withOpacity(0.3)),
                           disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColors3.primaryColor.withOpacity(0.3), width: 2.0),
+                            borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong, width: 2.0),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: AppColors3.primaryColor.withOpacity(0.3), width: 2.0),
+                            borderSide: BorderSide(color: AppColors3.primaryColorMoreStrong.withOpacity(0.5), width: 2.0),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(color: AppColors3.primaryColor, width: 2.0),
+                            borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong, width: 2.0),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                           border: OutlineInputBorder(
-                            borderSide: const BorderSide(color: AppColors3.primaryColor),
+                            borderSide: const BorderSide(color: AppColors3.primaryColorMoreStrong),
                             borderRadius: BorderRadius.circular(10.0),
                           ),
                         ),
@@ -550,9 +561,9 @@ class _ClientDetailsState extends State<ClientDetails> with RouteAware, SingleTi
                     });
                   },
                   icon: Icon(
-                    Icons.person_add_alt_outlined,
+                    Icons.person_add_alt_1_rounded,
                     size: MediaQuery.of(context).size.width * 0.11,
-                    color: AppColors3.primaryColor,
+                    color: AppColors3.primaryColorMoreStrong.withOpacity(0.7),
                   ),
                 ),
               ),
